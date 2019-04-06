@@ -67,6 +67,9 @@ Namespace Parser
             outputStream.MoveNext()
             Assert.AreEqual(Kind.RIGHTBRACKET, outputStream.Current.kind)
 
+            outputStream.MoveNext()
+            Assert.AreEqual(Kind.EOF, outputStream.Current.kind)
+
         End Sub
 
     End Class
