@@ -13,41 +13,57 @@
 '
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-Imports System.IO
 Imports System.Text
 Imports Microsoft.VisualStudio.TestTools.UnitTesting
 
 Imports Kind = OpenGSGLibrary.Parser.Kind
-Imports Scanner = OpenGSGLibrary.Parser.Scanner
 Imports Token = OpenGSGLibrary.Parser.Token
 
 <TestClass()> Public Class Test_Parser
 
     <TestMethod()> Public Sub Test_Parse()
-        Dim inputStream As IEnumerable(Of Token)
         Dim testParser = New OpenGSGLibrary.Parser.Parser
-        Dim testScanner = New Scanner
+        Dim testResult = New Dictionary(Of String, Object)
 
-        Dim inputText As TextReader = New StringReader(
-              "state={" _
-            & "       id=92" _
-            & "       name=STATE_92" _
-            & "      }")
+        testResult = testParser.Parse(inputStream())
 
-        '        testParser.Parse(inputStream())
-        testParser.Parse(testScanner.Scan(inputText))
+        Assert.AreEqual(vbObject, VarType(testResult("state")))
+        Dim stateProps As Dictionary(Of String, Object) = testResult("state")
+
+        Dim id As Integer = stateProps("id")
+        Assert.AreEqual(92, id)
+
+        Dim name As String = stateProps("name")
+        Assert.AreEqual("STATE_92", name)
+
+        Dim provinceList As List(Of Integer) = stateProps("provinces")
+        Assert.AreEqual(13, provinceList(0))
+        Assert.AreEqual(13423, provinceList(1))
+        Assert.AreEqual(908, provinceList(2))
+
     End Sub
 
     Private Iterator Function inputStream() As IEnumerator(Of Token)
         Yield Token.FromString("state")
         Yield Token.FromKind(Kind.EQUAL)
         Yield Token.FromKind(Kind.LEFTBRACKET)
+
         Yield Token.FromString("id")
         Yield Token.FromKind(Kind.EQUAL)
         Yield Token.FromValue(92)
+
         Yield Token.FromString("name")
         Yield Token.FromKind(Kind.EQUAL)
         Yield Token.FromString("STATE_92")
+
+        Yield Token.FromString("provinces")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromKind(Kind.LEFTBRACKET)
+        Yield Token.FromValue(13)
+        Yield Token.FromValue(13423)
+        Yield Token.FromValue(908)
+        Yield Token.FromKind(Kind.RIGHTBRACKET)
+
         Yield Token.FromKind(Kind.RIGHTBRACKET)
         Yield Token.FromKind(Kind.EOF)
         Throw New IndexOutOfRangeException("Tokenstream end reached.")
