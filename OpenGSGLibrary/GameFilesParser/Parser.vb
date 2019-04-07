@@ -18,10 +18,11 @@ Namespace Parser
 
     Public Class Parser
 
-        Public Sub Parser(tokenStream As IEnumerator(Of Token))
+        Public Sub Parse(tokenStream As IEnumerator(Of Token))
             tokenStream.MoveNext()
             While tokenStream.Current.kind <> Kind.EOF
                 ParseAssignment(tokenStream)
+                tokenStream.MoveNext()
             End While
         End Sub
 
@@ -49,10 +50,8 @@ Namespace Parser
                     tokenStream.MoveNext()
                     ParseCollection(tokenStream)
                 Case Kind.NUMBER
-                    tokenStream.MoveNext()
                     ParseValue(tokenStream)
                 Case Kind.KEYWORD
-                    tokenStream.MoveNext()
                     ParseText(tokenStream)
                 Case Else
                     Throw New ApplicationException("Error while parsing: { or assignable value expected,
@@ -75,6 +74,7 @@ Namespace Parser
                                                         got " & currentToken.ToString() & " instead.")
                 End Select
                 tokenStream.MoveNext()
+                currentToken = tokenStream.Current
             End While
 
         End Sub
