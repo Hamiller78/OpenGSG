@@ -18,12 +18,25 @@ Imports System.Drawing
 
 Namespace Map
 
+    ''' <summary>
+    ''' Base class for bitmaps of world map.
+    ''' </summary>
     Public Class LayerBitmap
 
+        ''' <summary>
+        ''' Sets the contained bitmap from a file.
+        ''' </summary>
+        ''' <param name="filePathAndName">String with full file path of image file.</param>
         Public Sub FromFile(filePathAndName As String)
             sourceBitmap_ = Image.FromFile(filePathAndName)
         End Sub
 
+        ''' <summary>
+        ''' Gets the RGB value of a pixel in the bitmap.
+        ''' </summary>
+        ''' <param name="x">x coordinate of target pixel in original image coordinates.</param>
+        ''' <param name="y">y coordinate of target pixel in original image coordinates.</param>
+        ''' <returns>RGB value as tuple of 3 bytes.</returns>
         Public Function GetPixelRgb(x As Integer, y As Integer) As Tuple(Of Byte, Byte, Byte)
             Try
                 Dim color As Color = sourceBitmap_.GetPixel(x, y)

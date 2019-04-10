@@ -17,10 +17,17 @@
 Imports Microsoft.VisualBasic.FileIO
 
 Namespace Map
-
+    ''' <summary>
+    ''' Bitmap for province view. RGB values mark provinces, which are translated names and IDs in extra CSV file.
+    ''' </summary>
     Public Class ProvinceMap
         Inherits LayerBitmap
 
+        ''' <summary>
+        ''' Gets the province number for a RGB value.
+        ''' </summary>
+        ''' <param name="rgbKey">RGB value as a tuple of three bytes.</param>
+        ''' <returns>Province number as integer, -1 if not found.</returns>
         Public Function GetProvinceNumber(rgbKey As Tuple(Of Byte, Byte, Byte)) As Integer
             Dim provinceNumber As Integer
             Try
@@ -30,7 +37,11 @@ Namespace Map
             End Try
             Return provinceNumber
         End Function
-
+        ''' <summary>
+        ''' Gets the province name for a RGB value.
+        ''' </summary>
+        ''' <param name="provinceNumber">RGB value as a tuple of three bytes.</param>
+        ''' <returns>Province name as string, empty string if not found.</returns>
         Public Function GetProvinceName(provinceNumber As Integer) As String
             Dim provinceName As String
             Try
@@ -41,6 +52,12 @@ Namespace Map
             Return provinceName
         End Function
 
+        ''' <summary>
+        ''' Loads province RGB values from a CSV file.
+        ''' Expected Format: Number;R;G;B;Name
+        ''' Ignores first line (headline).
+        ''' </summary>
+        ''' <param name="fullFilePath">Full file path of CSV file.</param>
         Public Sub LoadProvinceRGBs(fullFilePath As String)
             Dim csvParser = New TextFieldParser(fullFilePath)
             csvParser.TextFieldType = FieldType.Delimited
