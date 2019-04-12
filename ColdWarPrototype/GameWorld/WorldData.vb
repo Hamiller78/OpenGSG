@@ -20,6 +20,12 @@ Namespace GameWorld
 
     Public Class WorldData
 
+        ReadOnly Property provinceMap
+            Get
+                Return provinceMap_
+            End Get
+        End Property
+
         Public Sub LoadWorldmap(filePath As String)
             provinceMap_.FromFile(filePath)
         End Sub

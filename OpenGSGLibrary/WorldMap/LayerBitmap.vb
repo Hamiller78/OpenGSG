@@ -23,6 +23,12 @@ Namespace Map
     ''' </summary>
     Public Class LayerBitmap
 
+        Public ReadOnly Property sourceBitmap
+            Get
+                Return sourceBitmap_
+            End Get
+        End Property
+
         ''' <summary>
         ''' Sets the contained bitmap from a file.
         ''' </summary>
@@ -46,7 +52,7 @@ Namespace Map
             End Try
         End Function
 
-        Private Property sourceBitmap_ As Bitmap
+        Private sourceBitmap_ As Bitmap
     End Class
 
 End Namespace

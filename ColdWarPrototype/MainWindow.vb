@@ -13,6 +13,19 @@
 '
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Imports OpenGSGLibrary.Map
+
 Public Class MainWindow
+
+    Private coldWarWorld As GameWorld.WorldData = New GameWorld.WorldData()
+
+    Private Sub MainWindowx_Load(sender As Object, e As EventArgs) Handles Me.Load
+        coldWarWorld.LoadWorldmap("..\..\..\TestAssets\provinces.bmp")
+        Dim provinceMap As ProvinceMap = coldWarWorld.provinceMap
+        MapPictureBox.Image = provinceMap.sourceBitmap
+        MapPictureBox.SizeMode = PictureBoxSizeMode.Zoom
+        MapPictureBox.Invalidate()
+    End Sub
 
 End Class
