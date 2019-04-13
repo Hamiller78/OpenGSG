@@ -23,9 +23,8 @@ Public Class MainWindow
     Private Sub MainWindowx_Load(sender As Object, e As EventArgs) Handles Me.Load
 
         ' Load province map
-        coldWarWorld.LoadWorldmap("..\..\..\TestAssets\provinces.bmp")
+        coldWarWorld.LoadAll("..\..\..\ColdWarPrototype\GameData")
         provinceMap_ = coldWarWorld.provinceMap
-        provinceMap_.LoadProvinceRGBs("..\..\..\TestAssets\definitions.csv")
 
         ' Resize map for screen output
         Dim sourceSize As Size = provinceMap_.sourceBitmap.Size

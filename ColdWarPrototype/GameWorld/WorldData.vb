@@ -14,6 +14,8 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+Imports System.IO
+
 Imports OpenGSGLibrary.Map
 
 Namespace GameWorld
@@ -26,10 +28,21 @@ Namespace GameWorld
             End Get
         End Property
 
-        Public Sub LoadWorldmap(filePath As String)
-            provinceMap_.FromFile(filePath)
+        Public Sub LoadAll(gamedataPath As String)
+            If Not Directory.Exists(gamedataPath) Then
+                Throw New DirectoryNotFoundException("Given gamedata directory not found: " & gamedataPath)
+            End If
+
+            LoadWorldmap(Path.Combine(gamedataPath, "map"))
+            provinceMap_.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
+
         End Sub
 
+        Private Sub LoadWorldmap(filePath As String)
+            provinceMap_.FromFile(Path.Combine(filePath, "provinces.bmp"))
+        End Sub
+
+        Private gameDataDir As Directory
         Private provinceMap_ As New ProvinceMap()
 
     End Class
