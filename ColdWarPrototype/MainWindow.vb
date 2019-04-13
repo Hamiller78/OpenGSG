@@ -21,11 +21,46 @@ Public Class MainWindow
     Private coldWarWorld As GameWorld.WorldData = New GameWorld.WorldData()
 
     Private Sub MainWindowx_Load(sender As Object, e As EventArgs) Handles Me.Load
+
+        ' Load province map
         coldWarWorld.LoadWorldmap("..\..\..\TestAssets\provinces.bmp")
-        Dim provinceMap As ProvinceMap = coldWarWorld.provinceMap
-        MapPictureBox.Image = provinceMap.sourceBitmap
-        MapPictureBox.SizeMode = PictureBoxSizeMode.Zoom
+        provinceMap_ = coldWarWorld.provinceMap
+        provinceMap_.LoadProvinceRGBs("..\..\..\TestAssets\definitions.csv")
+
+        ' Resize map for screen output
+        Dim sourceSize As Size = provinceMap_.sourceBitmap.Size
+        SetMapScalingFactor(MapPictureBox.Size, sourceSize)
+        Dim newSize As Size = New Size(sourceSize.Width / mapScaling_, sourceSize.Height / mapScaling_)
+        Dim resizedBitmap As Bitmap = New Bitmap(provinceMap_.sourceBitmap, newSize)
+
+        ' Set the resized map in PictureBox
+        MapPictureBox.Image = resizedBitmap
         MapPictureBox.Invalidate()
+    End Sub
+
+    Private Sub MapPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseClick
+        Dim mouseX As Integer = e.X
+        Dim mouseY As Integer = e.Y
+
+        Dim mapX As Integer = e.X * mapScaling_
+        Dim mapY As Integer = e.Y * mapScaling_
+
+        Dim pixelTuple As Tuple(Of Byte, Byte, Byte) = provinceMap_.GetPixelRgb(mapX, mapY)
+        Dim provinceId As Integer = provinceMap_.GetProvinceNumber(pixelTuple)
+        If provinceId <> -1 Then
+            Dim provinceName As String = provinceMap_.GetProvinceName(provinceId)
+            MsgBox(provinceName)
+        End If
+
+    End Sub
+
+    Private provinceMap_ As ProvinceMap
+    Private mapScaling_ As Double = 0.0
+
+    Private Sub SetMapScalingFactor(newSize As Size, originalSize As Size)
+        Dim xFactor As Double = originalSize.Width / newSize.Width
+        Dim yFactor As Double = originalSize.Height / newSize.Height
+        mapScaling_ = Math.Max(xFactor, yFactor)
     End Sub
 
 End Class
