@@ -44,9 +44,9 @@ Namespace Parser
                         Yield Token.FromString(sval)
                     End If
                 ElseIf Char.IsSymbol(nextChar) Then
-                        Yield ScanSymbol(reader)
-                    Else
-                        Yield ScanOther(reader)
+                    Yield ScanSymbol(reader)
+                Else
+                    Yield ScanOther(reader)
                 End If
             End While
             Yield Token.FromKind(Kind.EOF)

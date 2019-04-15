@@ -17,6 +17,7 @@
 Imports System.IO
 
 Imports OpenGSGLibrary.Map
+Imports OpenGSGLibrary.WorldData
 
 Namespace GameWorld
 
@@ -35,6 +36,7 @@ Namespace GameWorld
 
             LoadWorldmap(Path.Combine(gamedataPath, "map"))
             provinceMap_.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
+            provinceData_.LoadAllProvinceFiles(Path.Combine(gamedataPath, "history\provinces"))
 
         End Sub
 
@@ -43,7 +45,8 @@ Namespace GameWorld
         End Sub
 
         Private gameDataDir As Directory
-        Private provinceMap_ As New ProvinceMap()
+        Private provinceMap_ As New ProvinceMap
+        Private provinceData_ As New ProvinceManager
 
     End Class
 
