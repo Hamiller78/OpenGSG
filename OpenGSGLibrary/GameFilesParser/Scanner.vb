@@ -57,8 +57,11 @@ Namespace Parser
 
         Private Function ScanName(reader As TextReader) As String
             Dim sb = New StringBuilder()
-            While Char.IsLetterOrDigit(Chr(reader.Peek())) Or Chr(reader.Peek()) = "_"
+            Dim nextCharCode = reader.Peek()
+            While (Char.IsLetterOrDigit(Chr(nextCharCode)) Or Chr(nextCharCode) = "_")
                 sb.Append(Chr(reader.Read()))
+                nextCharCode = reader.Peek()
+                If nextCharCode = -1 Then Return sb.ToString()
             End While
             Return sb.ToString()
         End Function

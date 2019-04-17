@@ -23,11 +23,9 @@ Namespace GameWorld
 
     Public Class WorldData
 
-        ReadOnly Property provinceMap
-            Get
-                Return provinceMap_
-            End Get
-        End Property
+        ReadOnly Property provinceMap As New ProvinceMap
+        ReadOnly Property provinceData As New ProvinceManager
+        ReadOnly Property countryData As New CountryManager
 
         Public Sub LoadAll(gamedataPath As String)
             If Not Directory.Exists(gamedataPath) Then
@@ -35,18 +33,15 @@ Namespace GameWorld
             End If
 
             LoadWorldmap(Path.Combine(gamedataPath, "map"))
-            provinceMap_.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
-            provinceData_.LoadAllProvinceFiles(Path.Combine(gamedataPath, "history\provinces"))
+            provinceMap.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
+            provinceData.LoadAllProvinceFiles(Path.Combine(gamedataPath, "history\provinces"))
+            countryData.LoadAllCountryFiles(Path.Combine(gamedataPath, "common\countries"))
 
         End Sub
 
         Private Sub LoadWorldmap(filePath As String)
-            provinceMap_.FromFile(Path.Combine(filePath, "provinces.bmp"))
+            provinceMap.FromFile(Path.Combine(filePath, "provinces.bmp"))
         End Sub
-
-        Private gameDataDir As Directory
-        Private provinceMap_ As New ProvinceMap
-        Private provinceData_ As New ProvinceManager
 
     End Class
 

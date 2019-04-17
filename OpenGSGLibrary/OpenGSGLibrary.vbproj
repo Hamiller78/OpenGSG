@@ -87,7 +87,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="WorldMap\CountryMapRenderer.vb" />
     <Compile Include="WorldMap\LayerBitmap.vb" />
+    <Compile Include="WorldMap\MapRenderer.vb" />
     <Compile Include="WorldMap\ProvinceMap.vb" />
   </ItemGroup>
   <ItemGroup>

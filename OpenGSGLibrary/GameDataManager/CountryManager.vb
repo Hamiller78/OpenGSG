@@ -20,7 +20,7 @@ Namespace WorldData
 
     Public Class CountryManager
 
-        Public Sub LoadAllProvinceFiles(countryPath As String)
+        Public Sub LoadAllCountryFiles(countryPath As String)
             If Not Directory.Exists(countryPath) Then
                 Throw New DirectoryNotFoundException("Given gamedata directory not found: " & countryPath)
             End If
@@ -28,21 +28,15 @@ Namespace WorldData
             Dim parsedCountryData As Dictionary(Of String, Object) = FileManager.LoadFolder(countryPath)
             For Each singleCountryData In parsedCountryData
                 Dim newCountry = New Country(singleCountryData.Key, singleCountryData.Value)
-                countryTable_.Add(newCountry.id, newCountry)
                 countryTagTable_.Add(newCountry.tag, newCountry)
             Next
 
         End Sub
 
-        Public Function GetCountry(id As Integer) As Country
-            Return countryTable_.Item(id)
-        End Function
-
         Public Function GetCountry(tag As String) As Country
             Return countryTagTable_.Item(tag)
         End Function
 
-        Private countryTable_ As Dictionary(Of Integer, Country) = New Dictionary(Of Integer, Country)
         Private countryTagTable_ As Dictionary(Of String, Country) = New Dictionary(Of String, Country)
 
     End Class

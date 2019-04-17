@@ -26,15 +26,7 @@ Public Class MainWindow
         coldWarWorld.LoadAll("..\..\..\ColdWarPrototype\GameData")
         provinceMap_ = coldWarWorld.provinceMap
 
-        ' Resize map for screen output
-        Dim sourceSize As Size = provinceMap_.sourceBitmap.Size
-        SetMapScalingFactor(MapPictureBox.Size, sourceSize)
-        Dim newSize As Size = New Size(sourceSize.Width / mapScaling_, sourceSize.Height / mapScaling_)
-        Dim resizedBitmap As Bitmap = New Bitmap(provinceMap_.sourceBitmap, newSize)
-
-        ' Set the resized map in PictureBox
-        MapPictureBox.Image = resizedBitmap
-        MapPictureBox.Invalidate()
+        SetMapPicture()
     End Sub
 
     Private Sub MapPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseClick
@@ -53,8 +45,42 @@ Public Class MainWindow
 
     End Sub
 
+    Private Sub MapModePolitical_CheckedChanged(sender As Object, e As EventArgs) Handles MapModePolitical.CheckedChanged
+        SetMapPicture()
+    End Sub
+
+    Private Sub MapModeRaw_CheckedChanged(sender As Object, e As EventArgs) Handles MapModeRaw.CheckedChanged
+        SetMapPicture()
+    End Sub
+
     Private provinceMap_ As ProvinceMap
     Private mapScaling_ As Double = 0.0
+
+    Private Sub SetMapPicture()
+        Dim renderedBitmap As Bitmap
+        Dim mapRenderer As MapRenderer
+
+        ' check if the required stuff is loaded
+        If IsNothing(provinceMap_) Then Return
+
+        ' Render new map
+        If MapModePolitical.Checked Then
+            mapRenderer = New CountryMapRenderer(provinceMap_, coldWarWorld.provinceData, coldWarWorld.countryData)
+            renderedBitmap = mapRenderer.RenderMap
+        Else
+            renderedBitmap = provinceMap_.sourceBitmap
+        End If
+
+        ' Resize map for screen output
+        Dim sourceSize As Size = provinceMap_.sourceBitmap.Size
+        SetMapScalingFactor(MapPictureBox.Size, sourceSize)
+        Dim newSize As Size = New Size(sourceSize.Width / mapScaling_, sourceSize.Height / mapScaling_)
+        Dim resizedBitmap As Bitmap = New Bitmap(renderedBitmap, newSize)
+
+        ' Set the resized map in PictureBox
+        MapPictureBox.Image = resizedBitmap
+        MapPictureBox.Invalidate()
+    End Sub
 
     Private Sub SetMapScalingFactor(newSize As Size, originalSize As Size)
         Dim xFactor As Double = originalSize.Width / newSize.Width

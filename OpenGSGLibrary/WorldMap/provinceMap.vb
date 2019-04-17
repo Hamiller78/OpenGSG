@@ -30,11 +30,11 @@ Namespace Map
         ''' <returns>Province number as integer, -1 if not found.</returns>
         Public Function GetProvinceNumber(rgbKey As Tuple(Of Byte, Byte, Byte)) As Integer
             Dim provinceNumber As Integer
-            Try
+            If rgbProvinceMap_.ContainsKey(rgbKey) Then
                 provinceNumber = rgbProvinceMap_.Item(rgbKey)
-            Catch ex As Exception
+            Else
                 provinceNumber = -1
-            End Try
+            End If
             Return provinceNumber
         End Function
         ''' <summary>
@@ -87,6 +87,7 @@ Namespace Map
                     Console.Write("Cast error for one or more fields: " + ex.ToString())
                 End Try
             End While
+
             rgbProvinceMap_ = newRgbProvinceMap
             provinceNames_ = newNameMap
         End Sub

@@ -30,10 +30,10 @@ Namespace WorldData
             name = Path.GetFileNameWithoutExtension(fileName)
 
             tag = parsedData("tag")
-            Dim colorArray As Integer() = parsedData("color")
-            Dim rValue As Byte = colorArray(0)
-            Dim gValue As Byte = colorArray(1)
-            Dim bValue As Byte = colorArray(2)
+            Dim colorList As List(Of Integer) = parsedData("color")
+            Dim rValue As Byte = colorList(0)
+            Dim gValue As Byte = colorList(1)
+            Dim bValue As Byte = colorList(2)
             Dim colorCode As Tuple(Of Byte, Byte, Byte) = New Tuple(Of Byte, Byte, Byte)(rValue, gValue, bValue)
             color = colorCode
 
