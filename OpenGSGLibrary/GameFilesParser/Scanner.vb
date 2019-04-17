@@ -34,8 +34,11 @@ Namespace Parser
         Public Iterator Function Scan(reader As TextReader) As IEnumerator(Of Token)
             While reader.Peek() <> -1
                 Dim nextChar As Char = Chr(reader.Peek())
-                If Char.IsWhiteSpace(nextChar) Then
+                If Char.IsWhiteSpace(nextChar) Or Char.IsControl(nextChar) Then
                     reader.Read()
+                ElseIf nextChar = "#" Then
+                    ' "#" is comment, skip rest of line
+                    reader.ReadLine()
                 ElseIf Char.IsLetterOrDigit(nextChar) Then
                     Dim sval As String = ScanName(reader)
                     If IsNumeric(sval) Then
