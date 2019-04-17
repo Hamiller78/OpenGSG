@@ -34,10 +34,10 @@ Namespace WorldData
         End Sub
 
         Public Function GetProvince(id As Integer) As Province
-            Return provinceTable_(id)
+            Return provinceTable_.Item(id)
         End Function
 
-        Private provinceTable_ = New Dictionary(Of Integer, Province)
+        Private provinceTable_ As Dictionary(Of Integer, Province) = New Dictionary(Of Integer, Province)
 
     End Class
 

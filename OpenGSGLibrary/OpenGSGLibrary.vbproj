@@ -64,6 +64,8 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameDataManager\Country.vb" />
+    <Compile Include="GameDataManager\CountryManager.vb" />
     <Compile Include="GameDataManager\FileManager.vb" />
     <Compile Include="GameDataManager\Province.vb" />
     <Compile Include="GameDataManager\ProvinceManager.vb" />

@@ -14,28 +14,19 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Namespace WorldData
+Imports System.Drawing
 
-    Public Class Province
+Namespace Map
 
-        ReadOnly Property id As Integer
-        ReadOnly Property name As String
-        ReadOnly Property controller As String
-        ReadOnly Property owner As String
+    Public MustInherit Class MapRenderer
 
-
-        Public Sub New(fileName As String, parsedData As Dictionary(Of String, Object))
-            Dim fileNameParts As String() = FileManager.ExtractFromFilename(fileName)
-            id = Val(fileNameParts(0))
-            name = fileNameParts(1)
-
-            controller = parsedData("controller")
-            owner = parsedData("owner")
-
-            parsedData_ = parsedData
+        Public Sub New(sourceMap As LayerBitmap)
+            sourceMap_ = sourceMap
         End Sub
 
-        Private parsedData_ = New Dictionary(Of String, Object)
+        Public MustOverride Function RenderMap() As Image
+
+        Protected sourceMap_ As LayerBitmap
 
     End Class
 

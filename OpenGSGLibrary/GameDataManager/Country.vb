@@ -14,23 +14,28 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+Imports System.IO
+
 Namespace WorldData
 
-    Public Class Province
+    Public Class Country
 
         ReadOnly Property id As Integer
+        ReadOnly Property tag As String
         ReadOnly Property name As String
-        ReadOnly Property controller As String
-        ReadOnly Property owner As String
-
+        ReadOnly Property color As Tuple(Of Byte, Byte, Byte)
 
         Public Sub New(fileName As String, parsedData As Dictionary(Of String, Object))
             Dim fileNameParts As String() = FileManager.ExtractFromFilename(fileName)
-            id = Val(fileNameParts(0))
-            name = fileNameParts(1)
+            name = Path.GetFileNameWithoutExtension(fileName)
 
-            controller = parsedData("controller")
-            owner = parsedData("owner")
+            tag = parsedData("tag")
+            Dim colorArray As Integer() = parsedData("color")
+            Dim rValue As Byte = colorArray(0)
+            Dim gValue As Byte = colorArray(1)
+            Dim bValue As Byte = colorArray(2)
+            Dim colorCode As Tuple(Of Byte, Byte, Byte) = New Tuple(Of Byte, Byte, Byte)(rValue, gValue, bValue)
+            color = colorCode
 
             parsedData_ = parsedData
         End Sub
