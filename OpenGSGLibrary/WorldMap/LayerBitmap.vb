@@ -35,6 +35,8 @@ Namespace Map
         ''' <param name="filePathAndName">String with full file path of image file.</param>
         Public Sub FromFile(filePathAndName As String)
             sourceBitmap_ = Image.FromFile(filePathAndName)
+            sourceBitmap_ = New Bitmap(sourceBitmap_)
+            Console.WriteLine(sourceBitmap_.PixelFormat.ToString())
         End Sub
 
         ''' <summary>

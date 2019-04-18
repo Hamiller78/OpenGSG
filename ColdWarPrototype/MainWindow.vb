@@ -26,6 +26,10 @@ Public Class MainWindow
         coldWarWorld.LoadAll("..\..\..\ColdWarPrototype\GameData")
         provinceMap_ = coldWarWorld.provinceMap
 
+        ' Render maps
+        Dim MapRenderer = New CountryMapRenderer(provinceMap_, coldWarWorld.provinceData, coldWarWorld.countryData)
+        countryMap_ = MapRenderer.RenderMap()
+
         SetMapPicture()
     End Sub
 
@@ -54,19 +58,18 @@ Public Class MainWindow
     End Sub
 
     Private provinceMap_ As ProvinceMap
+    Private countryMap_ As Bitmap
     Private mapScaling_ As Double = 0.0
 
     Private Sub SetMapPicture()
         Dim renderedBitmap As Bitmap
-        Dim mapRenderer As MapRenderer
 
         ' check if the required stuff is loaded
         If IsNothing(provinceMap_) Then Return
 
-        ' Render new map
+        ' Set new map
         If MapModePolitical.Checked Then
-            mapRenderer = New CountryMapRenderer(provinceMap_, coldWarWorld.provinceData, coldWarWorld.countryData)
-            renderedBitmap = mapRenderer.RenderMap
+            renderedBitmap = countryMap_
         Else
             renderedBitmap = provinceMap_.sourceBitmap
         End If
