@@ -46,6 +46,8 @@ Namespace Parser
                     Else
                         Yield Token.FromString(sval)
                     End If
+                ElseIf nextChar = """" Then
+                    Yield Token.FromString(ScanEmbeddedName(reader))
                 ElseIf Char.IsSymbol(nextChar) Then
                     Yield ScanSymbol(reader)
                 Else
@@ -62,6 +64,17 @@ Namespace Parser
                 sb.Append(Chr(reader.Read()))
                 nextCharCode = reader.Peek()
                 If nextCharCode = -1 Then Return sb.ToString()
+            End While
+            Return sb.ToString()
+        End Function
+
+        Private Function ScanEmbeddedName(reader As TextReader) As String
+            Dim sb = New StringBuilder()
+            Dim nextCharCode = reader.Read()
+            nextCharCode = reader.Read()
+            While (Chr(nextCharCode) <> """")
+                sb.Append(Chr(nextCharCode))
+                nextCharCode = reader.Read()
             End While
             Return sb.ToString()
         End Function

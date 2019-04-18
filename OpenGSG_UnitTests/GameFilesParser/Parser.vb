@@ -25,7 +25,7 @@ Imports Token = OpenGSGLibrary.Parser.Token
         Dim testParser = New OpenGSGLibrary.Parser.Parser
         Dim testResult = New Dictionary(Of String, Object)
 
-        testResult = testParser.Parse(inputStream())
+        testResult = testParser.Parse(InputStream())
 
         Assert.AreEqual(vbObject, VarType(testResult("state")))
         Dim stateProps As Dictionary(Of String, Object) = testResult("state")
@@ -43,7 +43,7 @@ Imports Token = OpenGSGLibrary.Parser.Token
 
     End Sub
 
-    Private Iterator Function inputStream() As IEnumerator(Of Token)
+    Private Iterator Function InputStream() As IEnumerator(Of Token)
         Yield Token.FromString("state")
         Yield Token.FromKind(Kind.EQUAL)
         Yield Token.FromKind(Kind.LEFTBRACKET)
@@ -62,6 +62,49 @@ Imports Token = OpenGSGLibrary.Parser.Token
         Yield Token.FromValue(13)
         Yield Token.FromValue(13423)
         Yield Token.FromValue(908)
+        Yield Token.FromKind(Kind.RIGHTBRACKET)
+
+        Yield Token.FromKind(Kind.RIGHTBRACKET)
+        Yield Token.FromKind(Kind.EOF)
+        Throw New IndexOutOfRangeException("Tokenstream end reached.")
+    End Function
+
+
+    <TestMethod()> Public Sub Test_ParseEmptyCollection()
+        Dim testParser = New OpenGSGLibrary.Parser.Parser
+        Dim testResult = New Dictionary(Of String, Object)
+
+        testResult = testParser.Parse(InputStreamWithEmptyCollection())
+
+        Assert.AreEqual(vbObject, VarType(testResult("country")))
+        Dim countryProps As Dictionary(Of String, Object) = testResult("country")
+
+        Dim tag As String = countryProps("tag")
+        Assert.AreEqual("FRG", tag)
+
+        Dim name As String = countryProps("name")
+        Assert.AreEqual("Germany", name)
+
+        Assert.AreEqual(False, countryProps.ContainsKey("resources"))
+
+    End Sub
+
+    Private Iterator Function InputStreamWithEmptyCollection() As IEnumerator(Of Token)
+        Yield Token.FromString("country")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromKind(Kind.LEFTBRACKET)
+
+        Yield Token.FromString("tag")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromString("FRG")
+
+        Yield Token.FromString("name")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromString("Germany")
+
+        Yield Token.FromString("resources")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromKind(Kind.LEFTBRACKET)
         Yield Token.FromKind(Kind.RIGHTBRACKET)
 
         Yield Token.FromKind(Kind.RIGHTBRACKET)

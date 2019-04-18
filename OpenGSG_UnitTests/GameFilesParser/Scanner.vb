@@ -27,7 +27,7 @@ Namespace Parser
             Dim inputText As TextReader = New StringReader(
               "state={ " & Environment.NewLine _
             & "       id=92     # comment to be ignored" & Environment.NewLine _
-            & "       name=STATE_92" & Environment.NewLine _
+            & "       name=""STATE 92""" & Environment.NewLine _
             & "      }")
             Dim outputStream As IEnumerator(Of Token)
             outputStream = testScanner.Scan(inputText)
@@ -62,7 +62,7 @@ Namespace Parser
 
             outputStream.MoveNext()
             Assert.AreEqual(Kind.KEYWORD, outputStream.Current.kind)
-            Assert.AreEqual("STATE_92", outputStream.Current.ToString())
+            Assert.AreEqual("STATE 92", outputStream.Current.ToString())
 
             outputStream.MoveNext()
             Assert.AreEqual(Kind.RIGHTBRACKET, outputStream.Current.kind)
