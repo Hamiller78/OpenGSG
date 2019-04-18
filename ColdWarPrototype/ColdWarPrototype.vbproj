@@ -4,30 +4,34 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{85167AB3-CFC3-498D-A827-0B0D04215EAB}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>OpenGSGLibrary</RootNamespace>
-    <AssemblyName>OpenGSGLibrary</AssemblyName>
+    <ProjectGuid>{7D1232DD-4C97-4133-A007-6E1F2F62C67A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>ColdWarPrototype.My.MyApplication</StartupObject>
+    <RootNamespace>ColdWarPrototype</RootNamespace>
+    <AssemblyName>ColdWarPrototype</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>Windows</MyType>
+    <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>OpenGSGLibrary.xml</DocumentationFile>
+    <DocumentationFile>ColdWarPrototype.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>OpenGSGLibrary.xml</DocumentationFile>
+    <DocumentationFile>ColdWarPrototype.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -45,7 +49,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -58,20 +64,22 @@
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
     <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
     <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
     <Import Include="System.Linq" />
     <Import Include="System.Xml.Linq" />
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameDataManager\Country.vb" />
-    <Compile Include="GameDataManager\CountryManager.vb" />
-    <Compile Include="GameDataManager\FileManager.vb" />
-    <Compile Include="GameDataManager\Province.vb" />
-    <Compile Include="GameDataManager\ProvinceManager.vb" />
-    <Compile Include="GameFilesParser\Parser.vb" />
-    <Compile Include="GameFilesParser\Scanner.vb" />
-    <Compile Include="GameFilesParser\Token.vb" />
+    <Compile Include="GameWorld\WorldData.vb" />
+    <Compile Include="MainWindow.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindow.Designer.vb">
+      <DependentUpon>MainWindow.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -87,12 +95,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="WorldMap\CountryMapRenderer.vb" />
-    <Compile Include="WorldMap\LayerBitmap.vb" />
-    <Compile Include="WorldMap\MapRenderer.vb" />
-    <Compile Include="WorldMap\ProvinceMap.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -101,6 +108,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ColdWarPrototype.licenseheader" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -110,8 +118,13 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="OpenGSGLibrary.licenseheader" />
+    <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\OpenGSGLibrary\OpenGSGLibrary.vbproj">
+      <Project>{85167ab3-cfc3-498d-a827-0b0d04215eab}</Project>
+      <Name>OpenGSGLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

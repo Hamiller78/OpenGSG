@@ -1,0 +1,5 @@
+color = { 255  166  66 }
+tag = GDR
+
+long_name = German_Democratic_Republic
+leader = Wilhelm_Pieck

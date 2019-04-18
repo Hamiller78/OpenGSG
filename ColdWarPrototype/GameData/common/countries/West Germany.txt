@@ -1,0 +1,5 @@
+color = { 250  250  128 }
+tag = FRG
+
+long_name = Federal_Republic_of_Germany
+leader = Konrad_Adenauer

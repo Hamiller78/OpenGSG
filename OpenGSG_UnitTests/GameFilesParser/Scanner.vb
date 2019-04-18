@@ -25,9 +25,9 @@ Namespace Parser
         <TestMethod()> Public Sub Test_Scan_StringReader()
             Dim testScanner = New OpenGSGLibrary.Parser.Scanner
             Dim inputText As TextReader = New StringReader(
-              "state={" _
-            & "       id=92" _
-            & "       name=STATE_92" _
+              "state={ " & Environment.NewLine _
+            & "       id=92     # comment to be ignored" & Environment.NewLine _
+            & "       name=STATE_92" & Environment.NewLine _
             & "      }")
             Dim outputStream As IEnumerator(Of Token)
             outputStream = testScanner.Scan(inputText)

@@ -34,8 +34,11 @@ Namespace Parser
         Public Iterator Function Scan(reader As TextReader) As IEnumerator(Of Token)
             While reader.Peek() <> -1
                 Dim nextChar As Char = Chr(reader.Peek())
-                If Char.IsWhiteSpace(nextChar) Then
+                If Char.IsWhiteSpace(nextChar) Or Char.IsControl(nextChar) Then
                     reader.Read()
+                ElseIf nextChar = "#" Then
+                    ' "#" is comment, skip rest of line
+                    reader.ReadLine()
                 ElseIf Char.IsLetterOrDigit(nextChar) Then
                     Dim sval As String = ScanName(reader)
                     If IsNumeric(sval) Then
@@ -44,9 +47,9 @@ Namespace Parser
                         Yield Token.FromString(sval)
                     End If
                 ElseIf Char.IsSymbol(nextChar) Then
-                        Yield ScanSymbol(reader)
-                    Else
-                        Yield ScanOther(reader)
+                    Yield ScanSymbol(reader)
+                Else
+                    Yield ScanOther(reader)
                 End If
             End While
             Yield Token.FromKind(Kind.EOF)
@@ -54,8 +57,11 @@ Namespace Parser
 
         Private Function ScanName(reader As TextReader) As String
             Dim sb = New StringBuilder()
-            While Char.IsLetterOrDigit(Chr(reader.Peek())) Or Chr(reader.Peek()) = "_"
+            Dim nextCharCode = reader.Peek()
+            While (Char.IsLetterOrDigit(Chr(nextCharCode)) Or Chr(nextCharCode) = "_")
                 sb.Append(Chr(reader.Read()))
+                nextCharCode = reader.Peek()
+                If nextCharCode = -1 Then Return sb.ToString()
             End While
             Return sb.ToString()
         End Function

@@ -1,0 +1,7 @@
+owner = FRG
+controller = FRG
+base_tax = 2 
+base_production = 4
+resources = {
+	oil = 0
+}

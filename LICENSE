@@ -1,3 +1,11 @@
+The following license applies to all files in this project except
+"ColdWarPrototype/GameData/map/provinces.bmp".
+The map in ColdWarPrototype/GameData/map/provinces.bmp is derived from
+https://commons.wikimedia.org/wiki/File:Cold_War_WorldMap_1953.png, which
+falls under the GNU Free Documentation License, version 1.2.
+A copy of the GNU Free Documentation License, version 1.2 is included
+in the folder "ColdWarPrototype/GameData/map/".
+
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
