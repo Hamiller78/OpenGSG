@@ -49,8 +49,10 @@ Namespace Parser
                 collectionObj = ParseValueList(tokenStream)
             ElseIf currentToken.kind = Kind.KEYWORD Then
                 collectionObj = ParseAssignmentList(tokenStream)
+            ElseIf Kind.RIGHTBRACKET Then
+                collectionObj = Nothing
             Else
-                Throw New ApplicationException("Error while parsing: { or keyword expected,
+                Throw New ApplicationException("Error while parsing: {, } or keyword expected,
                                                         got " & currentToken.ToString() & " instead.")
             End If
             tokenStream.MoveNext()
@@ -70,7 +72,9 @@ Namespace Parser
 
             While (currentToken.kind <> Kind.RIGHTBRACKET) And (currentToken.kind <> Kind.EOF)
                 Dim dictionaryEntry As Tuple(Of String, Object) = ParseAssignment(tokenStream)
-                returnDictionary.Add(dictionaryEntry.Item1, dictionaryEntry.Item2)
+                If Not IsNothing(dictionaryEntry.Item2) Then
+                    returnDictionary.Add(dictionaryEntry.Item1, dictionaryEntry.Item2)
+                End If
                 currentToken = tokenStream.Current
             End While
 
@@ -118,7 +122,7 @@ Namespace Parser
                 Case Kind.KEYWORD
                     returnObj = ParseText(tokenStream)
                 Case Else
-                    Throw New ApplicationException("Error while parsing: { or assignable value expected,
+                    Throw New ApplicationException("Error while parsing: {, } or assignable value expected,
                                                     got " & currentToken.ToString() & " instead.")
             End Select
 
