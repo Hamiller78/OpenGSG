@@ -14,28 +14,27 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Namespace WorldData
+Imports OpenGSGLibrary.WorldData
 
-    Public Class Province
+Namespace GameWorld
 
-        ReadOnly Property id As Integer
-        ReadOnly Property name As String
-        ReadOnly Property controller As String
-        ReadOnly Property owner As String
+    Public Class CwpCountry
+        Inherits Country
 
+        Public Property longName As String = ""
+        Public Property government As String = ""
+        Public Property allegiance As String = ""
+        Public Property leader As String = ""
 
         Public Sub New(fileName As String, parsedData As Dictionary(Of String, Object))
-            Dim fileNameParts As String() = FileManager.ExtractFromFilename(fileName)
-            id = Val(fileNameParts(0))
-            name = fileNameParts(1)
+            MyBase.New(fileName, parsedData)
 
-            controller = parsedData("controller")
-            owner = parsedData("owner")
+            longName = parsedData("long_name")
+            government = parsedData("government")
+            allegiance = parsedData("allegiance")
+            leader = parsedData("leader")
 
-            parsedData_ = parsedData
         End Sub
-
-        Protected parsedData_ = New Dictionary(Of String, Object)
 
     End Class
 
