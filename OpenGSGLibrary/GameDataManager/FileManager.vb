@@ -20,7 +20,28 @@ Namespace WorldData
 
     Public Class FileManager
 
-        Public Shared Function LoadFolder(gamedataPath As String) As Dictionary(Of String, Object)
+        Public Shared Function CreateObjectsFromFolder(Of idtype, type As {New, GameObject}) _
+            (folderPath As String, keyField As String) As Dictionary(Of idtype, type)
+
+            If Not Directory.Exists(folderPath) Then
+                Throw New DirectoryNotFoundException("Given game data directory not found: " & folderPath)
+            End If
+
+            Dim objectTable = New Dictionary(Of idtype, type)
+
+            Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
+            For Each singleObjectData In parsedObjectData
+                Dim newObject = New type()
+                newObject.SetData(singleObjectData.Key, singleObjectData.Value)
+                Dim key As idtype = CType(singleObjectData.Value("keyField"), idtype)
+                objectTable.Add(key, newObject)
+            Next
+
+            Return objectTable
+
+        End Function
+
+        Public Shared Function ParseFolder(gamedataPath As String) As Dictionary(Of String, Object)
             Dim dictionaryOfParsedData = New Dictionary(Of String, Object)
 
             Dim fileArray As String() = Directory.GetFiles(gamedataPath, "*.txt", SearchOption.AllDirectories)

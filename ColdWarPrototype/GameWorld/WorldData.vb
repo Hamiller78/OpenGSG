@@ -24,8 +24,16 @@ Namespace GameWorld
     Public Class WorldData
 
         ReadOnly Property provinceMap As New ProvinceMap
-        ReadOnly Property provinceData As New ProvinceManager
-        ReadOnly Property countryData As New CountryManager
+
+        Public Function GetProvinceTable() As Dictionary(Of Integer, CwpProvince)
+            Return provinceTable_
+        End Function
+
+        Public Function GetCountryTable() As Dictionary(Of String, CwpCountry)
+            Return countryTable_
+        End Function
+
+        ReadOnly Property countryData As New Dictionary(Of String, CwpCountry)
 
         Public Sub LoadAll(gamedataPath As String)
             If Not Directory.Exists(gamedataPath) Then
@@ -34,10 +42,16 @@ Namespace GameWorld
 
             LoadWorldmap(Path.Combine(gamedataPath, "map"))
             provinceMap.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
-            provinceData.LoadAllProvinceFiles(Path.Combine(gamedataPath, "history\provinces"))
-            countryData.LoadAllCountryFiles(Path.Combine(gamedataPath, "common\countries"))
+
+            provinceTable_ = FileManager.CreateObjectsFromFolder(Of Integer, CwpProvince) _
+                                (Path.Combine(gamedataPath, "history\provinces"), "id")
+            countryTable_ = FileManager.CreateObjectsFromFolder(Of String, CwpCountry) _
+                                (Path.Combine(gamedataPath, "common\countries"), "tag")
 
         End Sub
+
+        Private provinceTable_ As New Dictionary(Of Integer, CwpProvince)
+        Private countryTable_ As New Dictionary(Of String, CwpCountry)
 
         Private Sub LoadWorldmap(filePath As String)
             provinceMap.FromFile(Path.Combine(filePath, "provinces.bmp"))

@@ -15,6 +15,7 @@
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 Imports OpenGSGLibrary.Map
+Imports OpenGSGLibrary.WorldData
 
 Public Class MainWindow
 
@@ -27,7 +28,7 @@ Public Class MainWindow
         provinceMap_ = coldWarWorld.provinceMap
 
         ' Render maps
-        Dim MapRenderer = New CountryMapRenderer(provinceMap_, coldWarWorld.provinceData, coldWarWorld.countryData)
+        Dim MapRenderer = New CountryMapRenderer(provinceMap_, coldWarWorld.GetProvinceTable, coldWarWorld.countryData)
         countryMap_ = MapRenderer.RenderMap()
 
         SetMapPicture()

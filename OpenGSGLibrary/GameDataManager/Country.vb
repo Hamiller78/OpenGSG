@@ -19,28 +19,38 @@ Imports System.IO
 Namespace WorldData
 
     Public Class Country
+        Inherits GameObject
 
-        ReadOnly Property id As Integer
-        ReadOnly Property tag As String
-        ReadOnly Property name As String
-        ReadOnly Property color As Tuple(Of Byte, Byte, Byte)
+        Public Function GetTag() As String
+            Return tag_
+        End Function
 
-        Public Sub New(fileName As String, parsedData As Dictionary(Of String, Object))
+        Public Function GetName() As String
+            Return name_
+        End Function
+
+        Public Function GetColor() As Tuple(Of Byte, Byte, Byte)
+            Return color_
+        End Function
+
+        Public Overloads Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+            MyBase.SetData(fileName, parsedData)
+
             Dim fileNameParts As String() = FileManager.ExtractFromFilename(fileName)
-            name = Path.GetFileNameWithoutExtension(fileName)
+            name_ = Path.GetFileNameWithoutExtension(fileName)
 
-            tag = parsedData("tag")
+            tag_ = parsedData("tag")
             Dim colorList As List(Of Integer) = parsedData("color")
             Dim rValue As Byte = colorList(0)
             Dim gValue As Byte = colorList(1)
             Dim bValue As Byte = colorList(2)
             Dim colorCode As Tuple(Of Byte, Byte, Byte) = New Tuple(Of Byte, Byte, Byte)(rValue, gValue, bValue)
-            color = colorCode
-
-            parsedData_ = parsedData
+            color_ = colorCode
         End Sub
 
-        Private parsedData_ = New Dictionary(Of String, Object)
+        Private tag_ As String
+        Private name_ As String
+        Private color_ As Tuple(Of Byte, Byte, Byte)
 
     End Class
 

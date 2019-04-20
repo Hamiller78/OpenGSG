@@ -14,27 +14,21 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Imports OpenGSGLibrary.WorldData
+Namespace WorldData
 
-Namespace GameWorld
+    ''' <summary>
+    ''' Base class for game object classes like provinces, countries, armies, etc...
+    ''' Always stores its parser data
+    ''' </summary>
+    Public Class GameObject
 
-    Public Class CwpCountry
-        Inherits Country
-
-        Public Property longName As String = ""
-        Public Property government As String = ""
-        Public Property allegiance As String = ""
-        Public Property leader As String = ""
-
-        Public Overloads Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
-            MyBase.SetData(fileName, parsedData)
-
-            longName = parsedData("long_name")
-            government = parsedData("government")
-            allegiance = parsedData("allegiance")
-            leader = parsedData("leader")
-
+        Public Overridable Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+            fileName_ = fileName
+            parsedData_ = parsedData
         End Sub
+
+        Private fileName_ As String = ""
+        Private parsedData_ = New Dictionary(Of String, Object)
 
     End Class
 

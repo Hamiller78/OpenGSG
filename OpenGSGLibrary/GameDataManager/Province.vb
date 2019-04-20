@@ -17,25 +17,38 @@
 Namespace WorldData
 
     Public Class Province
+        Inherits GameObject
 
-        ReadOnly Property id As Integer
-        ReadOnly Property name As String
-        ReadOnly Property controller As String
-        ReadOnly Property owner As String
+        Public Function GetId() As Integer
+            Return id_
+        End Function
 
+        Public Function GetName() As String
+            Return name_
+        End Function
 
-        Public Sub New(fileName As String, parsedData As Dictionary(Of String, Object))
+        Public Function GetController() As String
+            Return controller_
+        End Function
+
+        Public Function GetOwner() As String
+            Return owner_
+        End Function
+
+        Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+            MyBase.SetData(fileName, parsedData)
             Dim fileNameParts As String() = FileManager.ExtractFromFilename(fileName)
-            id = Val(fileNameParts(0))
-            name = fileNameParts(1)
+            id_ = Val(fileNameParts(0))
+            name_ = fileNameParts(1)
 
-            controller = parsedData("controller")
-            owner = parsedData("owner")
-
-            parsedData_ = parsedData
+            controller_ = parsedData("controller")
+            owner_ = parsedData("owner")
         End Sub
 
-        Protected parsedData_ = New Dictionary(Of String, Object)
+        Private id_ As Integer
+        Private name_ As String
+        Private controller_ As String
+        Private owner_ As String
 
     End Class
 
