@@ -33,7 +33,7 @@ Namespace WorldData
             For Each singleObjectData In parsedObjectData
                 Dim newObject = New type()
                 newObject.SetData(singleObjectData.Key, singleObjectData.Value)
-                Dim key As idtype = CType(singleObjectData.Value("keyField"), idtype)
+                Dim key As idtype = CType(singleObjectData.Value(keyField), idtype)
                 objectTable.Add(key, newObject)
             Next
 
@@ -52,6 +52,10 @@ Namespace WorldData
                 Try
                     Dim rawFile As TextReader = File.OpenText(textFile)
                     Dim nextParseData As Dictionary(Of String, Object) = parser.Parse(scanner.Scan(rawFile))
+                    Dim fileNameParts As String() = ExtractFromFilename(textFile)
+                    For i = 0 To UBound(fileNameParts)
+                        nextParseData.Add("filename_" & Trim(Str(i)), fileNameParts(i))
+                    Next
                     If Not IsNothing(nextParseData) Then
                         dictionaryOfParsedData.Add(Path.GetFileName(textFile), nextParseData)
                     End If

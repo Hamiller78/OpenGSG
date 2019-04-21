@@ -19,16 +19,20 @@ Imports System.Diagnostics
 
 Namespace Map
 
-    Public Class CountryMapRenderer
+    Public Class CountryMapRenderer(Of provinceType As WorldData.Province, countryType As WorldData.Country)
         Inherits MapRenderer
 
-        Public Sub New(provinceMap As ProvinceMap,
-                       provinceTable As Dictionary(Of Integer, WorldData.Province),
-                       countryTable As Dictionary(Of String, WorldData.Country))
+        Public Sub New(provinceMap As ProvinceMap)
             MyBase.New(provinceMap)
             provinceMap_ = provinceMap
+        End Sub
+
+        Public Sub SetDataTables(provinceTable As Dictionary(Of Integer, provinceType),
+                                 countryTable As Dictionary(Of String, countryType))
+
             provinceTable_ = provinceTable
             countryTable_ = countryTable
+
         End Sub
 
         Public Overrides Function RenderMap() As Image
@@ -42,9 +46,9 @@ Namespace Map
                     Dim provinceId As Integer = provinceMap_.GetProvinceNumber(provinceRgb)
                     Dim drawColor As Color = Color.AntiqueWhite
                     If provinceId <> -1 Then
-                        Dim countryTag As String = provinceTable_("id").GetOwner()
+                        Dim countryTag As String = provinceTable_(provinceId).GetOwner()
                         ' get country color code
-                        Dim country As WorldData.Country = countryTable_("tag")
+                        Dim country As WorldData.Country = countryTable_(countryTag)
                         Dim countryColor As Tuple(Of Byte, Byte, Byte) = country.GetColor()
                         ' draw pixel in that color in destination map
                         drawColor = Color.FromArgb(countryColor.Item1, countryColor.Item2, countryColor.Item3)
@@ -57,8 +61,8 @@ Namespace Map
         End Function
 
         Private provinceMap_ As ProvinceMap
-        Private provinceTable_ As Dictionary(Of Integer, WorldData.Province)
-        Private countryTable_ As Dictionary(Of String, WorldData.Country)
+        Private provinceTable_ As Dictionary(Of Integer, provinceType)
+        Private countryTable_ As Dictionary(Of String, countryType)
 
     End Class
 

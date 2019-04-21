@@ -26,12 +26,16 @@ Namespace GameWorld
         Public Property allegiance As String = ""
         Public Property leader As String = ""
 
-        Public Overloads Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+        Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 
             longName = parsedData("long_name")
             government = parsedData("government")
-            allegiance = parsedData("allegiance")
+            If parsedData.ContainsKey("allegiance") Then
+                allegiance = parsedData("allegiance")
+            Else
+                allegiance = ""
+            End If
             leader = parsedData("leader")
 
         End Sub

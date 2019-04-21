@@ -33,7 +33,7 @@ Namespace WorldData
             Return color_
         End Function
 
-        Public Overloads Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+        Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 
             Dim fileNameParts As String() = FileManager.ExtractFromFilename(fileName)

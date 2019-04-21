@@ -44,7 +44,7 @@ Namespace GameWorld
             provinceMap.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
 
             provinceTable_ = FileManager.CreateObjectsFromFolder(Of Integer, CwpProvince) _
-                                (Path.Combine(gamedataPath, "history\provinces"), "id")
+                                (Path.Combine(gamedataPath, "history\provinces"), "filename_0")
             countryTable_ = FileManager.CreateObjectsFromFolder(Of String, CwpCountry) _
                                 (Path.Combine(gamedataPath, "common\countries"), "tag")
 

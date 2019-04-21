@@ -28,7 +28,8 @@ Public Class MainWindow
         provinceMap_ = coldWarWorld.provinceMap
 
         ' Render maps
-        Dim MapRenderer = New CountryMapRenderer(provinceMap_, coldWarWorld.GetProvinceTable, coldWarWorld.countryData)
+        Dim MapRenderer = New CountryMapRenderer(Of GameWorld.CwpProvince, GameWorld.CwpCountry)(provinceMap_)
+        MapRenderer.SetDataTables(coldWarWorld.GetProvinceTable, coldWarWorld.GetCountryTable)
         countryMap_ = MapRenderer.RenderMap()
 
         SetMapPicture()

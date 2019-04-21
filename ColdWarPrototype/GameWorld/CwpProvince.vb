@@ -25,7 +25,7 @@ Namespace GameWorld
         Public Property industrialization As Integer = 0
         Public Property education As Integer = 0
 
-        Public Overloads Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+        Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 
             population = parsedData("population")
