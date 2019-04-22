@@ -18,6 +18,9 @@ Imports System.IO
 
 Namespace WorldData
 
+    ''' <summary>
+    ''' Base class for coutries. Handles the most basic country properties.
+    ''' </summary>
     Public Class Country
         Inherits GameObject
 
@@ -33,10 +36,17 @@ Namespace WorldData
             Return color_
         End Function
 
+        ''' <summary>
+        ''' Sets the properties of a country from the parser data of the country file.
+        ''' This method handles country tag, name and the color tuple.
+        ''' Should be inherited to handle more game-specific properties.
+        ''' </summary>
+        ''' <param name="fileName"></param>
+        ''' <param name="parsedData"></param>
         Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 
-            Dim fileNameParts As String() = FileManager.ExtractFromFilename(fileName)
+            Dim fileNameParts As String() = GameObjectFactory.ExtractFromFilename(fileName)
             name_ = Path.GetFileNameWithoutExtension(fileName)
 
             tag_ = parsedData("tag")

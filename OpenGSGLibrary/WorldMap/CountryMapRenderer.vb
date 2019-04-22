@@ -19,6 +19,12 @@ Imports System.Diagnostics
 
 Namespace Map
 
+    ''' <summary>
+    ''' Map renderer for the country map mode (aka political map).
+    ''' The actually used derived province and country classes have to be specified.
+    ''' </summary>
+    ''' <typeparam name="provinceType"></typeparam>
+    ''' <typeparam name="countryType"></typeparam>
     Public Class CountryMapRenderer(Of provinceType As WorldData.Province, countryType As WorldData.Country)
         Inherits MapRenderer
 
@@ -27,6 +33,11 @@ Namespace Map
             provinceMap_ = provinceMap
         End Sub
 
+        ''' <summary>
+        ''' Sets province and country tables respectively.
+        ''' </summary>
+        ''' <param name="provinceTable">Dictionary province id -> province objects.</param>
+        ''' <param name="countryTable">Dictionary country tag -> country objects.</param>
         Public Sub SetDataTables(provinceTable As Dictionary(Of Integer, provinceType),
                                  countryTable As Dictionary(Of String, countryType))
 
@@ -35,6 +46,10 @@ Namespace Map
 
         End Sub
 
+        ''' <summary>
+        ''' Renders the country map as an image object.
+        ''' </summary>
+        ''' <returns>Image object with rendered map.</returns>
         Public Overrides Function RenderMap() As Image
             Dim mapSize As Size = provinceMap_.sourceBitmap.Size
 

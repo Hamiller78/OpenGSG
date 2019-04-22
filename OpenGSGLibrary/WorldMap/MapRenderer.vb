@@ -18,6 +18,10 @@ Imports System.Drawing
 
 Namespace Map
 
+    ''' <summary>
+    ''' Base class for map renderers.
+    ''' Each map renderer should correspond to a map mode in the game.
+    ''' </summary>
     Public MustInherit Class MapRenderer
 
         Public Sub New(sourceMap As LayerBitmap)

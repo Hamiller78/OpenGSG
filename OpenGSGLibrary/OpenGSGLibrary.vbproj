@@ -65,7 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameDataManager\Country.vb" />
-    <Compile Include="GameDataManager\FileManager.vb" />
+    <Compile Include="GameDataManager\GameObjectFactory.vb" />
     <Compile Include="GameDataManager\GameObject.vb" />
     <Compile Include="GameDataManager\Province.vb" />
     <Compile Include="GameFilesParser\Parser.vb" />

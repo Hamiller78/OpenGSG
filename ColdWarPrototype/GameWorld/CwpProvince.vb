@@ -18,6 +18,9 @@ Imports OpenGSGLibrary.WorldData
 
 Namespace GameWorld
 
+    ''' <summary>
+    ''' Province class for cold war game. Adds specialised properties to base province class.
+    ''' </summary>
     Public Class CwpProvince
         Inherits Province
 
@@ -25,6 +28,11 @@ Namespace GameWorld
         Public Property industrialization As Integer = 0
         Public Property education As Integer = 0
 
+        ''' <summary>
+        ''' Sets the province properties from the parsed data.
+        ''' </summary>
+        ''' <param name="fileName">Name of the source file of province object.</param>
+        ''' <param name="parsedData">Object with the parsed data from that file.</param>
         Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 

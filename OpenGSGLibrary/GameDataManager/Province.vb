@@ -16,6 +16,9 @@
 
 Namespace WorldData
 
+    ''' <summary>
+    ''' Base class for provinces. Handles the most basic province properties.
+    ''' </summary>
     Public Class Province
         Inherits GameObject
 
@@ -35,9 +38,16 @@ Namespace WorldData
             Return owner_
         End Function
 
+        ''' <summary>
+        ''' Sets the properties of a province from the parser data of the province file.
+        ''' This method handles province id, name, controller's country tag and owner's country tag.
+        ''' Should be inherited to handle more game-specific properties.
+        ''' </summary>
+        ''' <param name="fileName"></param>
+        ''' <param name="parsedData"></param>
         Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
             MyBase.SetData(fileName, parsedData)
-            Dim fileNameParts As String() = FileManager.ExtractFromFilename(fileName)
+            Dim fileNameParts As String() = GameObjectFactory.ExtractFromFilename(fileName)
             id_ = Val(fileNameParts(0))
             name_ = fileNameParts(1)
 

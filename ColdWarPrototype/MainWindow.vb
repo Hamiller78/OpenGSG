@@ -19,7 +19,7 @@ Imports OpenGSGLibrary.WorldData
 
 Public Class MainWindow
 
-    Private coldWarWorld As GameWorld.WorldData = New GameWorld.WorldData()
+    Private coldWarWorld As GameWorld.WorldDataManager = New GameWorld.WorldDataManager()
 
     Private Sub MainWindowx_Load(sender As Object, e As EventArgs) Handles Me.Load
 
