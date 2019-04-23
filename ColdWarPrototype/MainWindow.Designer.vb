@@ -41,8 +41,22 @@ Partial Class MainWindow
         Me.MapModeRaw = New System.Windows.Forms.RadioButton()
         Me.MapModePolitical = New System.Windows.Forms.RadioButton()
         Me.MapModeGroup = New System.Windows.Forms.GroupBox()
+        Me.ProvinceBox = New System.Windows.Forms.GroupBox()
+        Me.ProvinceEducation = New System.Windows.Forms.Label()
+        Me.ProvinceOwner = New System.Windows.Forms.Label()
+        Me.ProvinceController = New System.Windows.Forms.Label()
+        Me.ProvinceIndustrialization = New System.Windows.Forms.Label()
+        Me.ProvincePopulation = New System.Windows.Forms.Label()
+        Me.ProvinceName = New System.Windows.Forms.Label()
+        Me.CountryBox = New System.Windows.Forms.GroupBox()
+        Me.CountryAllegiance = New System.Windows.Forms.Label()
+        Me.CountryGovernment = New System.Windows.Forms.Label()
+        Me.CountryLeader = New System.Windows.Forms.Label()
+        Me.CountryName = New System.Windows.Forms.Label()
         CType(Me.MapPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MapModeGroup.SuspendLayout()
+        Me.ProvinceBox.SuspendLayout()
+        Me.CountryBox.SuspendLayout()
         Me.SuspendLayout()
         '
         'MapPictureBox
@@ -86,11 +100,131 @@ Partial Class MainWindow
         Me.MapModeGroup.TabStop = False
         Me.MapModeGroup.Text = "Map Modes"
         '
+        'ProvinceBox
+        '
+        Me.ProvinceBox.Controls.Add(Me.ProvinceEducation)
+        Me.ProvinceBox.Controls.Add(Me.ProvinceOwner)
+        Me.ProvinceBox.Controls.Add(Me.ProvinceController)
+        Me.ProvinceBox.Controls.Add(Me.ProvinceIndustrialization)
+        Me.ProvinceBox.Controls.Add(Me.ProvincePopulation)
+        Me.ProvinceBox.Controls.Add(Me.ProvinceName)
+        Me.ProvinceBox.Location = New System.Drawing.Point(4, 77)
+        Me.ProvinceBox.Name = "ProvinceBox"
+        Me.ProvinceBox.Size = New System.Drawing.Size(224, 116)
+        Me.ProvinceBox.TabIndex = 4
+        Me.ProvinceBox.TabStop = False
+        Me.ProvinceBox.Text = "Province"
+        '
+        'ProvinceEducation
+        '
+        Me.ProvinceEducation.AutoSize = True
+        Me.ProvinceEducation.Location = New System.Drawing.Point(8, 70)
+        Me.ProvinceEducation.Name = "ProvinceEducation"
+        Me.ProvinceEducation.Size = New System.Drawing.Size(10, 13)
+        Me.ProvinceEducation.TabIndex = 5
+        Me.ProvinceEducation.Text = "-"
+        '
+        'ProvinceOwner
+        '
+        Me.ProvinceOwner.AutoSize = True
+        Me.ProvinceOwner.Location = New System.Drawing.Point(8, 83)
+        Me.ProvinceOwner.Name = "ProvinceOwner"
+        Me.ProvinceOwner.Size = New System.Drawing.Size(10, 13)
+        Me.ProvinceOwner.TabIndex = 6
+        Me.ProvinceOwner.Text = "-"
+        '
+        'ProvinceController
+        '
+        Me.ProvinceController.AutoSize = True
+        Me.ProvinceController.Location = New System.Drawing.Point(8, 96)
+        Me.ProvinceController.Name = "ProvinceController"
+        Me.ProvinceController.Size = New System.Drawing.Size(10, 13)
+        Me.ProvinceController.TabIndex = 3
+        Me.ProvinceController.Text = "-"
+        '
+        'ProvinceIndustrialization
+        '
+        Me.ProvinceIndustrialization.AutoSize = True
+        Me.ProvinceIndustrialization.Location = New System.Drawing.Point(8, 57)
+        Me.ProvinceIndustrialization.Name = "ProvinceIndustrialization"
+        Me.ProvinceIndustrialization.Size = New System.Drawing.Size(10, 13)
+        Me.ProvinceIndustrialization.TabIndex = 2
+        Me.ProvinceIndustrialization.Text = "-"
+        '
+        'ProvincePopulation
+        '
+        Me.ProvincePopulation.AutoSize = True
+        Me.ProvincePopulation.Location = New System.Drawing.Point(8, 38)
+        Me.ProvincePopulation.Name = "ProvincePopulation"
+        Me.ProvincePopulation.Size = New System.Drawing.Size(13, 13)
+        Me.ProvincePopulation.TabIndex = 1
+        Me.ProvincePopulation.Text = "0"
+        '
+        'ProvinceName
+        '
+        Me.ProvinceName.AutoSize = True
+        Me.ProvinceName.Location = New System.Drawing.Point(8, 18)
+        Me.ProvinceName.Name = "ProvinceName"
+        Me.ProvinceName.Size = New System.Drawing.Size(10, 13)
+        Me.ProvinceName.TabIndex = 0
+        Me.ProvinceName.Text = "-"
+        '
+        'CountryBox
+        '
+        Me.CountryBox.Controls.Add(Me.CountryAllegiance)
+        Me.CountryBox.Controls.Add(Me.CountryGovernment)
+        Me.CountryBox.Controls.Add(Me.CountryLeader)
+        Me.CountryBox.Controls.Add(Me.CountryName)
+        Me.CountryBox.Location = New System.Drawing.Point(4, 200)
+        Me.CountryBox.Name = "CountryBox"
+        Me.CountryBox.Size = New System.Drawing.Size(219, 113)
+        Me.CountryBox.TabIndex = 5
+        Me.CountryBox.TabStop = False
+        Me.CountryBox.Text = "Country"
+        '
+        'CountryAllegiance
+        '
+        Me.CountryAllegiance.AutoSize = True
+        Me.CountryAllegiance.Location = New System.Drawing.Point(8, 55)
+        Me.CountryAllegiance.Name = "CountryAllegiance"
+        Me.CountryAllegiance.Size = New System.Drawing.Size(10, 13)
+        Me.CountryAllegiance.TabIndex = 3
+        Me.CountryAllegiance.Text = "-"
+        '
+        'CountryGovernment
+        '
+        Me.CountryGovernment.AutoSize = True
+        Me.CountryGovernment.Location = New System.Drawing.Point(8, 42)
+        Me.CountryGovernment.Name = "CountryGovernment"
+        Me.CountryGovernment.Size = New System.Drawing.Size(10, 13)
+        Me.CountryGovernment.TabIndex = 2
+        Me.CountryGovernment.Text = "-"
+        '
+        'CountryLeader
+        '
+        Me.CountryLeader.AutoSize = True
+        Me.CountryLeader.Location = New System.Drawing.Point(8, 29)
+        Me.CountryLeader.Name = "CountryLeader"
+        Me.CountryLeader.Size = New System.Drawing.Size(10, 13)
+        Me.CountryLeader.TabIndex = 1
+        Me.CountryLeader.Text = "-"
+        '
+        'CountryName
+        '
+        Me.CountryName.AutoSize = True
+        Me.CountryName.Location = New System.Drawing.Point(8, 16)
+        Me.CountryName.Name = "CountryName"
+        Me.CountryName.Size = New System.Drawing.Size(10, 13)
+        Me.CountryName.TabIndex = 0
+        Me.CountryName.Text = "-"
+        '
         'MainWindow
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1884, 1001)
+        Me.Controls.Add(Me.CountryBox)
+        Me.Controls.Add(Me.ProvinceBox)
         Me.Controls.Add(Me.MapModeGroup)
         Me.Controls.Add(Me.MapPictureBox)
         Me.Name = "MainWindow"
@@ -99,6 +233,10 @@ Partial Class MainWindow
         CType(Me.MapPictureBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MapModeGroup.ResumeLayout(False)
         Me.MapModeGroup.PerformLayout()
+        Me.ProvinceBox.ResumeLayout(False)
+        Me.ProvinceBox.PerformLayout()
+        Me.CountryBox.ResumeLayout(False)
+        Me.CountryBox.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -107,4 +245,16 @@ Partial Class MainWindow
     Friend WithEvents MapModeRaw As RadioButton
     Friend WithEvents MapModePolitical As RadioButton
     Friend WithEvents MapModeGroup As GroupBox
+    Friend WithEvents ProvinceBox As GroupBox
+    Friend WithEvents ProvinceName As Label
+    Friend WithEvents ProvinceEducation As Label
+    Friend WithEvents ProvinceOwner As Label
+    Friend WithEvents ProvinceController As Label
+    Friend WithEvents ProvinceIndustrialization As Label
+    Friend WithEvents ProvincePopulation As Label
+    Friend WithEvents CountryBox As GroupBox
+    Friend WithEvents CountryAllegiance As Label
+    Friend WithEvents CountryGovernment As Label
+    Friend WithEvents CountryLeader As Label
+    Friend WithEvents CountryName As Label
 End Class
