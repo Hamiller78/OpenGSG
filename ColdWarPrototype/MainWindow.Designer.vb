@@ -53,6 +53,7 @@ Partial Class MainWindow
         Me.CountryGovernment = New System.Windows.Forms.Label()
         Me.CountryLeader = New System.Windows.Forms.Label()
         Me.CountryName = New System.Windows.Forms.Label()
+        Me.DateButton = New System.Windows.Forms.Button()
         CType(Me.MapPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MapModeGroup.SuspendLayout()
         Me.ProvinceBox.SuspendLayout()
@@ -218,11 +219,21 @@ Partial Class MainWindow
         Me.CountryName.TabIndex = 0
         Me.CountryName.Text = "-"
         '
+        'DateButton
+        '
+        Me.DateButton.Location = New System.Drawing.Point(6, 320)
+        Me.DateButton.Name = "DateButton"
+        Me.DateButton.Size = New System.Drawing.Size(216, 37)
+        Me.DateButton.TabIndex = 6
+        Me.DateButton.Text = "DD-MM-YYYY"
+        Me.DateButton.UseVisualStyleBackColor = True
+        '
         'MainWindow
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1884, 1001)
+        Me.Controls.Add(Me.DateButton)
         Me.Controls.Add(Me.CountryBox)
         Me.Controls.Add(Me.ProvinceBox)
         Me.Controls.Add(Me.MapModeGroup)
@@ -257,4 +268,5 @@ Partial Class MainWindow
     Friend WithEvents CountryGovernment As Label
     Friend WithEvents CountryLeader As Label
     Friend WithEvents CountryName As Label
+    Friend WithEvents DateButton As Button
 End Class

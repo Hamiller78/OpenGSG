@@ -30,7 +30,11 @@ Public Class MainWindow
         MapRenderer.SetDataTables(coldWarWorld_.GetProvinceTable, coldWarWorld_.GetCountryTable)
         countryMap_ = MapRenderer.RenderMap()
 
+        ' Set map
         SetMapPicture()
+
+        ' Set text of date button
+        UpdateDateText()
     End Sub
 
     Private Sub MapPictureBox_MouseMove(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseMove
@@ -55,8 +59,18 @@ Public Class MainWindow
         SetMapPicture()
     End Sub
 
+    Private Sub DateButton_Click(sender As Object, e As EventArgs) Handles DateButton.Click
+        coldWarWorld_.UpdateEverythingDaily()
+        gameDate_ = gameDate_.Add(TimeSpan.FromDays(1))
+
+        UpdateDateText()
+        UpdateCountryInfo(currentCountryTag_)
+        UpdateProvinceInfo(currentProvinceId_)
+    End Sub
+
     ' Global game data
     Private coldWarWorld_ As GameWorld.WorldDataManager = New GameWorld.WorldDataManager()
+    Private gameDate_ = New DateTime(1950, 1, 1)
 
     ' GUI related members
     Private currentProvinceId_ As Integer = -1
@@ -120,6 +134,10 @@ Public Class MainWindow
         CountryLeader.Text = currentCountry.leader
         CountryGovernment.Text = currentCountry.government
         CountryAllegiance.Text = currentCountry.allegiance
+    End Sub
+
+    Private Sub UpdateDateText()
+        DateButton.Text = gameDate_.ToString()
     End Sub
 
 End Class

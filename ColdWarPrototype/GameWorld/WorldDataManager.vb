@@ -58,6 +58,12 @@ Namespace GameWorld
 
         End Sub
 
+        Public Sub UpdateEverythingDaily()
+            For Each provinceEntry In provinceTable_
+                provinceEntry.Value.UpdateDaily()
+            Next
+        End Sub
+
         Private provinceTable_ As New Dictionary(Of Integer, CwpProvince)
         Private countryTable_ As New Dictionary(Of String, CwpCountry)
 

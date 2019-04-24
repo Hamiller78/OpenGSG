@@ -42,6 +42,13 @@ Namespace GameWorld
 
         End Sub
 
+        Public Sub UpdateDaily()
+            ' Change in population number, just something small for a test
+            population = population * 1.00003
+            ' Change in industrialization
+            ' Change of education
+        End Sub
+
     End Class
 
 End Namespace
