@@ -64,6 +64,16 @@ Namespace GameWorld
             Next
         End Sub
 
+        Public Function GetCountryProduction(countryTag As String) As Long
+            Dim countryProduction As Long = 0
+            For Each province In provinceTable_
+                If province.Value.GetController() = countryTag Then
+                    countryProduction += province.Value.production
+                End If
+            Next
+            Return countryProduction
+        End Function
+
         Private provinceTable_ As New Dictionary(Of Integer, CwpProvince)
         Private countryTable_ As New Dictionary(Of String, CwpCountry)
 

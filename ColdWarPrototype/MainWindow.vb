@@ -118,6 +118,8 @@ Public Class MainWindow
         ProvincePopulation.Text = Trim(Str(currentProvince.population))
         ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
         ProvinceEducation.Text = Trim(Str(currentProvince.education))
+        ProvinceProduction.Text = currentProvince.production
+
         Dim mouseCountryTag As String = currentProvince.GetOwner()
         ProvinceController.Text = currentProvince.GetController()
 
@@ -134,6 +136,7 @@ Public Class MainWindow
         CountryLeader.Text = currentCountry.leader
         CountryGovernment.Text = currentCountry.government
         CountryAllegiance.Text = currentCountry.allegiance
+        CountryProduction.Text = coldWarWorld_.GetCountryProduction(currentCountryTag_)
     End Sub
 
     Private Sub UpdateDateText()

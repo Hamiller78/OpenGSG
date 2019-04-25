@@ -54,6 +54,8 @@ Partial Class MainWindow
         Me.CountryLeader = New System.Windows.Forms.Label()
         Me.CountryName = New System.Windows.Forms.Label()
         Me.DateButton = New System.Windows.Forms.Button()
+        Me.ProvinceProduction = New System.Windows.Forms.Label()
+        Me.CountryProduction = New System.Windows.Forms.Label()
         CType(Me.MapPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MapModeGroup.SuspendLayout()
         Me.ProvinceBox.SuspendLayout()
@@ -103,6 +105,7 @@ Partial Class MainWindow
         '
         'ProvinceBox
         '
+        Me.ProvinceBox.Controls.Add(Me.ProvinceProduction)
         Me.ProvinceBox.Controls.Add(Me.ProvinceEducation)
         Me.ProvinceBox.Controls.Add(Me.ProvinceOwner)
         Me.ProvinceBox.Controls.Add(Me.ProvinceController)
@@ -111,7 +114,7 @@ Partial Class MainWindow
         Me.ProvinceBox.Controls.Add(Me.ProvinceName)
         Me.ProvinceBox.Location = New System.Drawing.Point(4, 77)
         Me.ProvinceBox.Name = "ProvinceBox"
-        Me.ProvinceBox.Size = New System.Drawing.Size(224, 116)
+        Me.ProvinceBox.Size = New System.Drawing.Size(224, 138)
         Me.ProvinceBox.TabIndex = 4
         Me.ProvinceBox.TabStop = False
         Me.ProvinceBox.Text = "Province"
@@ -172,13 +175,14 @@ Partial Class MainWindow
         '
         'CountryBox
         '
+        Me.CountryBox.Controls.Add(Me.CountryProduction)
         Me.CountryBox.Controls.Add(Me.CountryAllegiance)
         Me.CountryBox.Controls.Add(Me.CountryGovernment)
         Me.CountryBox.Controls.Add(Me.CountryLeader)
         Me.CountryBox.Controls.Add(Me.CountryName)
-        Me.CountryBox.Location = New System.Drawing.Point(4, 200)
+        Me.CountryBox.Location = New System.Drawing.Point(4, 221)
         Me.CountryBox.Name = "CountryBox"
-        Me.CountryBox.Size = New System.Drawing.Size(219, 113)
+        Me.CountryBox.Size = New System.Drawing.Size(224, 93)
         Me.CountryBox.TabIndex = 5
         Me.CountryBox.TabStop = False
         Me.CountryBox.Text = "Country"
@@ -228,6 +232,24 @@ Partial Class MainWindow
         Me.DateButton.Text = "DD-MM-YYYY"
         Me.DateButton.UseVisualStyleBackColor = True
         '
+        'ProvinceProduction
+        '
+        Me.ProvinceProduction.AutoSize = True
+        Me.ProvinceProduction.Location = New System.Drawing.Point(8, 115)
+        Me.ProvinceProduction.Name = "ProvinceProduction"
+        Me.ProvinceProduction.Size = New System.Drawing.Size(10, 13)
+        Me.ProvinceProduction.TabIndex = 7
+        Me.ProvinceProduction.Text = "-"
+        '
+        'CountryProduction
+        '
+        Me.CountryProduction.AutoSize = True
+        Me.CountryProduction.Location = New System.Drawing.Point(8, 73)
+        Me.CountryProduction.Name = "CountryProduction"
+        Me.CountryProduction.Size = New System.Drawing.Size(10, 13)
+        Me.CountryProduction.TabIndex = 4
+        Me.CountryProduction.Text = "-"
+        '
         'MainWindow
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -269,4 +291,6 @@ Partial Class MainWindow
     Friend WithEvents CountryLeader As Label
     Friend WithEvents CountryName As Label
     Friend WithEvents DateButton As Button
+    Friend WithEvents ProvinceProduction As Label
+    Friend WithEvents CountryProduction As Label
 End Class

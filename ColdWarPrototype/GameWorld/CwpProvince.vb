@@ -24,9 +24,17 @@ Namespace GameWorld
     Public Class CwpProvince
         Inherits Province
 
-        Public Property population As Integer = 0
-        Public Property industrialization As Integer = 0
-        Public Property education As Integer = 0
+        Public Property population As Long = 0
+        Public Property industrialization As Long = 0
+        Public Property education As Long = 0
+
+        Public ReadOnly Property production As Long
+            Get
+                CalculateProduction()
+                Return production_
+            End Get
+        End Property
+        Private production_ As Long = 0
 
         ''' <summary>
         ''' Sets the province properties from the parsed data.
@@ -47,6 +55,10 @@ Namespace GameWorld
             population = population * 1.00003
             ' Change in industrialization
             ' Change of education
+        End Sub
+
+        Public Sub CalculateProduction()
+            production_ = population * industrialization / 100 * education / 100
         End Sub
 
     End Class
