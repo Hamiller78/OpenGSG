@@ -53,6 +53,33 @@ Namespace Tools
             logFile_ = New StreamWriter(fullLogFilePath, FileMode.Append)
         End Sub
 
+        ''' <summary>
+        ''' Immediately writes one line of output into log file.
+        ''' System time in milliseconds and log level will be written in front of message.
+        ''' </summary>
+        ''' <param name="logLevel">LogLevel from LogLevel enumeration, will be noted as I|W|E|F.</param>
+        ''' <param name="message">Message to write into log.</param>
+        Public Sub WriteLine(logLevel As LogLevel, message As String)
+            Dim outputLine As String = ""
+            outputLine = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture) & vbTab
+
+            Select Case logLevel
+                Case LogLevel.Info
+                    outputLine = outputLine & "I" & vbTab
+                Case LogLevel.Warning
+                    outputLine = outputLine & "W " & vbTab
+                Case LogLevel.Err
+                    outputLine = outputLine & "E " & vbTab
+                Case LogLevel.Fatal
+                    outputLine = outputLine & "F " & vbTab
+            End Select
+
+            outputLine = outputLine & message
+
+            logFile_.WriteLine(outputLine)
+            logFile_.Flush()
+        End Sub
+
         Private Sub ArchiveLogFile(fullFilePath As String)
             ' make sure LogArchive subfolder exists
             Dim logFileName As String = Path.GetFileName(fullFilePath)
@@ -69,7 +96,7 @@ Namespace Tools
         End Sub
 
         Private Function GetFreeLogFilePath(archivePath As String, logFileName As String) As String
-            Dim coreName As String = Path.GetFileNameWithoutExtension(logFileName) & "_" & DateTime.Today()
+            Dim coreName As String = Path.GetFileNameWithoutExtension(logFileName) & "_" & Date.Today.ToString("yyyyMMdd")
 
             Dim proposedName As String = coreName & ".log"
             Dim i As Integer = 0
@@ -80,26 +107,6 @@ Namespace Tools
 
             Return Path.Combine(archivePath, proposedName)
         End Function
-
-        Private Sub WriteLine(logLevel As LogLevel, message As String)
-            Dim outputLine As String = ""
-            outputLine = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture) & vbTab
-
-            Select Case logLevel
-                Case LogLevel.Info
-                    outputLine = outputLine & "I" & vbTab
-                Case LogLevel.Warning
-                    outputLine = outputLine & "W " & vbTab
-                Case LogLevel.Err
-                    outputLine = outputLine & "E " & vbTab
-                Case LogLevel.Fatal
-                    outputLine = outputLine & "F " & vbTab
-            End Select
-
-            outputLine = outputLine & "message"
-
-            logFile_.WriteLine(outputLine)
-        End Sub
 
     End Class
 
