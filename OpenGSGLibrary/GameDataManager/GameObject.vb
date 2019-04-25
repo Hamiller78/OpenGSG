@@ -14,23 +14,27 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Imports System.Drawing
-
-Namespace Map
+Namespace WorldData
 
     ''' <summary>
-    ''' Base class for map renderers.
-    ''' Each map renderer should correspond to a map mode in the game.
+    ''' Base class for game object classes like provinces, countries, armies, etc...
+    ''' Always stores its parser data
     ''' </summary>
-    Public MustInherit Class MapRenderer
+    Public Class GameObject
 
-        Public Sub New(sourceMap As LayerBitmap)
-            sourceMap_ = sourceMap
+        ''' <summary>
+        ''' Sets file name and parser data of the object.
+        ''' This doesn't work in the constructor with generic types, hence we use an extra method.
+        ''' </summary>
+        ''' <param name="fileName">Name of the source file for the object's data.</param>
+        ''' <param name="parsedData">Structure with the parsed data.</param>
+        Public Overridable Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+            fileName_ = fileName
+            parsedData_ = parsedData
         End Sub
 
-        Public MustOverride Function RenderMap() As Image
-
-        Protected sourceMap_ As LayerBitmap
+        Private fileName_ As String = ""
+        Private parsedData_ = New Dictionary(Of String, Object)
 
     End Class
 

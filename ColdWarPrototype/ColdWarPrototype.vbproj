@@ -72,7 +72,9 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameWorld\WorldData.vb" />
+    <Compile Include="GameWorld\CwpCountry.vb" />
+    <Compile Include="GameWorld\CwpProvince.vb" />
+    <Compile Include="GameWorld\WorldDataManager.vb" />
     <Compile Include="MainWindow.vb">
       <SubType>Form</SubType>
     </Compile>

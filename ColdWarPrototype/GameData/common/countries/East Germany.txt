@@ -1,5 +1,6 @@
 color = { 255  166  66 }
 tag = GDR
-
-long_name = German_Democratic_Republic
-leader = Wilhelm_Pieck
+long_name = "German Democratic Republic"
+government = communist
+allegiance = USSR
+leader = "Wilhelm Pieck"

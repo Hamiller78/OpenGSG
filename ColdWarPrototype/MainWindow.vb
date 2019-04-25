@@ -15,25 +15,29 @@
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 Imports OpenGSGLibrary.Map
+Imports OpenGSGLibrary.WorldData
 
 Public Class MainWindow
-
-    Private coldWarWorld As GameWorld.WorldData = New GameWorld.WorldData()
 
     Private Sub MainWindowx_Load(sender As Object, e As EventArgs) Handles Me.Load
 
         ' Load province map
-        coldWarWorld.LoadAll("..\..\..\ColdWarPrototype\GameData")
-        provinceMap_ = coldWarWorld.provinceMap
+        coldWarWorld_.LoadAll("..\..\..\ColdWarPrototype\GameData")
+        provinceMap_ = coldWarWorld_.provinceMap
 
         ' Render maps
-        Dim MapRenderer = New CountryMapRenderer(provinceMap_, coldWarWorld.provinceData, coldWarWorld.countryData)
+        Dim MapRenderer = New CountryMapRenderer(Of GameWorld.CwpProvince, GameWorld.CwpCountry)(provinceMap_)
+        MapRenderer.SetDataTables(coldWarWorld_.GetProvinceTable, coldWarWorld_.GetCountryTable)
         countryMap_ = MapRenderer.RenderMap()
 
+        ' Set map
         SetMapPicture()
+
+        ' Set text of date button
+        UpdateDateText()
     End Sub
 
-    Private Sub MapPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseClick
+    Private Sub MapPictureBox_MouseMove(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseMove
         Dim mouseX As Integer = e.X
         Dim mouseY As Integer = e.Y
 
@@ -41,12 +45,10 @@ Public Class MainWindow
         Dim mapY As Integer = e.Y * mapScaling_
 
         Dim pixelTuple As Tuple(Of Byte, Byte, Byte) = provinceMap_.GetPixelRgb(mapX, mapY)
-        Dim provinceId As Integer = provinceMap_.GetProvinceNumber(pixelTuple)
-        If provinceId <> -1 Then
-            Dim provinceName As String = provinceMap_.GetProvinceName(provinceId)
-            MsgBox(provinceName)
+        Dim mouseProvinceId As Integer = provinceMap_.GetProvinceNumber(pixelTuple)
+        If (mouseProvinceId <> -1) And (mouseProvinceId <> currentProvinceId_) Then
+            UpdateProvinceInfo(mouseProvinceId)
         End If
-
     End Sub
 
     Private Sub MapModePolitical_CheckedChanged(sender As Object, e As EventArgs) Handles MapModePolitical.CheckedChanged
@@ -57,6 +59,24 @@ Public Class MainWindow
         SetMapPicture()
     End Sub
 
+    Private Sub DateButton_Click(sender As Object, e As EventArgs) Handles DateButton.Click
+        coldWarWorld_.UpdateEverythingDaily()
+        gameDate_ = gameDate_.Add(TimeSpan.FromDays(1))
+
+        UpdateDateText()
+        UpdateCountryInfo(currentCountryTag_)
+        UpdateProvinceInfo(currentProvinceId_)
+    End Sub
+
+    ' Global game data
+    Private coldWarWorld_ As GameWorld.WorldDataManager = New GameWorld.WorldDataManager()
+    Private gameDate_ = New DateTime(1950, 1, 1)
+
+    ' GUI related members
+    Private currentProvinceId_ As Integer = -1
+    Private currentCountryTag_ As String = ""
+
+    ' Map related members
     Private provinceMap_ As ProvinceMap
     Private countryMap_ As Bitmap
     Private mapScaling_ As Double = 0.0
@@ -89,6 +109,38 @@ Public Class MainWindow
         Dim xFactor As Double = originalSize.Width / newSize.Width
         Dim yFactor As Double = originalSize.Height / newSize.Height
         mapScaling_ = Math.Max(xFactor, yFactor)
+    End Sub
+
+    Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
+        currentProvinceId_ = mouseProvinceId
+        ProvinceName.Text = provinceMap_.GetProvinceName(currentProvinceId_)
+        Dim currentProvince As GameWorld.CwpProvince = coldWarWorld_.GetProvinceTable(currentProvinceId_)
+        ProvincePopulation.Text = Trim(Str(currentProvince.population))
+        ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
+        ProvinceEducation.Text = Trim(Str(currentProvince.education))
+        ProvinceProduction.Text = currentProvince.production
+
+        Dim mouseCountryTag As String = currentProvince.GetOwner()
+        ProvinceController.Text = currentProvince.GetController()
+
+        If mouseCountryTag <> currentCountryTag_ Then
+            UpdateCountryInfo(mouseCountryTag)
+            ProvinceOwner.Text = currentCountryTag_
+        End If
+    End Sub
+
+    Private Sub UpdateCountryInfo(mouseCountryTag As String)
+        currentCountryTag_ = mouseCountryTag
+        Dim currentCountry As GameWorld.CwpCountry = coldWarWorld_.GetCountryTable(mouseCountryTag)
+        CountryName.Text = currentCountry.longName
+        CountryLeader.Text = currentCountry.leader
+        CountryGovernment.Text = currentCountry.government
+        CountryAllegiance.Text = currentCountry.allegiance
+        CountryProduction.Text = coldWarWorld_.GetCountryProduction(currentCountryTag_)
+    End Sub
+
+    Private Sub UpdateDateText()
+        DateButton.Text = gameDate_.ToString()
     End Sub
 
 End Class

@@ -16,26 +16,49 @@
 
 Namespace WorldData
 
+    ''' <summary>
+    ''' Base class for provinces. Handles the most basic province properties.
+    ''' </summary>
     Public Class Province
+        Inherits GameObject
 
-        ReadOnly Property id As Integer
-        ReadOnly Property name As String
-        ReadOnly Property controller As String
-        ReadOnly Property owner As String
+        Public Function GetId() As Integer
+            Return id_
+        End Function
 
+        Public Function GetName() As String
+            Return name_
+        End Function
 
-        Public Sub New(fileName As String, parsedData As Dictionary(Of String, Object))
-            Dim fileNameParts As String() = FileManager.ExtractFromFilename(fileName)
-            id = Val(fileNameParts(0))
-            name = fileNameParts(1)
+        Public Function GetController() As String
+            Return controller_
+        End Function
 
-            controller = parsedData("controller")
-            owner = parsedData("owner")
+        Public Function GetOwner() As String
+            Return owner_
+        End Function
 
-            parsedData_ = parsedData
+        ''' <summary>
+        ''' Sets the properties of a province from the parser data of the province file.
+        ''' This method handles province id, name, controller's country tag and owner's country tag.
+        ''' Should be inherited to handle more game-specific properties.
+        ''' </summary>
+        ''' <param name="fileName"></param>
+        ''' <param name="parsedData"></param>
+        Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+            MyBase.SetData(fileName, parsedData)
+            Dim fileNameParts As String() = GameObjectFactory.ExtractFromFilename(fileName)
+            id_ = Val(fileNameParts(0))
+            name_ = fileNameParts(1)
+
+            controller_ = parsedData("controller")
+            owner_ = parsedData("owner")
         End Sub
 
-        Private parsedData_ = New Dictionary(Of String, Object)
+        Private id_ As Integer
+        Private name_ As String
+        Private controller_ As String
+        Private owner_ As String
 
     End Class
 

@@ -1,7 +1,5 @@
 owner = USSR
 controller = USSR
-base_tax = 8
-base_production = 8
-resources = {
-	oil = 2
-}
+population = 181077000
+industrialization = 25
+education = 100

@@ -1,5 +1,5 @@
 color = { 100  100  255 }
 tag = USA
-
-long_name = United_States_of_America
-leader = Harry_Truman
+long_name = "United States of America"
+government = democratic
+leader = "Harry Truman"
