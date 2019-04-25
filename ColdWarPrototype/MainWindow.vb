@@ -14,12 +14,32 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+Imports System.IO
+
 Imports OpenGSGLibrary.Map
-Imports OpenGSGLibrary.WorldData
+Imports OpenGSGLibrary.Tools
 
 Public Class MainWindow
 
-    Private Sub MainWindowx_Load(sender As Object, e As EventArgs) Handles Me.Load
+    ' Global objects
+    Public log As Logger = New Logger("CWPLog.log", Directory.GetCurrentDirectory())
+
+    ' General game data
+    Private coldWarWorld_ As GameWorld.WorldDataManager = New GameWorld.WorldDataManager()
+    Private gameDate_ = New DateTime(1950, 1, 1)
+
+    ' GUI related members
+    Private currentProvinceId_ As Integer = -1
+    Private currentCountryTag_ As String = ""
+
+    ' Map related members
+    Private provinceMap_ As ProvinceMap
+    Private countryMap_ As Bitmap
+    Private mapScaling_ As Double = 0.0
+
+    ' GUI event handlers
+    Private Sub MainWindow_Load(sender As Object, e As EventArgs) Handles Me.Load
+        log.WriteLine(LogLevel.Info, "Session started, TODO: version information")
 
         ' Load province map
         coldWarWorld_.LoadAll("..\..\..\ColdWarPrototype\GameData")
@@ -35,6 +55,8 @@ Public Class MainWindow
 
         ' Set text of date button
         UpdateDateText()
+
+        log.WriteLine(LogLevel.Info, "Main window loaded")
     End Sub
 
     Private Sub MapPictureBox_MouseMove(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseMove
@@ -68,19 +90,7 @@ Public Class MainWindow
         UpdateProvinceInfo(currentProvinceId_)
     End Sub
 
-    ' Global game data
-    Private coldWarWorld_ As GameWorld.WorldDataManager = New GameWorld.WorldDataManager()
-    Private gameDate_ = New DateTime(1950, 1, 1)
-
-    ' GUI related members
-    Private currentProvinceId_ As Integer = -1
-    Private currentCountryTag_ As String = ""
-
-    ' Map related members
-    Private provinceMap_ As ProvinceMap
-    Private countryMap_ As Bitmap
-    Private mapScaling_ As Double = 0.0
-
+    ' helper functions
     Private Sub SetMapPicture()
         Dim renderedBitmap As Bitmap
 
