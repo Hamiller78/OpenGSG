@@ -94,6 +94,7 @@
     <Compile Include="WorldMap\MapRenderer.vb" />
     <Compile Include="WorldMap\Projection.vb" />
     <Compile Include="WorldMap\ProvinceMap.vb" />
+    <Compile Include="WorldMap\RobinsonProjection.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
