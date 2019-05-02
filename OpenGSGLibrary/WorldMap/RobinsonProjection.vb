@@ -25,9 +25,8 @@ Namespace Map
     Public Class RobinsonProjection
         Inherits Projection
 
-        ' constant parameters, Raidus = 1 and map centered around the Greenwich meridian
-        Const capitalR As Double = 1D
         Const centralMeridian As Double = 0.0
+        Private _capitalR As Double = 1D
 
         ''' <summary>
         ''' Returns the map coordinates based on a Robinson projection with R=1.
@@ -38,8 +37,8 @@ Namespace Map
         Public Overrides Function getMapCoordinates(globePoint As GeoCoordinate) As Tuple(Of Double, Double)
             Dim capitalXY As Tuple(Of Double, Double) = getXY(globePoint.Latitude)
 
-            Dim x As Double = 0.8487 * capitalR * capitalXY.Item1 * (globePoint.Longitude - centralMeridian)
-            Dim y As Double = 1.3523 * capitalR * capitalXY.Item2
+            Dim x As Double = 0.8487 * GetcapitalR() * capitalXY.Item1 * (globePoint.Longitude - centralMeridian)
+            Dim y As Double = 1.3523 * GetcapitalR() * capitalXY.Item2
 
             Return New Tuple(Of Double, Double)(x, y)
         End Function
@@ -48,11 +47,19 @@ Namespace Map
             Dim latitude As Double = 0D
             Dim longitude As Double = 0D
 
-            latitude = getLatitudeOfY(mapPoint.Item2 / (1.3523 * capitalR))
-            longitude = mapPoint.Item1 / (0.8487 * capitalR * getXY(latitude).Item1) + centralMeridian
+            latitude = getLatitudeOfY(mapPoint.Item2 / (1.3523 * GetcapitalR()))
+            longitude = mapPoint.Item1 / (0.8487 * GetcapitalR() * getXY(latitude).Item1) + centralMeridian
 
             Return New GeoCoordinate(latitude, longitude)
         End Function
+
+        Public Function GetCapitalR() As Double
+            Return _capitalR
+        End Function
+
+        Public Sub SetCapitalR(AutoPropertyValue As Double)
+            _capitalR = AutoPropertyValue
+        End Sub
 
         Private Function getXY(latitude As Double) As Tuple(Of Double, Double)
             Dim capitalX As Double = 0
