@@ -54,7 +54,7 @@ Public Class MainWindow
 
         ' Set map
         SetMapPicture()
-        mapProjection_.SetCapitalR(MapPictureBox.Width / 2)
+        mapProjection_.SetCapitalR(720)
 
         ' Set text of date button
         UpdateDateText()
@@ -75,10 +75,9 @@ Public Class MainWindow
             UpdateProvinceInfo(mouseProvinceId)
         End If
 
-        Dim mapCoords = New Tuple(Of Double, Double)(mouseX - MapPictureBox.Width / 2D + 82, mouseY - MapPictureBox.Height / 2D + 82)
+        Dim mapCoords = New Tuple(Of Double, Double)(mapX - 642, mapY - 362)
         Dim mouseGeoCoord As GeoCoordinate = mapProjection_.getGlobeCoordinates(mapCoords)
         CoordinateDisplay.Text = mouseGeoCoord.ToString()
-        'CoordinateDisplay.Text = mapCoords.ToString()
 
     End Sub
 
