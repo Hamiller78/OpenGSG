@@ -155,6 +155,7 @@ Public Class MainWindow
         CountryGovernment.Text = currentCountry.government
         CountryAllegiance.Text = currentCountry.allegiance
         CountryProduction.Text = coldWarWorld_.GetCountryProduction(currentCountryTag_)
+        FlagPictureBox.Image = currentCountry.flag
     End Sub
 
     Private Sub UpdateDateText()

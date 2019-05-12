@@ -21,7 +21,7 @@ Namespace WorldData
     ''' <summary>
     ''' Base class for coutries. Handles the most basic country properties.
     ''' </summary>
-    Public Class Country
+    Public MustInherit Class Country
         Inherits GameObject
 
         Public Function GetTag() As String
@@ -57,6 +57,13 @@ Namespace WorldData
             Dim colorCode As Tuple(Of Byte, Byte, Byte) = New Tuple(Of Byte, Byte, Byte)(rValue, gValue, bValue)
             color_ = colorCode
         End Sub
+
+        ''' <summary>
+        ''' Loads all flag images for the country from files.
+        ''' The exact implementation is game specific, e.g. HOI4 has variations for ideology
+        ''' </summary>
+        ''' <param name="flagPath">String with path to the folder containing the flag image files.</param>
+        Public MustOverride Sub LoadFlags(flagPath As String)
 
         Private tag_ As String
         Private name_ As String

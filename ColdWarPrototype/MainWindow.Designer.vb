@@ -57,10 +57,12 @@ Partial Class MainWindow
         Me.CountryName = New System.Windows.Forms.Label()
         Me.DateButton = New System.Windows.Forms.Button()
         Me.CoordinateDisplay = New System.Windows.Forms.Label()
+        Me.FlagPictureBox = New System.Windows.Forms.PictureBox()
         CType(Me.MapPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MapModeGroup.SuspendLayout()
         Me.ProvinceBox.SuspendLayout()
         Me.CountryBox.SuspendLayout()
+        CType(Me.FlagPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'MapPictureBox
@@ -185,6 +187,7 @@ Partial Class MainWindow
         '
         'CountryBox
         '
+        Me.CountryBox.Controls.Add(Me.FlagPictureBox)
         Me.CountryBox.Controls.Add(Me.CountryProduction)
         Me.CountryBox.Controls.Add(Me.CountryAllegiance)
         Me.CountryBox.Controls.Add(Me.CountryGovernment)
@@ -260,6 +263,15 @@ Partial Class MainWindow
         Me.CoordinateDisplay.TabIndex = 7
         Me.CoordinateDisplay.Text = "- , -"
         '
+        'FlagPictureBox
+        '
+        Me.FlagPictureBox.Location = New System.Drawing.Point(174, 16)
+        Me.FlagPictureBox.Name = "FlagPictureBox"
+        Me.FlagPictureBox.Size = New System.Drawing.Size(45, 30)
+        Me.FlagPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.FlagPictureBox.TabIndex = 5
+        Me.FlagPictureBox.TabStop = False
+        '
         'MainWindow
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -281,6 +293,7 @@ Partial Class MainWindow
         Me.ProvinceBox.PerformLayout()
         Me.CountryBox.ResumeLayout(False)
         Me.CountryBox.PerformLayout()
+        CType(Me.FlagPictureBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -306,4 +319,5 @@ Partial Class MainWindow
     Friend WithEvents ProvinceProduction As Label
     Friend WithEvents CountryProduction As Label
     Friend WithEvents CoordinateDisplay As Label
+    Friend WithEvents FlagPictureBox As PictureBox
 End Class

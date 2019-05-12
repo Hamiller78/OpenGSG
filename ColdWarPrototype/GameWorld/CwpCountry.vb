@@ -14,6 +14,8 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+Imports System.IO
+
 Imports OpenGSGLibrary.WorldData
 
 Namespace GameWorld
@@ -29,10 +31,12 @@ Namespace GameWorld
         Public Property allegiance As String = ""
         Public Property leader As String = ""
 
+        Public Property flag As Bitmap = Nothing
+
         ''' <summary>
         ''' Sets the country properties from the parsed data.
         ''' </summary>
-        ''' <param name="fileName">Name of the source file of county object.</param>
+        ''' <param name="fileName">Name of the source file of country object.</param>
         ''' <param name="parsedData">Object with the parsed data from that file.</param>
         Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
             MyBase.SetData(fileName, parsedData)
@@ -46,6 +50,16 @@ Namespace GameWorld
             End If
             leader = parsedData("leader")
 
+        End Sub
+
+        ''' <summary>
+        ''' Loads the flag PNG file for the country.
+        ''' The name of the file has to be tag + ".png"
+        ''' </summary>
+        ''' <param name="flagPath">String with the folder path for the flag files.</param>
+        Public Overrides Sub LoadFlags(flagPath As String)
+            Dim flagImage As Image = Image.FromFile(Path.Combine(flagPath, GetTag() & ".png"))
+            flag = New Bitmap(flagImage)
         End Sub
 
     End Class

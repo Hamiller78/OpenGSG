@@ -55,15 +55,26 @@ Namespace GameWorld
                                 (Path.Combine(gamedataPath, "history\provinces"), "filename_0")
             countryTable_ = GameObjectFactory.FromFolder(Of String, CwpCountry) _
                                 (Path.Combine(gamedataPath, "common\countries"), "tag")
+            LoadCountryFlags(Path.Combine(gamedataPath, "gfx\flags"))
 
         End Sub
 
+        ''' <summary>
+        ''' Method to be called each day of game time.
+        ''' Prototype for an event handler.
+        ''' </summary>
         Public Sub UpdateEverythingDaily()
             For Each provinceEntry In provinceTable_
                 provinceEntry.Value.UpdateDaily()
             Next
         End Sub
 
+        ''' <summary>
+        ''' Getter for a countrys' production.
+        ''' Calculates the value by adding the province values of that country.
+        ''' </summary>
+        ''' <param name="countryTag">String with the country tag (e.g. "GDR").</param>
+        ''' <returns></returns>
         Public Function GetCountryProduction(countryTag As String) As Long
             Dim countryProduction As Long = 0
             For Each province In provinceTable_
@@ -79,6 +90,12 @@ Namespace GameWorld
 
         Private Sub LoadWorldmap(filePath As String)
             provinceMap.FromFile(Path.Combine(filePath, "provinces.bmp"))
+        End Sub
+
+        Private Sub LoadCountryFlags(flagPath As String)
+            For Each country In countryTable_
+                country.Value.LoadFlags(flagPath)
+            Next
         End Sub
 
     End Class
