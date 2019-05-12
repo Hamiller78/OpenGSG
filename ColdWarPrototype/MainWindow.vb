@@ -14,6 +14,7 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+Imports System.Device.Location
 Imports System.IO
 
 Imports OpenGSGLibrary.Map
@@ -36,6 +37,7 @@ Public Class MainWindow
     Private provinceMap_ As ProvinceMap
     Private countryMap_ As Bitmap
     Private mapScaling_ As Double = 0.0
+    Private mapProjection_ As RobinsonProjection = New RobinsonProjection
 
     ' GUI event handlers
     Private Sub MainWindow_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -52,6 +54,7 @@ Public Class MainWindow
 
         ' Set map
         SetMapPicture()
+        mapProjection_.SetCapitalR(720)
 
         ' Set text of date button
         UpdateDateText()
@@ -71,6 +74,11 @@ Public Class MainWindow
         If (mouseProvinceId <> -1) And (mouseProvinceId <> currentProvinceId_) Then
             UpdateProvinceInfo(mouseProvinceId)
         End If
+
+        Dim mapCoords = New Tuple(Of Double, Double)(mapX - 642, mapY - 362)
+        Dim mouseGeoCoord As GeoCoordinate = mapProjection_.getGlobeCoordinates(mapCoords)
+        CoordinateDisplay.Text = mouseGeoCoord.ToString()
+
     End Sub
 
     Private Sub MapModePolitical_CheckedChanged(sender As Object, e As EventArgs) Handles MapModePolitical.CheckedChanged

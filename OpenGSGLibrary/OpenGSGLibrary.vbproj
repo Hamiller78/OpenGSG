@@ -45,6 +45,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -89,8 +90,11 @@
     <Compile Include="Tools\Logger.vb" />
     <Compile Include="WorldMap\CountryMapRenderer.vb" />
     <Compile Include="WorldMap\LayerBitmap.vb" />
+    <Compile Include="WorldMap\Navigator.vb" />
     <Compile Include="WorldMap\MapRenderer.vb" />
+    <Compile Include="WorldMap\Projection.vb" />
     <Compile Include="WorldMap\ProvinceMap.vb" />
+    <Compile Include="WorldMap\RobinsonProjection.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

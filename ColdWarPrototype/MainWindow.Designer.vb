@@ -42,6 +42,7 @@ Partial Class MainWindow
         Me.MapModePolitical = New System.Windows.Forms.RadioButton()
         Me.MapModeGroup = New System.Windows.Forms.GroupBox()
         Me.ProvinceBox = New System.Windows.Forms.GroupBox()
+        Me.ProvinceProduction = New System.Windows.Forms.Label()
         Me.ProvinceEducation = New System.Windows.Forms.Label()
         Me.ProvinceOwner = New System.Windows.Forms.Label()
         Me.ProvinceController = New System.Windows.Forms.Label()
@@ -49,13 +50,13 @@ Partial Class MainWindow
         Me.ProvincePopulation = New System.Windows.Forms.Label()
         Me.ProvinceName = New System.Windows.Forms.Label()
         Me.CountryBox = New System.Windows.Forms.GroupBox()
+        Me.CountryProduction = New System.Windows.Forms.Label()
         Me.CountryAllegiance = New System.Windows.Forms.Label()
         Me.CountryGovernment = New System.Windows.Forms.Label()
         Me.CountryLeader = New System.Windows.Forms.Label()
         Me.CountryName = New System.Windows.Forms.Label()
         Me.DateButton = New System.Windows.Forms.Button()
-        Me.ProvinceProduction = New System.Windows.Forms.Label()
-        Me.CountryProduction = New System.Windows.Forms.Label()
+        Me.CoordinateDisplay = New System.Windows.Forms.Label()
         CType(Me.MapPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MapModeGroup.SuspendLayout()
         Me.ProvinceBox.SuspendLayout()
@@ -118,6 +119,15 @@ Partial Class MainWindow
         Me.ProvinceBox.TabIndex = 4
         Me.ProvinceBox.TabStop = False
         Me.ProvinceBox.Text = "Province"
+        '
+        'ProvinceProduction
+        '
+        Me.ProvinceProduction.AutoSize = True
+        Me.ProvinceProduction.Location = New System.Drawing.Point(8, 115)
+        Me.ProvinceProduction.Name = "ProvinceProduction"
+        Me.ProvinceProduction.Size = New System.Drawing.Size(10, 13)
+        Me.ProvinceProduction.TabIndex = 7
+        Me.ProvinceProduction.Text = "-"
         '
         'ProvinceEducation
         '
@@ -187,6 +197,15 @@ Partial Class MainWindow
         Me.CountryBox.TabStop = False
         Me.CountryBox.Text = "Country"
         '
+        'CountryProduction
+        '
+        Me.CountryProduction.AutoSize = True
+        Me.CountryProduction.Location = New System.Drawing.Point(8, 73)
+        Me.CountryProduction.Name = "CountryProduction"
+        Me.CountryProduction.Size = New System.Drawing.Size(10, 13)
+        Me.CountryProduction.TabIndex = 4
+        Me.CountryProduction.Text = "-"
+        '
         'CountryAllegiance
         '
         Me.CountryAllegiance.AutoSize = True
@@ -225,36 +244,28 @@ Partial Class MainWindow
         '
         'DateButton
         '
-        Me.DateButton.Location = New System.Drawing.Point(6, 320)
+        Me.DateButton.Location = New System.Drawing.Point(4, 356)
         Me.DateButton.Name = "DateButton"
         Me.DateButton.Size = New System.Drawing.Size(216, 37)
         Me.DateButton.TabIndex = 6
         Me.DateButton.Text = "DD-MM-YYYY"
         Me.DateButton.UseVisualStyleBackColor = True
         '
-        'ProvinceProduction
+        'CoordinateDisplay
         '
-        Me.ProvinceProduction.AutoSize = True
-        Me.ProvinceProduction.Location = New System.Drawing.Point(8, 115)
-        Me.ProvinceProduction.Name = "ProvinceProduction"
-        Me.ProvinceProduction.Size = New System.Drawing.Size(10, 13)
-        Me.ProvinceProduction.TabIndex = 7
-        Me.ProvinceProduction.Text = "-"
-        '
-        'CountryProduction
-        '
-        Me.CountryProduction.AutoSize = True
-        Me.CountryProduction.Location = New System.Drawing.Point(8, 73)
-        Me.CountryProduction.Name = "CountryProduction"
-        Me.CountryProduction.Size = New System.Drawing.Size(10, 13)
-        Me.CountryProduction.TabIndex = 4
-        Me.CountryProduction.Text = "-"
+        Me.CoordinateDisplay.AutoSize = True
+        Me.CoordinateDisplay.Location = New System.Drawing.Point(1, 317)
+        Me.CoordinateDisplay.Name = "CoordinateDisplay"
+        Me.CoordinateDisplay.Size = New System.Drawing.Size(22, 13)
+        Me.CoordinateDisplay.TabIndex = 7
+        Me.CoordinateDisplay.Text = "- , -"
         '
         'MainWindow
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1884, 1001)
+        Me.Controls.Add(Me.CoordinateDisplay)
         Me.Controls.Add(Me.DateButton)
         Me.Controls.Add(Me.CountryBox)
         Me.Controls.Add(Me.ProvinceBox)
@@ -271,6 +282,7 @@ Partial Class MainWindow
         Me.CountryBox.ResumeLayout(False)
         Me.CountryBox.PerformLayout()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -293,4 +305,5 @@ Partial Class MainWindow
     Friend WithEvents DateButton As Button
     Friend WithEvents ProvinceProduction As Label
     Friend WithEvents CountryProduction As Label
+    Friend WithEvents CoordinateDisplay As Label
 End Class
