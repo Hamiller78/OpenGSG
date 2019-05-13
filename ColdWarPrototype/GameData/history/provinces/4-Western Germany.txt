@@ -3,3 +3,4 @@ controller = FRG
 population = 50100000 
 industrialization = 30
 education = 90
+terrain = coastal

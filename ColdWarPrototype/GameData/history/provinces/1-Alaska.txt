@@ -3,3 +3,4 @@ controller = USA
 population = 135000
 industrialization = 10
 education = 90
+terrain = coastal

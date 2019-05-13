@@ -137,6 +137,7 @@ Public Class MainWindow
         ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
         ProvinceEducation.Text = Trim(Str(currentProvince.education))
         ProvinceProduction.Text = currentProvince.production
+        ProvinceTerrain.Text = currentProvince.terrain
 
         Dim mouseCountryTag As String = currentProvince.GetOwner()
         ProvinceController.Text = currentProvince.GetController()

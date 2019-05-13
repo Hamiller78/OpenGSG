@@ -27,6 +27,7 @@ Namespace GameWorld
         Public Property population As Long = 0
         Public Property industrialization As Long = 0
         Public Property education As Long = 0
+        Public Property terrain As String = ""
 
         Public ReadOnly Property production As Long
             Get
@@ -47,9 +48,13 @@ Namespace GameWorld
             population = parsedData("population")
             industrialization = parsedData("industrialization")
             education = parsedData("education")
+            terrain = parsedData("terrain")
 
         End Sub
 
+        ''' <summary>
+        ''' Should be called each day of game time to update province properties.
+        ''' </summary>
         Public Sub UpdateDaily()
             ' Change in population number, just something small for a test
             population = population * 1.00003
