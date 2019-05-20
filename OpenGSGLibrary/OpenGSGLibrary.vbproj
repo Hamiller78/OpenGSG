@@ -72,6 +72,9 @@
     <Compile Include="GameFilesParser\Parser.vb" />
     <Compile Include="GameFilesParser\Scanner.vb" />
     <Compile Include="GameFilesParser\Token.vb" />
+    <Compile Include="Military\Unit.vb" />
+    <Compile Include="Military\UnitGroup.vb" />
+    <Compile Include="Military\UnitType.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
