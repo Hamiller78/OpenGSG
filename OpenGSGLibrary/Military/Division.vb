@@ -16,11 +16,12 @@
 
 Namespace Military
 
-    Public MustInherit Class Unit
+    Public Class Division
 
-        Public MustOverride Function GetName() As String
-
-        Public MustOverride Function GetSpeed(terrainType As String) As Double
+        Public Property name As String
+        Public Property type As Unit
+        Public Property owner As String
+        Public Property strength As Integer
 
     End Class
 

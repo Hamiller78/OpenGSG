@@ -16,9 +16,17 @@
 
 Namespace Military
 
-    Public Class UnitGroup
+    Public Class Army
+        Inherits WorldData.GameObject
 
-        Public Property units As List(Of Unit)
+        Public Property units As List(Of Division)
+
+        Private tag_ As String
+        Private name_ As String
+
+        Public Sub New()
+
+        End Sub
 
     End Class
 

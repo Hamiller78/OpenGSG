@@ -59,6 +59,7 @@ Namespace WorldData
         Private name_ As String
         Private controller_ As String
         Private owner_ As String
+        Private units_ As List(Of Military.Division)
 
     End Class
 

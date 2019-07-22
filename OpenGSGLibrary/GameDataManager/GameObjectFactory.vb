@@ -52,6 +52,43 @@ Namespace WorldData
 
         End Function
 
+        ' TODO: Test and debug!
+
+        ''' <summary>
+        ''' Creates a table of generated lists objects from the parsed files in one directory.
+        ''' Assumes that each file contains a collection of objects
+        ''' </summary>
+        ''' <typeparam name="idtype">Variable type of the id (e.g. Integer, String)</typeparam>
+        ''' <typeparam name="type">Variable type of the generated objects (e.g. Province)</typeparam>
+        ''' <param name="folderPath">String with the directory path.</param>
+        ''' <param name="keyField">Name of the field in the parsed file which value is used as key in the return value.</param>
+        ''' <returns>Dictionary with generated objects.</returns>
+        Public Shared Function ListsFromFolder(Of idtype, Type As {New, GameObject}) _
+            (folderPath As String, keyField As String) As Dictionary(Of idtype, List(Of Type))
+
+            If Not Directory.Exists(folderPath) Then
+                Throw New DirectoryNotFoundException("Given game data directory not found: " & folderPath)
+            End If
+
+            Dim objectTable = New Dictionary(Of idtype, List(Of Type))
+
+            Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
+            For Each singleFileData In parsedObjectData
+                Dim newList = New List(Of Type)()
+                Dim fileCollection = CType(singleFileData.Value, Collection)
+                For Each obj In fileCollection
+                    Dim newObject = New Type()
+                    newObject.SetData(singleFileData.Key, obj)
+                    newList.Add(newObject)
+                Next
+                Dim key As idtype = CType(singleFileData.Value(keyField), idtype)
+                objectTable.Add(key, newList)
+            Next
+
+            Return objectTable
+
+        End Function
+
         ''' <summary>
         ''' Parses all files in a folder with txt extension.
         ''' </summary>

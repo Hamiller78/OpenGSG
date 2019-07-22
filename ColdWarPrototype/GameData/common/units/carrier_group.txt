@@ -1,0 +1,7 @@
+#Carrier group
+type = navy
+
+strength = 10
+air_capability = 8
+
+speed = 50

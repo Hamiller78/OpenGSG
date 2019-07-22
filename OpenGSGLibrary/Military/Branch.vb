@@ -13,15 +13,34 @@
 '
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+Public Class Branch
 
-Namespace Military
+    Public Enum Type
+        Army
+        Navy
+        Airforce
+        Space
+    End Enum
 
-    Public MustInherit Class UnitType
+    Private Property type_
 
-        Public MustOverride Function GetName() As String
+    Public Sub New(type As Branch.Type)
+        type_ = type
+    End Sub
 
-        Public MustOverride Function GetSpeed(terrainType As String) As Double
+    Public Sub New(typeName As String)
+        Select Case typeName.ToLower()
+            Case "army"
+                type_ = Type.Army
+            Case "navy"
+                type_ = Type.Navy
+            Case "airforce"
+                type_ = Type.Airforce
+            Case "space"
+                type_ = Type.Space
+            Case Else
+                Throw New ApplicationException("Unknown type for military branch: " & typeName)
+        End Select
+    End Sub
 
-    End Class
-
-End Namespace
+End Class
