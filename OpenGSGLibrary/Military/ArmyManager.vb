@@ -30,7 +30,7 @@ Namespace Military
 
             Dim countryArmies As List(Of Army)
             countryToArmiesTable_ = WorldData.GameObjectFactory.ListsFromFolder(Of String, Army) _
-                                (Path.Combine(unitsPath, "history\units"), "filename_0")
+                                      (unitsPath, "filename_0")
 
             ' TODO: Update provinceIdToArmiesTable with data drom countryToArmiesTable_
 

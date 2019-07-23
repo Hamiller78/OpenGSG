@@ -3,6 +3,7 @@
 army = {			
 	name = "Seventh Army"
 	location = 4
+	
 	division = {
 		name = "1st Europe Infantry Division"
 		type = infantry

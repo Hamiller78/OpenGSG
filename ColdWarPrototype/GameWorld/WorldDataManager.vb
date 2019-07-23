@@ -17,6 +17,7 @@
 Imports System.IO
 
 Imports OpenGSGLibrary.Map
+Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.WorldData
 
 Namespace GameWorld
@@ -57,6 +58,8 @@ Namespace GameWorld
                                 (Path.Combine(gamedataPath, "common\countries"), "tag")
             LoadCountryFlags(Path.Combine(gamedataPath, "gfx\flags"))
 
+            armyManager_.LoadFolder(Path.Combine(gamedataPath, "history\units"))
+
         End Sub
 
         ''' <summary>
@@ -87,6 +90,7 @@ Namespace GameWorld
 
         Private provinceTable_ As New Dictionary(Of Integer, CwpProvince)
         Private countryTable_ As New Dictionary(Of String, CwpCountry)
+        Private armyManager_ As New ArmyManager()
 
         Private Sub LoadWorldmap(filePath As String)
             provinceMap.FromFile(Path.Combine(filePath, "provinces.bmp"))
