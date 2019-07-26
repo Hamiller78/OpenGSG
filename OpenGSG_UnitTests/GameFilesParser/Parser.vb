@@ -112,4 +112,88 @@ Imports Token = OpenGSGLibrary.Parser.Token
         Throw New IndexOutOfRangeException("Tokenstream end reached.")
     End Function
 
+    <TestMethod()> Public Sub Test_ParseDuplicateKeyCollection()
+        Dim testParser = New OpenGSGLibrary.Parser.Parser
+        Dim testResult = New Dictionary(Of String, Object)
+
+        testResult = testParser.Parse(InputStreamWithDuplicateKey())
+
+        Assert.AreEqual(vbObject, VarType(testResult("army")))
+        Dim armyProps As Lookup(Of String, Object) = testResult("army")
+
+        Assert.AreEqual(1, armyProps("name").Count)
+        Dim name As String = armyProps("name").First()
+        Assert.AreEqual("Some army name", name)
+
+        Assert.AreEqual(1, armyProps("name").Count)
+        Dim location As Integer = armyProps("location").First()
+        Assert.AreEqual(4, location)
+
+        Assert.AreEqual(2, armyProps("division").Count)
+
+        Dim division As Lookup(Of String, Object) = armyProps("division").ElementAt(0)
+        Assert.AreEqual("Division 1", division("name").Single())
+        Assert.AreEqual("Infantry", division("type").Single())
+        Assert.AreEqual(10000, division("size").Single())
+
+        division = armyProps("division").ElementAt(1)
+        Assert.AreEqual("Division 2", division("name").Single())
+        Assert.AreEqual("Armor", division("type").Single())
+        Assert.AreEqual(300, division("size").Single())
+
+    End Sub
+
+    Private Iterator Function InputStreamWithDuplicateKey() As IEnumerator(Of Token)
+        Yield Token.FromString("army")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromKind(Kind.LEFTBRACKET)
+
+        Yield Token.FromString("name")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromString("Some army name")
+
+        Yield Token.FromString("location")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromValue(4)
+
+        Yield Token.FromString("division")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromKind(Kind.LEFTBRACKET)
+
+        Yield Token.FromString("name")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromString("Division 1")
+
+        Yield Token.FromString("type")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromString("Infantry")
+
+        Yield Token.FromString("size")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromValue(10000)
+
+        Yield Token.FromKind(Kind.RIGHTBRACKET)
+        Yield Token.FromString("division")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromKind(Kind.LEFTBRACKET)
+
+        Yield Token.FromString("name")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromString("Division 2")
+
+        Yield Token.FromString("type")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromString("Armor")
+
+        Yield Token.FromString("size")
+        Yield Token.FromKind(Kind.EQUAL)
+        Yield Token.FromValue(300)
+
+        Yield Token.FromKind(Kind.RIGHTBRACKET)
+
+        Yield Token.FromKind(Kind.RIGHTBRACKET)
+        Yield Token.FromKind(Kind.EOF)
+        Throw New IndexOutOfRangeException("Tokenstream end reached.")
+    End Function
+
 End Class
