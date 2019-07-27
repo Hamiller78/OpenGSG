@@ -38,17 +38,17 @@ Namespace GameWorld
         ''' </summary>
         ''' <param name="fileName">Name of the source file of country object.</param>
         ''' <param name="parsedData">Object with the parsed data from that file.</param>
-        Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+        Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 
-            longName = parsedData("long_name")
-            government = parsedData("government")
-            If parsedData.ContainsKey("allegiance") Then
-                allegiance = parsedData("allegiance")
+            longName = parsedData("long_name").Single()
+            government = parsedData("government").Single()
+            If parsedData.Contains("allegiance") Then
+                allegiance = parsedData("allegiance").Single()
             Else
                 allegiance = ""
             End If
-            leader = parsedData("leader")
+            leader = parsedData("leader").Single()
 
         End Sub
 

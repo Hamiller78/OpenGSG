@@ -94,13 +94,14 @@ Namespace WorldData
         ''' </summary>
         ''' <param name="gamedataPath">String with the path of the folder.</param>
         ''' <returns>Dictionary with a file name as key and that file's parsed data as object.</returns>
-        Public Shared Function ParseFolder(gamedataPath As String) As Dictionary(Of String, Object)
+        Public Shared Function ParseFolder(gamedataPath As String) As Lookup(Of String, Object)
             Dim dictionaryOfParsedData = New Dictionary(Of String, Object)
 
             Dim fileArray As String() = Directory.GetFiles(gamedataPath, "*.txt", SearchOption.AllDirectories)
 
             Dim scanner = New Parser.Scanner()
             Dim parser = New Parser.Parser()
+            ' TODO: Switch dictionary to Lookup
             For Each textFile As String In fileArray
                 Try
                     Dim rawFile As TextReader = File.OpenText(textFile)
@@ -117,7 +118,7 @@ Namespace WorldData
                 End Try
             Next
 
-            Return dictionaryOfParsedData
+            Return dictionaryOfParsedData.ToLookup(Function(kvPair) kvPair.Key, Function(kvPair) kvPair.Value)
 
         End Function
 

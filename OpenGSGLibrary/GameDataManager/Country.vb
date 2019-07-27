@@ -43,14 +43,14 @@ Namespace WorldData
         ''' </summary>
         ''' <param name="fileName"></param>
         ''' <param name="parsedData"></param>
-        Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+        Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 
             Dim fileNameParts As String() = GameObjectFactory.ExtractFromFilename(fileName)
             name_ = Path.GetFileNameWithoutExtension(fileName)
 
-            tag_ = parsedData("tag")
-            Dim colorList As List(Of Integer) = parsedData("color")
+            tag_ = parsedData("tag").Single()
+            Dim colorList As List(Of Integer) = parsedData("color").Single()
             Dim rValue As Byte = colorList(0)
             Dim gValue As Byte = colorList(1)
             Dim bValue As Byte = colorList(2)

@@ -42,13 +42,13 @@ Namespace GameWorld
         ''' </summary>
         ''' <param name="fileName">Name of the source file of province object.</param>
         ''' <param name="parsedData">Object with the parsed data from that file.</param>
-        Public Overrides Sub SetData(fileName As String, parsedData As Dictionary(Of String, Object))
+        Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 
-            population = parsedData("population")
-            industrialization = parsedData("industrialization")
-            education = parsedData("education")
-            terrain = parsedData("terrain")
+            population = parsedData("population").Single()
+            industrialization = parsedData("industrialization").Single()
+            education = parsedData("education").Single()
+            terrain = parsedData("terrain").Single()
 
         End Sub
 

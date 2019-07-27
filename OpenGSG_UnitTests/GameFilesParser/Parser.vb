@@ -23,20 +23,19 @@ Imports Token = OpenGSGLibrary.Parser.Token
 
     <TestMethod()> Public Sub Test_Parse()
         Dim testParser = New OpenGSGLibrary.Parser.Parser
-        Dim testResult = New Dictionary(Of String, Object)
 
+        Dim testResult As Lookup(Of String, Object)
         testResult = testParser.Parse(InputStream())
 
-        Assert.AreEqual(vbObject, VarType(testResult("state")))
-        Dim stateProps As Dictionary(Of String, Object) = testResult("state")
+        Dim stateProps As Lookup(Of String, Object) = testResult("state").First()
 
-        Dim id As Integer = stateProps("id")
+        Dim id As Integer = stateProps("id").Single()
         Assert.AreEqual(92, id)
 
-        Dim name As String = stateProps("name")
+        Dim name As String = stateProps("name").Single()
         Assert.AreEqual("STATE_92", name)
 
-        Dim provinceList As List(Of Integer) = stateProps("provinces")
+        Dim provinceList As List(Of Integer) = stateProps("provinces").Single()
         Assert.AreEqual(13, provinceList(0))
         Assert.AreEqual(13423, provinceList(1))
         Assert.AreEqual(908, provinceList(2))
@@ -72,20 +71,19 @@ Imports Token = OpenGSGLibrary.Parser.Token
 
     <TestMethod()> Public Sub Test_ParseEmptyCollection()
         Dim testParser = New OpenGSGLibrary.Parser.Parser
-        Dim testResult = New Dictionary(Of String, Object)
+        Dim testResult As Lookup(Of String, Object)
 
         testResult = testParser.Parse(InputStreamWithEmptyCollection())
 
-        Assert.AreEqual(vbObject, VarType(testResult("country")))
-        Dim countryProps As Dictionary(Of String, Object) = testResult("country")
+        Dim countryProps As Lookup(Of String, Object) = testResult("country").Single()
 
-        Dim tag As String = countryProps("tag")
+        Dim tag As String = countryProps("tag").Single()
         Assert.AreEqual("FRG", tag)
 
-        Dim name As String = countryProps("name")
+        Dim name As String = countryProps("name").Single()
         Assert.AreEqual("Germany", name)
 
-        Assert.AreEqual(False, countryProps.ContainsKey("resources"))
+        Assert.AreEqual(False, countryProps.Contains("resources"))
 
     End Sub
 
@@ -114,12 +112,11 @@ Imports Token = OpenGSGLibrary.Parser.Token
 
     <TestMethod()> Public Sub Test_ParseDuplicateKeyCollection()
         Dim testParser = New OpenGSGLibrary.Parser.Parser
-        Dim testResult = New Dictionary(Of String, Object)
 
+        Dim testResult As Lookup(Of String, Object)
         testResult = testParser.Parse(InputStreamWithDuplicateKey())
 
-        Assert.AreEqual(vbObject, VarType(testResult("army")))
-        Dim armyProps As Lookup(Of String, Object) = testResult("army")
+        Dim armyProps As Lookup(Of String, Object) = testResult("army").First()
 
         Assert.AreEqual(1, armyProps("name").Count)
         Dim name As String = armyProps("name").First()
