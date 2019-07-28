@@ -26,6 +26,39 @@ Namespace WorldData
         ''' <summary>
         ''' Creates a table of generated objects from the parsed files in one directory.
         ''' </summary>
+        ''' <typeparam name="type">Variable type of the generated objects (e.g. Province)</typeparam>
+        ''' <param name="folderPath">String with the directory path.</param>
+        ''' <returns>Dictionary with generated objects using file names without extensions as key.</returns>
+        Public Shared Function FromFolderWithFilenameId(Of type As {New, GameObject}) _
+            (folderPath As String) As Dictionary(Of Integer, type)
+
+            If Not Directory.Exists(folderPath) Then
+                Throw New DirectoryNotFoundException("Given game data directory not found: " & folderPath)
+            End If
+
+            Dim objectTable = New Dictionary(Of Integer, type)
+
+            Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
+            For Each singleObjectData In parsedObjectData
+                Dim newObject = New type()
+                newObject.SetData(singleObjectData.Key, singleObjectData.Value)
+                Dim key As String = ""
+                Dim filenameParts As String() = ExtractFromFilename(singleObjectData.Key)
+                Try
+                    key = Convert.ToInt32(filenameParts(0))
+                    objectTable.Add(key, newObject)
+                Catch ex As Exception
+                    ' TODO: Log failed object
+                End Try
+            Next
+
+            Return objectTable
+
+        End Function
+
+        ''' <summary>
+        ''' Creates a table of generated objects from the parsed files in one directory.
+        ''' </summary>
         ''' <typeparam name="idtype">Variable type of the id (e.g. Integer, String)</typeparam>
         ''' <typeparam name="type">Variable type of the generated objects (e.g. Province)</typeparam>
         ''' <param name="folderPath">String with the directory path.</param>
@@ -42,9 +75,10 @@ Namespace WorldData
 
             Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
             For Each singleObjectData In parsedObjectData
+                Dim countryData As Lookup(Of String, Object) = singleObjectData.Value
                 Dim newObject = New type()
-                newObject.SetData(singleObjectData.Key, singleObjectData.Value)
-                Dim key As idtype = CType(singleObjectData.Value(keyField), idtype)
+                newObject.SetData(singleObjectData.Key, countryData)
+                Dim key As idtype = countryData(keyField).Single()
                 objectTable.Add(key, newObject)
             Next
 
@@ -52,73 +86,67 @@ Namespace WorldData
 
         End Function
 
-        ' TODO: Test and debug!
-
+        ' TODO: For armies, really useful?
         ''' <summary>
         ''' Creates a table of generated lists objects from the parsed files in one directory.
-        ''' Assumes that each file contains a collection of objects
+        ''' Assumes that each file contains a collection of objects (one or more).
         ''' </summary>
         ''' <typeparam name="idtype">Variable type of the id (e.g. Integer, String)</typeparam>
         ''' <typeparam name="type">Variable type of the generated objects (e.g. Province)</typeparam>
         ''' <param name="folderPath">String with the directory path.</param>
         ''' <param name="keyField">Name of the field in the parsed file which value is used as key in the return value.</param>
-        ''' <returns>Dictionary with generated objects.</returns>
-        Public Shared Function ListsFromFolder(Of idtype, Type As {New, GameObject}) _
-            (folderPath As String, keyField As String) As Dictionary(Of idtype, List(Of Type))
-
-            If Not Directory.Exists(folderPath) Then
-                Throw New DirectoryNotFoundException("Given game data directory not found: " & folderPath)
-            End If
-
-            Dim objectTable = New Dictionary(Of idtype, List(Of Type))
-
-            Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
-            For Each singleFileData In parsedObjectData
-                Dim newList = New List(Of Type)()
-                Dim fileCollection = CType(singleFileData.Value, Collection)
-                For Each obj In fileCollection
-                    Dim newObject = New Type()
-                    newObject.SetData(singleFileData.Key, obj)
-                    newList.Add(newObject)
-                Next
-                Dim key As idtype = CType(singleFileData.Value(keyField), idtype)
-                objectTable.Add(key, newList)
-            Next
-
-            Return objectTable
-
-        End Function
+        ''' <returns>Dictionary with lits of generated objects.</returns>
+        '        Public Shared Function ListsFromFolder(Of idtype, Type As {New, GameObject}) _
+        '            (folderPath As String, keyField As String) As Dictionary(Of idtype, List(Of Type))
+        '
+        '            If Not Directory.Exists(folderPath) Then
+        '                Throw New DirectoryNotFoundException("Given game data directory not found: " & folderPath)
+        '            End If
+        '
+        '            Dim objectTable = New Dictionary(Of idtype, List(Of Type))
+        '
+        '            Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
+        '            For Each singleFileData In parsedObjectData
+        '                Dim newList = New List(Of Type)()
+        '                Dim fileCollection = CType(singleFileData.Value, Collection)
+        '                For Each obj In fileCollection
+        '                    Dim newObject = New Type()
+        '                    newObject.SetData(singleFileData.Key, obj)
+        '                    newList.Add(newObject)
+        '                Next
+        '                Dim key As idtype = singleFileData.Value(keyField)
+        '                objectTable.Add(key, newList)
+        '            Next
+        '
+        '            Return objectTable
+        '
+        '        End Function
 
         ''' <summary>
         ''' Parses all files in a folder with txt extension.
         ''' </summary>
         ''' <param name="gamedataPath">String with the path of the folder.</param>
-        ''' <returns>Dictionary with a file name as key and that file's parsed data as object.</returns>
-        Public Shared Function ParseFolder(gamedataPath As String) As Lookup(Of String, Object)
+        ''' <returns>Dictionary with a file name as key (without extension) and that file's parsed data as object.</returns>
+        Public Shared Function ParseFolder(gamedataPath As String) As Dictionary(Of String, Object)
             Dim dictionaryOfParsedData = New Dictionary(Of String, Object)
 
-            Dim fileArray As String() = Directory.GetFiles(gamedataPath, "*.txt", SearchOption.AllDirectories)
+            Dim txtFilesInDir As String() = Directory.GetFiles(gamedataPath, "*.txt", SearchOption.AllDirectories)
 
             Dim scanner = New Parser.Scanner()
             Dim parser = New Parser.Parser()
-            ' TODO: Switch dictionary to Lookup
-            For Each textFile As String In fileArray
+            For Each textFile As String In txtFilesInDir
                 Try
                     Dim rawFile As TextReader = File.OpenText(textFile)
-                    Dim nextParseData As Dictionary(Of String, Object) = parser.Parse(scanner.Scan(rawFile))
-                    Dim fileNameParts As String() = ExtractFromFilename(textFile)
-                    For i = 0 To UBound(fileNameParts)
-                        nextParseData.Add("filename_" & Trim(Str(i)), fileNameParts(i))
-                    Next
+                    Dim nextParseData As Lookup(Of String, Object) = parser.Parse(scanner.Scan(rawFile))
                     If Not IsNothing(nextParseData) Then
-                        dictionaryOfParsedData.Add(Path.GetFileName(textFile), nextParseData)
+                        dictionaryOfParsedData.Add(Path.GetFileNameWithoutExtension(textFile), nextParseData)
                     End If
                 Catch ex As Exception
                     'TODO: Need a logger to throw a warning
                 End Try
             Next
 
-            Return dictionaryOfParsedData.ToLookup(Function(kvPair) kvPair.Key, Function(kvPair) kvPair.Value)
+            Return dictionaryOfParsedData
 
         End Function
 

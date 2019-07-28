@@ -26,7 +26,7 @@ Namespace WorldData
         ''' Sets file name and parser data of the object.
         ''' This doesn't work in the constructor with generic types, hence we use an extra method.
         ''' </summary>
-        ''' <param name="fileName">Name of the source file for the object's data.</param>
+        ''' <param name="fileName">Name of the source file for the object's data without extension.</param>
         ''' <param name="parsedData">Structure with the parsed data.</param>
         Public Overridable Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
             fileName_ = fileName

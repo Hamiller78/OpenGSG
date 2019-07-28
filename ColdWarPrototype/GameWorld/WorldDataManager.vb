@@ -52,13 +52,13 @@ Namespace GameWorld
             LoadWorldmap(Path.Combine(gamedataPath, "map"))
             provinceMap.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
 
-            provinceTable_ = GameObjectFactory.FromFolder(Of Integer, CwpProvince) _
-                                (Path.Combine(gamedataPath, "history\provinces"), "filename_0")
+            provinceTable_ = GameObjectFactory.FromFolderWithFilenameId(Of CwpProvince) _
+                                (Path.Combine(gamedataPath, "history\provinces"))
             countryTable_ = GameObjectFactory.FromFolder(Of String, CwpCountry) _
                                 (Path.Combine(gamedataPath, "common\countries"), "tag")
             LoadCountryFlags(Path.Combine(gamedataPath, "gfx\flags"))
 
-            armyManager_.LoadFolder(Path.Combine(gamedataPath, "history\units"))
+            '           armyManager_.LoadFolder(Path.Combine(gamedataPath, "history\units"))
 
         End Sub
 
