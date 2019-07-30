@@ -14,29 +14,25 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Imports System.IO
-
 Namespace Military
 
-    ''' <summary>
-    ''' Manages all units in the game, e.g. units per province, per country, etc...
-    ''' </summary>
-    Public Class ArmyManager
+    Public Class NationMilitary
+        Inherits WorldData.GameObject
 
-        Public Sub LoadFolder(unitsPath As String)
-            If Not Directory.Exists(unitsPath) Then
-                Throw New DirectoryNotFoundException("Given game data directory not found: " & unitsPath)
-            End If
+        Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
+            MyBase.SetData(fileName, parsedData)
 
-            Dim nationMilitaryTable_ = WorldData.GameObjectFactory.FromFolder(Of String, NationMilitary)(unitsPath, "tag")
-
-            ' TODO: Update provinceIdToArmiesTable with data drom countryToArmiesTable_
-
+            tag_ = parsedData("tag").Single()
+            Dim armiesData_ As List(Of Lookup(Of String, Object)) = parsedData("army")
+            For Each rawArmyData In armiesData_
+                Dim newArmy As New Army()
+                newArmy.SetData("", rawArmyData)
+                armies_.Add(newArmy)
+            Next
         End Sub
 
-        Private provinceIdToArmiesTable_ As Dictionary(Of Integer, List(Of Army))
-        Private nationMilitaryTable_ As Dictionary(Of String, NationMilitary)
-
+        Private tag_ As String = ""
+        Private armies_ As List(Of Army)
     End Class
 
 End Namespace

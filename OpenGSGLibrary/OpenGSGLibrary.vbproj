@@ -75,6 +75,7 @@
     <Compile Include="Military\Branch.vb" />
     <Compile Include="Military\Division.vb" />
     <Compile Include="Military\Army.vb" />
+    <Compile Include="Military\NationMilitary.vb" />
     <Compile Include="Military\Unit.vb" />
     <Compile Include="Military\ArmyManager.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />

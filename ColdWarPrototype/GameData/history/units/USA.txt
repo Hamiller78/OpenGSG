@@ -1,4 +1,6 @@
 ﻿###### Start unit locations ######
+tag = USA
+
 ### European Armies ###
 army = {			
 	name = "Seventh Army"
