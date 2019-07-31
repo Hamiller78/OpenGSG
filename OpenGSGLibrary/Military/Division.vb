@@ -17,11 +17,19 @@
 Namespace Military
 
     Public Class Division
+        Inherits WorldData.GameObject
 
-        Public Property name As String
-        Public Property type As Unit
-        Public Property owner As String
-        Public Property strength As Integer
+        Private name_ As String = ""
+        Private type_ As String = ""
+        Private size_ As Integer = 0
+        Private owner_ As String = ""
+
+        Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
+            name_ = parsedData("name").Single()
+            type_ = parsedData("type").Single()
+            size_ = parsedData("size").Single()
+            owner_ = WorldData.GameObjectFactory.ExtractFromFilename(fileName)(0)
+        End Sub
 
     End Class
 
