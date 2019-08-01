@@ -86,41 +86,26 @@ Namespace WorldData
 
         End Function
 
-        ' TODO: For armies, really useful?
         ''' <summary>
-        ''' Creates a table of generated lists objects from the parsed files in one directory.
-        ''' Assumes that each file contains a collection of objects (one or more).
+        ''' Creates a list of GameObject objects from a Lookup structure.
         ''' </summary>
-        ''' <typeparam name="idtype">Variable type of the id (e.g. Integer, String)</typeparam>
-        ''' <typeparam name="type">Variable type of the generated objects (e.g. Province)</typeparam>
-        ''' <param name="folderPath">String with the directory path.</param>
-        ''' <param name="keyField">Name of the field in the parsed file which value is used as key in the return value.</param>
-        ''' <returns>Dictionary with lits of generated objects.</returns>
-        '        Public Shared Function ListsFromFolder(Of idtype, Type As {New, GameObject}) _
-        '            (folderPath As String, keyField As String) As Dictionary(Of idtype, List(Of Type))
-        '
-        '            If Not Directory.Exists(folderPath) Then
-        '                Throw New DirectoryNotFoundException("Given game data directory not found: " & folderPath)
-        '            End If
-        '
-        '            Dim objectTable = New Dictionary(Of idtype, List(Of Type))
-        '
-        '            Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
-        '            For Each singleFileData In parsedObjectData
-        '                Dim newList = New List(Of Type)()
-        '                Dim fileCollection = CType(singleFileData.Value, Collection)
-        '                For Each obj In fileCollection
-        '                    Dim newObject = New Type()
-        '                    newObject.SetData(singleFileData.Key, obj)
-        '                    newList.Add(newObject)
-        '                Next
-        '                Dim key As idtype = singleFileData.Value(keyField)
-        '                objectTable.Add(key, newList)
-        '            Next
-        '
-        '            Return objectTable
-        '
-        '        End Function
+        ''' <typeparam name="type">Class inheriting from gamneObject class</typeparam>
+        ''' <param name="parsedData">Parser data as a Lookup(Of String, object)</param>
+        ''' <param name="objectId">Field id in the top level of the parser data for the 'type' objects</param>
+        ''' <returns></returns>
+        Public Shared Function ListFromLookup(Of type As {New, GameObject}) _
+            (parsedData As Lookup(Of String, Object), objectId As String) As List(Of type)
+
+            Dim generatedList As New List(Of type)
+
+            For Each objParserData In parsedData(objectId)
+                Dim newObj As New type()
+                newObj.SetData("", objParserData)
+                generatedList.Add(newObj)
+            Next
+
+            Return generatedList
+        End Function
 
         ''' <summary>
         ''' Parses all files in a folder with txt extension.

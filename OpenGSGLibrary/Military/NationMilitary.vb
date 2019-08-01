@@ -23,12 +23,7 @@ Namespace Military
             MyBase.SetData(fileName, parsedData)
 
             tag_ = parsedData("tag").Single()
-            Dim armiesData_ As List(Of Lookup(Of String, Object)) = parsedData("army")
-            For Each rawArmyData In armiesData_
-                Dim newArmy As New Army()
-                newArmy.SetData("", rawArmyData)
-                armies_.Add(newArmy)
-            Next
+            armies_ = WorldData.GameObjectFactory.ListFromLookup(Of Army)(parsedData, "army")
         End Sub
 
         Private tag_ As String = ""

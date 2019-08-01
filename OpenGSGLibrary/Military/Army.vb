@@ -24,8 +24,8 @@ Namespace Military
         Private tag_ As String
         Private name_ As String
 
-        Public Sub New()
-
+        Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
+            ' TODO: Implement me!
         End Sub
 
     End Class
