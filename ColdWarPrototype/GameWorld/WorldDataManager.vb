@@ -58,7 +58,7 @@ Namespace GameWorld
                                 (Path.Combine(gamedataPath, "common\countries"), "tag")
             LoadCountryFlags(Path.Combine(gamedataPath, "gfx\flags"))
 
-            '           armyManager_.LoadFolder(Path.Combine(gamedataPath, "history\units"))
+            armyManager_.LoadFolder(Path.Combine(gamedataPath, "history\units"))
 
         End Sub
 

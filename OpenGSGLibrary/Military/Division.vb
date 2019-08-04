@@ -28,7 +28,10 @@ Namespace Military
             name_ = parsedData("name").Single()
             type_ = parsedData("type").Single()
             size_ = parsedData("size").Single()
-            owner_ = WorldData.GameObjectFactory.ExtractFromFilename(fileName)(0)
+        End Sub
+
+        Public Sub SetOwner(tag As String)
+            owner_ = tag
         End Sub
 
     End Class

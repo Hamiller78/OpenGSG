@@ -22,11 +22,18 @@ Namespace Military
         Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 
-            tag_ = parsedData("tag").Single()
+            owner_ = parsedData("tag").Single()
             armies_ = WorldData.GameObjectFactory.ListFromLookup(Of Army)(parsedData, "army")
+            For Each army In armies_
+                army.SetOwner(owner_)
+            Next
         End Sub
 
-        Private tag_ As String = ""
+        Public Function GetArmiesList() As List(Of Army)
+            Return armies_
+        End Function
+
+        Private owner_ As String = ""
         Private armies_ As List(Of Army)
     End Class
 

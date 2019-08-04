@@ -28,14 +28,30 @@ Namespace Military
                 Throw New DirectoryNotFoundException("Given game data directory not found: " & unitsPath)
             End If
 
-            Dim nationMilitaryTable_ = WorldData.GameObjectFactory.FromFolder(Of String, NationMilitary)(unitsPath, "tag")
+            nationMilitaryTable_ = WorldData.GameObjectFactory.FromFolder(Of String, NationMilitary)(unitsPath, "tag")
 
-            ' TODO: Update provinceIdToArmiesTable with data drom countryToArmiesTable_
+            UpdateProvinceToArmyTable()
 
         End Sub
 
-        Private provinceIdToArmiesTable_ As Dictionary(Of Integer, List(Of Army))
-        Private nationMilitaryTable_ As Dictionary(Of String, NationMilitary)
+        Private Sub UpdateProvinceToArmyTable()
+            provinceIdToArmiesTable_ = New Dictionary(Of Integer, List(Of Army))
+
+            For Each countryNationMil In nationMilitaryTable_
+                For Each army In countryNationMil.Value.GetArmiesList()
+                    Dim location As Integer = army.GetLocation()
+                    Dim armyList As List(Of Army) = Nothing
+                    If Not provinceIdToArmiesTable_.TryGetValue(location, armyList) Then
+                        armyList = New List(Of Army)()
+                        provinceIdToArmiesTable_.Add(location, armyList)
+                    End If
+                    armyList.Add(army)
+                Next
+            Next
+        End Sub
+
+        Private provinceIdToArmiesTable_ As Dictionary(Of Integer, List(Of Army)) = Nothing
+        Private nationMilitaryTable_ As Dictionary(Of String, NationMilitary) = Nothing
 
     End Class
 

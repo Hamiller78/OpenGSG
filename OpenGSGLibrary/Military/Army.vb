@@ -21,12 +21,29 @@ Namespace Military
 
         Public Property units As List(Of Division)
 
-        Private tag_ As String
-        Private name_ As String
+        Private owner_ As String = ""
+        Private name_ As String = ""
+        Private location_ As Integer = 0
+        Private divisions_ As List(Of Division) = Nothing
 
         Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
-            ' TODO: Implement me!
+            name_ = parsedData("name").Single()
+            location_ = Val(parsedData("location").Single())
+            divisions_ = WorldData.GameObjectFactory.ListFromLookup(Of Division)(parsedData, "division")
         End Sub
+
+        Public Sub SetOwner(tag As String)
+            owner_ = tag
+            If divisions_ IsNot Nothing Then
+                For Each division In divisions_
+                    division.SetOwner(tag)
+                Next
+            End If
+        End Sub
+
+        Public Function GetLocation() As Integer
+            Return location_
+        End Function
 
     End Class
 
