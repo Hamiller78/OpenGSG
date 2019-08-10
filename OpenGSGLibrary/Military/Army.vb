@@ -45,6 +45,10 @@ Namespace Military
             Return location_
         End Function
 
+        Public Overrides Function ToString() As String
+            Return name_
+        End Function
+
     End Class
 
 End Namespace

@@ -18,6 +18,7 @@ Imports System.Device.Location
 Imports System.IO
 
 Imports OpenGSGLibrary.Map
+Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.Tools
 
 Public Class MainWindow
@@ -63,14 +64,10 @@ Public Class MainWindow
     End Sub
 
     Private Sub MapPictureBox_MouseMove(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseMove
-        Dim mouseX As Integer = e.X
-        Dim mouseY As Integer = e.Y
-
         Dim mapX As Integer = e.X * mapScaling_
         Dim mapY As Integer = e.Y * mapScaling_
 
-        Dim pixelTuple As Tuple(Of Byte, Byte, Byte) = provinceMap_.GetPixelRgb(mapX, mapY)
-        Dim mouseProvinceId As Integer = provinceMap_.GetProvinceNumber(pixelTuple)
+        Dim mouseProvinceId As Integer = GetProvinceUnderMouse(mapX, mapY)
         If (mouseProvinceId <> -1) And (mouseProvinceId <> currentProvinceId_) Then
             UpdateProvinceInfo(mouseProvinceId)
         End If
@@ -78,6 +75,22 @@ Public Class MainWindow
         Dim mapCoords = New Tuple(Of Double, Double)(mapX - 642, mapY - 362)
         Dim mouseGeoCoord As GeoCoordinate = mapProjection_.getGlobeCoordinates(mapCoords)
         CoordinateDisplay.Text = mouseGeoCoord.ToString()
+
+    End Sub
+
+    Private Sub MapPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseClick
+        Dim mapX As Integer = e.X * mapScaling_
+        Dim mapY As Integer = e.Y * mapScaling_
+
+        Dim mouseProvinceId As Integer = GetProvinceUnderMouse(mapX, mapY)
+
+        If (mouseProvinceId <> -1) Then
+            If (mouseProvinceId <> currentProvinceId_) Then
+                MoveSelectedArmies(mouseProvinceId)
+                currentProvinceId_ = mouseProvinceId
+            End If
+            UpdateArmyListBox(mouseProvinceId)
+        End If
 
     End Sub
 
@@ -129,6 +142,12 @@ Public Class MainWindow
         mapScaling_ = Math.Max(xFactor, yFactor)
     End Sub
 
+    Private Function GetProvinceUnderMouse(mapX As Integer, mapY As Integer) As Integer
+        Dim pixelTuple As Tuple(Of Byte, Byte, Byte) = provinceMap_.GetPixelRgb(mapX, mapY)
+        Dim mouseProvinceId As Integer = provinceMap_.GetProvinceNumber(pixelTuple)
+        Return mouseProvinceId
+    End Function
+
     Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
         currentProvinceId_ = mouseProvinceId
         ProvinceName.Text = provinceMap_.GetProvinceName(currentProvinceId_)
@@ -157,6 +176,24 @@ Public Class MainWindow
         CountryAllegiance.Text = currentCountry.allegiance
         CountryProduction.Text = coldWarWorld_.GetCountryProduction(currentCountryTag_)
         FlagPictureBox.Image = currentCountry.flag
+    End Sub
+
+    Private Sub UpdateArmyListBox(mouseProvinceId As Integer)
+        Dim armiesInProvince As List(Of Army) = coldWarWorld_.GetArmyManager().GetArmiesInProvince(mouseProvinceId)
+
+        ArmyListBox.Items.Clear()
+        ArmyListBox.BeginUpdate()
+        If armiesInProvince IsNot Nothing Then
+            For Each Army In armiesInProvince
+                ArmyListBox.Items.Add(Army.ToString())
+            Next
+        End If
+        ArmyListBox.EndUpdate()
+
+    End Sub
+
+    Private Sub MoveSelectedArmies(mouseProvinceId As Integer)
+        ' TODO: Throw New NotImplementedException()
     End Sub
 
     Private Sub UpdateDateText()

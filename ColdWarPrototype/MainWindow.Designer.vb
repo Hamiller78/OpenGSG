@@ -42,6 +42,7 @@ Partial Class MainWindow
         Me.MapModePolitical = New System.Windows.Forms.RadioButton()
         Me.MapModeGroup = New System.Windows.Forms.GroupBox()
         Me.ProvinceBox = New System.Windows.Forms.GroupBox()
+        Me.ProvinceTerrain = New System.Windows.Forms.Label()
         Me.ProvinceProduction = New System.Windows.Forms.Label()
         Me.ProvinceEducation = New System.Windows.Forms.Label()
         Me.ProvinceOwner = New System.Windows.Forms.Label()
@@ -58,7 +59,7 @@ Partial Class MainWindow
         Me.CountryName = New System.Windows.Forms.Label()
         Me.DateButton = New System.Windows.Forms.Button()
         Me.CoordinateDisplay = New System.Windows.Forms.Label()
-        Me.ProvinceTerrain = New System.Windows.Forms.Label()
+        Me.ArmyListBox = New System.Windows.Forms.ListBox()
         CType(Me.MapPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MapModeGroup.SuspendLayout()
         Me.ProvinceBox.SuspendLayout()
@@ -123,6 +124,15 @@ Partial Class MainWindow
         Me.ProvinceBox.TabIndex = 4
         Me.ProvinceBox.TabStop = False
         Me.ProvinceBox.Text = "Province"
+        '
+        'ProvinceTerrain
+        '
+        Me.ProvinceTerrain.AutoSize = True
+        Me.ProvinceTerrain.Location = New System.Drawing.Point(8, 128)
+        Me.ProvinceTerrain.Name = "ProvinceTerrain"
+        Me.ProvinceTerrain.Size = New System.Drawing.Size(10, 13)
+        Me.ProvinceTerrain.TabIndex = 8
+        Me.ProvinceTerrain.Text = "-"
         '
         'ProvinceProduction
         '
@@ -258,7 +268,7 @@ Partial Class MainWindow
         '
         'DateButton
         '
-        Me.DateButton.Location = New System.Drawing.Point(4, 423)
+        Me.DateButton.Location = New System.Drawing.Point(4, 556)
         Me.DateButton.Name = "DateButton"
         Me.DateButton.Size = New System.Drawing.Size(216, 37)
         Me.DateButton.TabIndex = 6
@@ -268,26 +278,26 @@ Partial Class MainWindow
         'CoordinateDisplay
         '
         Me.CoordinateDisplay.AutoSize = True
-        Me.CoordinateDisplay.Location = New System.Drawing.Point(9, 345)
+        Me.CoordinateDisplay.Location = New System.Drawing.Point(9, 540)
         Me.CoordinateDisplay.Name = "CoordinateDisplay"
         Me.CoordinateDisplay.Size = New System.Drawing.Size(22, 13)
         Me.CoordinateDisplay.TabIndex = 7
         Me.CoordinateDisplay.Text = "- , -"
         '
-        'ProvinceTerrain
+        'ArmyListBox
         '
-        Me.ProvinceTerrain.AutoSize = True
-        Me.ProvinceTerrain.Location = New System.Drawing.Point(8, 128)
-        Me.ProvinceTerrain.Name = "ProvinceTerrain"
-        Me.ProvinceTerrain.Size = New System.Drawing.Size(10, 13)
-        Me.ProvinceTerrain.TabIndex = 8
-        Me.ProvinceTerrain.Text = "-"
+        Me.ArmyListBox.FormattingEnabled = True
+        Me.ArmyListBox.Location = New System.Drawing.Point(4, 341)
+        Me.ArmyListBox.Name = "ArmyListBox"
+        Me.ArmyListBox.Size = New System.Drawing.Size(223, 199)
+        Me.ArmyListBox.TabIndex = 8
         '
         'MainWindow
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1884, 1001)
+        Me.Controls.Add(Me.ArmyListBox)
         Me.Controls.Add(Me.CoordinateDisplay)
         Me.Controls.Add(Me.DateButton)
         Me.Controls.Add(Me.CountryBox)
@@ -332,4 +342,5 @@ Partial Class MainWindow
     Friend WithEvents CoordinateDisplay As Label
     Friend WithEvents FlagPictureBox As PictureBox
     Friend WithEvents ProvinceTerrain As Label
+    Friend WithEvents ArmyListBox As ListBox
 End Class

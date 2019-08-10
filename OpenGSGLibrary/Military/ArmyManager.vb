@@ -34,6 +34,12 @@ Namespace Military
 
         End Sub
 
+        Public Function GetArmiesInProvince(provinceId As Integer) As List(Of Army)
+            Dim resultList As List(Of Army) = Nothing
+            Dim result As Boolean = provinceIdToArmiesTable_.TryGetValue(provinceId, resultList)
+            Return resultList
+        End Function
+
         Private Sub UpdateProvinceToArmyTable()
             provinceIdToArmiesTable_ = New Dictionary(Of Integer, List(Of Army))
 

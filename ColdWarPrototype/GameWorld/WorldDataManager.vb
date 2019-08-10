@@ -39,6 +39,10 @@ Namespace GameWorld
 
         ReadOnly Property countryData As New Dictionary(Of String, CwpCountry)
 
+        Public Function GetArmyManager() As ArmyManager
+            Return armyManager_
+        End Function
+
         ''' <summary>
         ''' Loads game data from game files.
         ''' Should be called at start of program.
