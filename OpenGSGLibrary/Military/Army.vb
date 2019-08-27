@@ -45,6 +45,10 @@ Namespace Military
             Return location_
         End Function
 
+        Public Sub SetLocation(provinceId As Integer)
+            location_ = provinceId
+        End Sub
+
         Public Overrides Function ToString() As String
             Return name_
         End Function

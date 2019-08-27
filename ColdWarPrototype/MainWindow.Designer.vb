@@ -60,6 +60,7 @@ Partial Class MainWindow
         Me.DateButton = New System.Windows.Forms.Button()
         Me.CoordinateDisplay = New System.Windows.Forms.Label()
         Me.ArmyListBox = New System.Windows.Forms.ListBox()
+        Me.MoveArmiesButton = New System.Windows.Forms.Button()
         CType(Me.MapPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MapModeGroup.SuspendLayout()
         Me.ProvinceBox.SuspendLayout()
@@ -268,7 +269,7 @@ Partial Class MainWindow
         '
         'DateButton
         '
-        Me.DateButton.Location = New System.Drawing.Point(4, 556)
+        Me.DateButton.Location = New System.Drawing.Point(4, 952)
         Me.DateButton.Name = "DateButton"
         Me.DateButton.Size = New System.Drawing.Size(216, 37)
         Me.DateButton.TabIndex = 6
@@ -278,7 +279,7 @@ Partial Class MainWindow
         'CoordinateDisplay
         '
         Me.CoordinateDisplay.AutoSize = True
-        Me.CoordinateDisplay.Location = New System.Drawing.Point(9, 540)
+        Me.CoordinateDisplay.Location = New System.Drawing.Point(3, 936)
         Me.CoordinateDisplay.Name = "CoordinateDisplay"
         Me.CoordinateDisplay.Size = New System.Drawing.Size(22, 13)
         Me.CoordinateDisplay.TabIndex = 7
@@ -292,11 +293,21 @@ Partial Class MainWindow
         Me.ArmyListBox.Size = New System.Drawing.Size(223, 199)
         Me.ArmyListBox.TabIndex = 8
         '
+        'MoveArmiesButton
+        '
+        Me.MoveArmiesButton.Location = New System.Drawing.Point(6, 547)
+        Me.MoveArmiesButton.Name = "MoveArmiesButton"
+        Me.MoveArmiesButton.Size = New System.Drawing.Size(220, 33)
+        Me.MoveArmiesButton.TabIndex = 9
+        Me.MoveArmiesButton.Text = "Move Armies"
+        Me.MoveArmiesButton.UseVisualStyleBackColor = True
+        '
         'MainWindow
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1884, 1001)
+        Me.Controls.Add(Me.MoveArmiesButton)
         Me.Controls.Add(Me.ArmyListBox)
         Me.Controls.Add(Me.CoordinateDisplay)
         Me.Controls.Add(Me.DateButton)
@@ -343,4 +354,5 @@ Partial Class MainWindow
     Friend WithEvents FlagPictureBox As PictureBox
     Friend WithEvents ProvinceTerrain As Label
     Friend WithEvents ArmyListBox As ListBox
+    Friend WithEvents MoveArmiesButton As Button
 End Class

@@ -33,6 +33,9 @@ Public Class MainWindow
     ' GUI related members
     Private currentProvinceId_ As Integer = -1
     Private currentCountryTag_ As String = ""
+    Private isChoosingTarget_ As Boolean = False
+    Private armiesInProvince_ As New List(Of Army)
+    Private selectedArmies_ As New List(Of Army)
 
     ' Map related members
     Private provinceMap_ As ProvinceMap
@@ -86,8 +89,12 @@ Public Class MainWindow
 
         If (mouseProvinceId <> -1) Then
             If (mouseProvinceId <> currentProvinceId_) Then
-                MoveSelectedArmies(mouseProvinceId)
                 currentProvinceId_ = mouseProvinceId
+            End If
+            ' move armies if in army move mode
+            If isChoosingTarget_ Then
+                MoveSelectedArmies(currentProvinceId_)
+                isChoosingTarget_ = False
             End If
             UpdateArmyListBox(mouseProvinceId)
         End If
@@ -109,6 +116,20 @@ Public Class MainWindow
         UpdateDateText()
         UpdateCountryInfo(currentCountryTag_)
         UpdateProvinceInfo(currentProvinceId_)
+    End Sub
+
+    Private Sub MoveArmiesButton_Click(sender As Object, e As EventArgs) Handles MoveArmiesButton.Click
+        Dim selectedArmyIndices As ListBox.SelectedIndexCollection = ArmyListBox.SelectedIndices
+
+        selectedArmies_.Clear()
+        For Each listIndex As Integer In selectedArmyIndices
+            selectedArmies_.Add(armiesInProvince_.ElementAt(listIndex))
+        Next
+
+        If selectedArmies_.Count > 0 Then
+            isChoosingTarget_ = True
+        End If
+
     End Sub
 
     ' helper functions
@@ -179,12 +200,12 @@ Public Class MainWindow
     End Sub
 
     Private Sub UpdateArmyListBox(mouseProvinceId As Integer)
-        Dim armiesInProvince As List(Of Army) = coldWarWorld_.GetArmyManager().GetArmiesInProvince(mouseProvinceId)
+        armiesInProvince_ = coldWarWorld_.GetArmyManager().GetArmiesInProvince(mouseProvinceId)
 
         ArmyListBox.Items.Clear()
         ArmyListBox.BeginUpdate()
-        If armiesInProvince IsNot Nothing Then
-            For Each Army In armiesInProvince
+        If armiesInProvince_ IsNot Nothing Then
+            For Each Army In armiesInProvince_
                 ArmyListBox.Items.Add(Army.ToString())
             Next
         End If
@@ -192,8 +213,10 @@ Public Class MainWindow
 
     End Sub
 
-    Private Sub MoveSelectedArmies(mouseProvinceId As Integer)
-        ' TODO: Throw New NotImplementedException()
+    Private Sub MoveSelectedArmies(targetProvinceId As Integer)
+        For Each movingArmy In selectedArmies_
+            coldWarWorld_.GetArmyManager().MoveArmy(movingArmy, targetProvinceId)
+        Next
     End Sub
 
     Private Sub UpdateDateText()

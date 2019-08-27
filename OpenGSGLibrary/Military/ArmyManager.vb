@@ -40,6 +40,21 @@ Namespace Military
             Return resultList
         End Function
 
+        Public Sub MoveArmy(movingArmy As Army, targetProvinceId As Integer)
+            Dim oldLocation As Integer = movingArmy.GetLocation()
+
+            Dim oldProvinceList As List(Of Army) = provinceIdToArmiesTable_(oldLocation)
+            oldProvinceList.Remove(movingArmy)
+
+            Dim newProvinceList As List(Of Army) = Nothing
+            If Not provinceIdToArmiesTable_.TryGetValue(targetProvinceId, newProvinceList) Then
+                newProvinceList = New List(Of Army)
+                provinceIdToArmiesTable_.Add(targetProvinceId, newProvinceList)
+            End If
+            movingArmy.SetLocation(targetProvinceId)
+            newProvinceList.Add(movingArmy)
+        End Sub
+
         Private Sub UpdateProvinceToArmyTable()
             provinceIdToArmiesTable_ = New Dictionary(Of Integer, List(Of Army))
 
