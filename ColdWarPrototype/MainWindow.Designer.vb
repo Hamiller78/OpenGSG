@@ -290,6 +290,7 @@ Partial Class MainWindow
         Me.ArmyListBox.FormattingEnabled = True
         Me.ArmyListBox.Location = New System.Drawing.Point(4, 341)
         Me.ArmyListBox.Name = "ArmyListBox"
+        Me.ArmyListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.ArmyListBox.Size = New System.Drawing.Size(223, 199)
         Me.ArmyListBox.TabIndex = 8
         '
