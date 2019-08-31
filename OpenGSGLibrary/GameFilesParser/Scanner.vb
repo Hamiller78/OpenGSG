@@ -33,7 +33,7 @@ Namespace Parser
         ''' <returns></returns>
         Public Iterator Function Scan(reader As TextReader) As IEnumerator(Of Token)
             While reader.Peek() <> -1
-                Dim nextChar As Char = Chr(reader.Peek())
+                Dim nextChar As Char = ChrW(reader.Peek())
                 If Char.IsWhiteSpace(nextChar) Or Char.IsControl(nextChar) Then
                     reader.Read()
                 ElseIf nextChar = "#" Then
@@ -60,8 +60,8 @@ Namespace Parser
         Private Function ScanName(reader As TextReader) As String
             Dim sb = New StringBuilder()
             Dim nextCharCode = reader.Peek()
-            While (Char.IsLetterOrDigit(Chr(nextCharCode)) Or Chr(nextCharCode) = "_")
-                sb.Append(Chr(reader.Read()))
+            While (Char.IsLetterOrDigit(ChrW(nextCharCode)) Or ChrW(nextCharCode) = "_")
+                sb.Append(ChrW(reader.Read()))
                 nextCharCode = reader.Peek()
                 If nextCharCode = -1 Then Return sb.ToString()
             End While
@@ -72,15 +72,15 @@ Namespace Parser
             Dim sb = New StringBuilder()
             Dim nextCharCode = reader.Read()
             nextCharCode = reader.Read()
-            While (Chr(nextCharCode) <> """")
-                sb.Append(Chr(nextCharCode))
+            While (ChrW(nextCharCode) <> """")
+                sb.Append(ChrW(nextCharCode))
                 nextCharCode = reader.Read()
             End While
             Return sb.ToString()
         End Function
 
         Private Function ScanSymbol(reader As TextReader) As Token
-            Dim currentChar As Char = Chr(reader.Read())
+            Dim currentChar As Char = ChrW(reader.Read())
             Select Case currentChar
                 Case "="
                     Return Token.FromKind(Kind.EQUAL)
@@ -90,7 +90,7 @@ Namespace Parser
         End Function
 
         Private Function ScanOther(reader As TextReader) As Token
-            Dim currentChar As Char = Chr(reader.Read())
+            Dim currentChar As Char = ChrW(reader.Read())
             Select Case currentChar
                 Case "{"
                     Return Token.FromKind(Kind.LEFTBRACKET)

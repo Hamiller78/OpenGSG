@@ -1,0 +1,6 @@
+#Infantry
+type = army
+
+strength = 2
+
+speed = 10

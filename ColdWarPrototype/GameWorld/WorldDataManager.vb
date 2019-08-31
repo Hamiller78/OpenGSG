@@ -17,6 +17,7 @@
 Imports System.IO
 
 Imports OpenGSGLibrary.Map
+Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.WorldData
 
 Namespace GameWorld
@@ -38,6 +39,10 @@ Namespace GameWorld
 
         ReadOnly Property countryData As New Dictionary(Of String, CwpCountry)
 
+        Public Function GetArmyManager() As ArmyManager
+            Return armyManager_
+        End Function
+
         ''' <summary>
         ''' Loads game data from game files.
         ''' Should be called at start of program.
@@ -51,11 +56,13 @@ Namespace GameWorld
             LoadWorldmap(Path.Combine(gamedataPath, "map"))
             provinceMap.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
 
-            provinceTable_ = GameObjectFactory.FromFolder(Of Integer, CwpProvince) _
-                                (Path.Combine(gamedataPath, "history\provinces"), "filename_0")
+            provinceTable_ = GameObjectFactory.FromFolderWithFilenameId(Of CwpProvince) _
+                                (Path.Combine(gamedataPath, "history\provinces"))
             countryTable_ = GameObjectFactory.FromFolder(Of String, CwpCountry) _
                                 (Path.Combine(gamedataPath, "common\countries"), "tag")
             LoadCountryFlags(Path.Combine(gamedataPath, "gfx\flags"))
+
+            armyManager_.LoadFolder(Path.Combine(gamedataPath, "history\units"))
 
         End Sub
 
@@ -87,6 +94,7 @@ Namespace GameWorld
 
         Private provinceTable_ As New Dictionary(Of Integer, CwpProvince)
         Private countryTable_ As New Dictionary(Of String, CwpCountry)
+        Private armyManager_ As New ArmyManager()
 
         Private Sub LoadWorldmap(filePath As String)
             provinceMap.FromFile(Path.Combine(filePath, "provinces.bmp"))

@@ -18,6 +18,7 @@ Imports System.Device.Location
 Imports System.IO
 
 Imports OpenGSGLibrary.Map
+Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.Tools
 
 Public Class MainWindow
@@ -32,6 +33,9 @@ Public Class MainWindow
     ' GUI related members
     Private currentProvinceId_ As Integer = -1
     Private currentCountryTag_ As String = ""
+    Private isChoosingTarget_ As Boolean = False
+    Private armiesInProvince_ As New List(Of Army)
+    Private selectedArmies_ As New List(Of Army)
 
     ' Map related members
     Private provinceMap_ As ProvinceMap
@@ -63,14 +67,10 @@ Public Class MainWindow
     End Sub
 
     Private Sub MapPictureBox_MouseMove(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseMove
-        Dim mouseX As Integer = e.X
-        Dim mouseY As Integer = e.Y
-
         Dim mapX As Integer = e.X * mapScaling_
         Dim mapY As Integer = e.Y * mapScaling_
 
-        Dim pixelTuple As Tuple(Of Byte, Byte, Byte) = provinceMap_.GetPixelRgb(mapX, mapY)
-        Dim mouseProvinceId As Integer = provinceMap_.GetProvinceNumber(pixelTuple)
+        Dim mouseProvinceId As Integer = GetProvinceUnderMouse(mapX, mapY)
         If (mouseProvinceId <> -1) And (mouseProvinceId <> currentProvinceId_) Then
             UpdateProvinceInfo(mouseProvinceId)
         End If
@@ -78,6 +78,26 @@ Public Class MainWindow
         Dim mapCoords = New Tuple(Of Double, Double)(mapX - 642, mapY - 362)
         Dim mouseGeoCoord As GeoCoordinate = mapProjection_.getGlobeCoordinates(mapCoords)
         CoordinateDisplay.Text = mouseGeoCoord.ToString()
+
+    End Sub
+
+    Private Sub MapPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseClick
+        Dim mapX As Integer = e.X * mapScaling_
+        Dim mapY As Integer = e.Y * mapScaling_
+
+        Dim mouseProvinceId As Integer = GetProvinceUnderMouse(mapX, mapY)
+
+        If (mouseProvinceId <> -1) Then
+            If (mouseProvinceId <> currentProvinceId_) Then
+                currentProvinceId_ = mouseProvinceId
+            End If
+            ' move armies if in army move mode
+            If isChoosingTarget_ Then
+                MoveSelectedArmies(currentProvinceId_)
+                isChoosingTarget_ = False
+            End If
+            UpdateArmyListBox(mouseProvinceId)
+        End If
 
     End Sub
 
@@ -96,6 +116,20 @@ Public Class MainWindow
         UpdateDateText()
         UpdateCountryInfo(currentCountryTag_)
         UpdateProvinceInfo(currentProvinceId_)
+    End Sub
+
+    Private Sub MoveArmiesButton_Click(sender As Object, e As EventArgs) Handles MoveArmiesButton.Click
+        Dim selectedArmyIndices As ListBox.SelectedIndexCollection = ArmyListBox.SelectedIndices
+
+        selectedArmies_.Clear()
+        For Each listIndex As Integer In selectedArmyIndices
+            selectedArmies_.Add(armiesInProvince_.ElementAt(listIndex))
+        Next
+
+        If selectedArmies_.Count > 0 Then
+            isChoosingTarget_ = True
+        End If
+
     End Sub
 
     ' helper functions
@@ -129,6 +163,12 @@ Public Class MainWindow
         mapScaling_ = Math.Max(xFactor, yFactor)
     End Sub
 
+    Private Function GetProvinceUnderMouse(mapX As Integer, mapY As Integer) As Integer
+        Dim pixelTuple As Tuple(Of Byte, Byte, Byte) = provinceMap_.GetPixelRgb(mapX, mapY)
+        Dim mouseProvinceId As Integer = provinceMap_.GetProvinceNumber(pixelTuple)
+        Return mouseProvinceId
+    End Function
+
     Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
         currentProvinceId_ = mouseProvinceId
         ProvinceName.Text = provinceMap_.GetProvinceName(currentProvinceId_)
@@ -157,6 +197,26 @@ Public Class MainWindow
         CountryAllegiance.Text = currentCountry.allegiance
         CountryProduction.Text = coldWarWorld_.GetCountryProduction(currentCountryTag_)
         FlagPictureBox.Image = currentCountry.flag
+    End Sub
+
+    Private Sub UpdateArmyListBox(mouseProvinceId As Integer)
+        armiesInProvince_ = coldWarWorld_.GetArmyManager().GetArmiesInProvince(mouseProvinceId)
+
+        ArmyListBox.Items.Clear()
+        ArmyListBox.BeginUpdate()
+        If armiesInProvince_ IsNot Nothing Then
+            For Each Army In armiesInProvince_
+                ArmyListBox.Items.Add(Army.ToString())
+            Next
+        End If
+        ArmyListBox.EndUpdate()
+
+    End Sub
+
+    Private Sub MoveSelectedArmies(targetProvinceId As Integer)
+        For Each movingArmy In selectedArmies_
+            coldWarWorld_.GetArmyManager().MoveArmy(movingArmy, targetProvinceId)
+        Next
     End Sub
 
     Private Sub UpdateDateText()
