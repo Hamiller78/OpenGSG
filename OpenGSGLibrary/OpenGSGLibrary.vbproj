@@ -72,6 +72,7 @@
     <Compile Include="GameFilesParser\Parser.vb" />
     <Compile Include="GameFilesParser\Scanner.vb" />
     <Compile Include="GameFilesParser\Token.vb" />
+    <Compile Include="GameLogic\TickHandler.vb" />
     <Compile Include="Military\Branch.vb" />
     <Compile Include="Military\Division.vb" />
     <Compile Include="Military\Army.vb" />
