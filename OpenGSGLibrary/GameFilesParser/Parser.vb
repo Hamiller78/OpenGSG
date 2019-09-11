@@ -18,8 +18,6 @@ Namespace Parser
 
     Public Class Parser
 
-        ' TODO: Change use of Dictionary to Lookup table to support repeatedly occuring keywords (multimap)
-
         ''' <summary>
         ''' Parse a token stream.
         ''' Will return a nested structure with the following properties:

@@ -72,6 +72,10 @@
     <Compile Include="GameFilesParser\Parser.vb" />
     <Compile Include="GameFilesParser\Scanner.vb" />
     <Compile Include="GameFilesParser\Token.vb" />
+    <Compile Include="GameLogic\Actor.vb" />
+    <Compile Include="GameLogic\ActorManager.vb" />
+    <Compile Include="GameLogic\AiActor.vb" />
+    <Compile Include="GameLogic\PlayerActor.vb" />
     <Compile Include="GameLogic\TickHandler.vb" />
     <Compile Include="Military\Branch.vb" />
     <Compile Include="Military\Division.vb" />
