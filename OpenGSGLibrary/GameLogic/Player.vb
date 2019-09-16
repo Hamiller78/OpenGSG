@@ -16,8 +16,22 @@
 
 Namespace GameLogic
 
-    Public Class ActorManager
-        Private actorList As List(Of Actor)
+    Public MustInherit Class Player
+
+        Private tickDone_ As Boolean = False
+
+        Private playerIndex_ As Integer
+        Private country_ As WorldData.Country
+
+        ''' <summary>
+        ''' Flag whether player is done for the turn.
+        ''' For human players can be set to false to pause (e.g. when an event pops up)
+        ''' </summary>
+        ''' <returns>Boolean whether player is done for this tick</returns>
+        Public Function IsTickDone() As Boolean
+            Return tickDone_
+        End Function
+
     End Class
 
 End Namespace

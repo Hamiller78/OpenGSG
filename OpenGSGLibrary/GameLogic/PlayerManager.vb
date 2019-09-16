@@ -16,8 +16,22 @@
 
 Namespace GameLogic
 
-    Public Class AiActor
-        Inherits Actor
+    Public Class PlayerManager
+        Private Shared playerList_ As List(Of Player) = Nothing
+
+        ''' <summary>
+        ''' Returns a flag whether all players are done with the current tick.
+        ''' </summary>
+        ''' <returns>Boolean whether everyone is done</returns>
+        Public Shared Function IsEverybodyDone() As Boolean
+            For Each currentPlayer In playerList_
+                If Not currentPlayer.IsTickDone() Then
+                    Return False
+                End If
+            Next
+
+            Return True
+        End Function
 
     End Class
 

@@ -18,21 +18,29 @@ Namespace GameLogic
 
     Public Class TickHandler
 
+        Public Sub BeginNewTick()
+            ' do timed game events
+            ' launch AI threads
+            ' collect GUI input
+        End Sub
+
+        ''' <summary>
+        ''' Is the current tick complete?
+        ''' </summary>
+        ''' <returns>Boolean whether the current tick is complete</returns>
         Public Function IsTickComplete() As Boolean
-            ' tick time complete?
-            ' all players done?
+            ' TODO: tick time complete?
+
+            If PlayerManager.IsEverybodyDone() = False Then
+                Return False
+            End If
+
             Return True
         End Function
 
         Public Sub FinishTick()
             ' lock GUI input
             ' calculate world in next tick
-        End Sub
-
-        Public Sub BeginNewTick()
-            ' do timed game events
-            ' launch AI threads
-            ' collect GUI input
         End Sub
 
     End Class

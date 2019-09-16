@@ -16,10 +16,8 @@
 
 Namespace GameLogic
 
-    Public MustInherit Class Actor
-
-        Private actorIndex_ As Integer
-        Private country_ As WorldData.Country
+    Public Class AiPlayer
+        Inherits Player
 
     End Class
 

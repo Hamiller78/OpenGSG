@@ -16,8 +16,8 @@
 
 Namespace GameLogic
 
-    Public Class PlayerActor
-        Inherits Actor
+    Public Class HumanPlayer
+        Inherits Player
 
     End Class
 
