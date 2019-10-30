@@ -14,29 +14,31 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Namespace GameLogic
+Namespace WorldData
 
-    Public Class PlayerManager
-        Private Shared playerList_ As List(Of Player) = Nothing
+    Public MustInherit Class WorldState
 
-        Public Sub CalculateStrategies(ByRef currentWorldState As WorldData.WorldState)
-            Throw New NotImplementedException()
-        End Sub
-
-        ''' <summary>
-        ''' Returns a flag whether all players are done with the current tick.
-        ''' </summary>
-        ''' <returns>Boolean whether everyone is done</returns>
-        Public Function IsEverybodyDone() As Boolean
-            For Each currentPlayer In playerList_
-                If Not currentPlayer.IsTickDone() Then
-                    Return False
-                End If
-            Next
-
-            Return True
+        Public Function GetProvinceTable() As Dictionary(Of Integer, Province)
+            Return provinceTable_
         End Function
 
+        Public Function GetCountryTable() As Dictionary(Of String, Country)
+            Return countryTable_
+        End Function
+
+        Public Function GetArmyManager() As Military.ArmyManager
+            Return armyManager_
+        End Function
+
+        Private provinceTable_ As New Dictionary(Of Integer, Province)
+        Private countryTable_ As New Dictionary(Of String, Country)
+        Private armyManager_ As New Military.ArmyManager()
+
+        Private runningOrders_ As New List(Of Orders.Order)
+
+        ' TODO: production
+        ' TODO: pending events
+        ' TODO: global modifier
     End Class
 
 End Namespace

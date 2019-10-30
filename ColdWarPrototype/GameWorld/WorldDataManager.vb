@@ -37,8 +37,6 @@ Namespace GameWorld
             Return countryTable_
         End Function
 
-        ReadOnly Property countryData As New Dictionary(Of String, CwpCountry)
-
         Public Function GetArmyManager() As ArmyManager
             Return armyManager_
         End Function

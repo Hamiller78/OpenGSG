@@ -18,9 +18,13 @@ Namespace GameLogic
 
     Public Class TickHandler
 
+        Private playerManager_ As New PlayerManager()
+        Private currentWorldState_ As WorldData.WorldState
+
         Public Sub BeginNewTick()
             ' do timed game events
             ' launch AI threads
+            playerManager_.CalculateStrategies(currentWorldState_)
             ' collect GUI input
         End Sub
 
@@ -31,7 +35,7 @@ Namespace GameLogic
         Public Function IsTickComplete() As Boolean
             ' TODO: tick time complete?
 
-            If PlayerManager.IsEverybodyDone() = False Then
+            If playerManager_.IsEverybodyDone() = False Then
                 Return False
             End If
 

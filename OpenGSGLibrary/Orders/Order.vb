@@ -13,29 +13,14 @@
 '
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+Namespace Orders
 
-Namespace GameLogic
+    Public MustInherit Class Order
 
-    Public Class PlayerManager
-        Private Shared playerList_ As List(Of Player) = Nothing
+        Private startTick_ As New Long
+        Private completeTick_ As New Long
 
-        Public Sub CalculateStrategies(ByRef currentWorldState As WorldData.WorldState)
-            Throw New NotImplementedException()
-        End Sub
-
-        ''' <summary>
-        ''' Returns a flag whether all players are done with the current tick.
-        ''' </summary>
-        ''' <returns>Boolean whether everyone is done</returns>
-        Public Function IsEverybodyDone() As Boolean
-            For Each currentPlayer In playerList_
-                If Not currentPlayer.IsTickDone() Then
-                    Return False
-                End If
-            Next
-
-            Return True
-        End Function
+        Private type_ As New OrderType
 
     End Class
 
