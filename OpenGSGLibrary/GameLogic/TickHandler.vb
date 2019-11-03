@@ -20,6 +20,7 @@ Namespace GameLogic
 
         Private playerManager_ As New PlayerManager()
         Private currentWorldState_ As WorldData.WorldState
+        Private currentTick_ As Integer = 0
 
         Public Sub BeginNewTick()
             ' do timed game events
@@ -45,6 +46,16 @@ Namespace GameLogic
         Public Sub FinishTick()
             ' lock GUI input
             ' calculate world in next tick
+            currentTick_ += 1
+            '   executing orders
+            Dim activeOrders As List(Of Orders.Order) = currentWorldState_.GetOrders()
+            For Each order In activeOrders
+                If order.GetCompletionTick() = currentTick_ Then
+                    order.FinalizeOrder(currentWorldState_)
+                End If
+            Next
+
+
         End Sub
 
     End Class

@@ -15,18 +15,23 @@
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Namespace Orders
 
-    Public MustInherit Class Order
+    Public Class MarchOrder
+        Inherits Order
 
-        Public Function GetCompletionTick() As Integer
-            Return completeTick_
-        End Function
+        Public Sub New(army As Military.Army, targetProvince As Integer)
+            army_ = army
+            targetProvince_ = targetProvince
+        End Sub
 
-        Public MustOverride Sub FinalizeOrder(ByRef currentWorld As WorldData.WorldState)
+        Public Overrides Sub FinalizeOrder(ByRef currentWorld As WorldData.WorldState)
 
-        Private startTick_ As New Long
-        Private completeTick_ As New Long
+            Dim armyManager As Military.ArmyManager = currentWorld.GetArmyManager()
+            armyManager.MoveArmy(army_, targetProvince_)
 
-        Private type_ As New OrderType
+        End Sub
+
+        Private army_ As Military.Army
+        Private targetProvince_ As Integer
 
     End Class
 

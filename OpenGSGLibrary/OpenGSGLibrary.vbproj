@@ -99,6 +99,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Orders\MarchOrder.vb" />
     <Compile Include="Orders\OrderTypes.vb" />
     <Compile Include="Orders\Order.vb" />
     <Compile Include="Tools\Logger.vb" />

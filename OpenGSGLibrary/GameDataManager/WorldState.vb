@@ -30,6 +30,10 @@ Namespace WorldData
             Return armyManager_
         End Function
 
+        Public Function GetOrders() As List(Of Orders.Order)
+            Return runningOrders_
+        End Function
+
         Private provinceTable_ As New Dictionary(Of Integer, Province)
         Private countryTable_ As New Dictionary(Of String, Country)
         Private armyManager_ As New Military.ArmyManager()
