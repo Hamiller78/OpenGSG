@@ -16,6 +16,7 @@
 
 Imports System.IO
 
+Imports OpenGSGLibrary.GameLogic
 Imports OpenGSGLibrary.Map
 Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.WorldData
@@ -65,14 +66,15 @@ Namespace GameWorld
         End Sub
 
         ''' <summary>
-        ''' Method to be called each day of game time.
-        ''' Prototype for an event handler.
+        ''' Sets the ickDone handler for all provinces
         ''' </summary>
-        Public Sub UpdateEverythingDaily()
+        ''' <param name="tickHandler"></param>
+        Public Sub SetAllProvinceHandlers(ByRef tickHandler As TickHandler)
             For Each provinceEntry In provinceTable_
-                provinceEntry.Value.UpdateDaily()
+                AddHandler tickHandler.TickDone, AddressOf provinceEntry.Value.OnTickDone
             Next
         End Sub
+
 
         ''' <summary>
         ''' Getter for a countrys' production.

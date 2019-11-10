@@ -17,6 +17,7 @@
 Namespace GameLogic
 
     Public Class TickHandler
+        Public Event TickDone As EventHandler
 
         Private playerManager_ As New PlayerManager()
         Private currentWorldState_ As WorldData.WorldState
@@ -47,15 +48,20 @@ Namespace GameLogic
             ' lock GUI input
             ' calculate world in next tick
             currentTick_ += 1
-            '   executing orders
-            Dim activeOrders As List(Of Orders.Order) = currentWorldState_.GetOrders()
-            For Each order In activeOrders
-                If order.GetCompletionTick() = currentTick_ Then
-                    order.FinalizeOrder(currentWorldState_)
-                End If
-            Next
+            ' notify all interested classes
+            RaiseEvent TickDone(Me, New TickEventArgs(currentTick_))
 
+        End Sub
 
+    End Class
+
+    Public Class TickEventArgs
+        Inherits EventArgs
+
+        Public Property tick As Integer
+
+        Public Sub New(tickPar As Integer)
+            tick = tickPar
         End Sub
 
     End Class

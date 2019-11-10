@@ -14,6 +14,7 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+Imports OpenGSGLibrary.GameLogic
 Imports OpenGSGLibrary.WorldData
 
 Namespace GameWorld
@@ -53,9 +54,16 @@ Namespace GameWorld
         End Sub
 
         ''' <summary>
-        ''' Should be called each day of game time to update province properties.
+        ''' Handler for game ticks.
+        ''' In this game, a tick represents a day.
         ''' </summary>
-        Public Sub UpdateDaily()
+        ''' <param name="sender">sender TickHandler</param>
+        ''' <param name="e">TickEventArgs containing current game time</param>
+        Public Overrides Sub OnTickDone(sender As Object, e As TickEventArgs)
+            UpdateDaily()
+        End Sub
+
+        Private Sub UpdateDaily()
             ' Change in population number, just something small for a test
             population = population * 1.00003
             ' Change in industrialization

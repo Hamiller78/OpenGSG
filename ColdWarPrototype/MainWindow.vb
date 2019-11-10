@@ -17,6 +17,7 @@
 Imports System.Device.Location
 Imports System.IO
 
+Imports OpenGSGLibrary.GameLogic
 Imports OpenGSGLibrary.Map
 Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.Tools
@@ -27,6 +28,7 @@ Public Class MainWindow
     Public log As Logger = New Logger("CWPLog.log", Directory.GetCurrentDirectory())
 
     ' General game data
+    Private tickHandler_ As New TickHandler()
     Private coldWarWorld_ As GameWorld.WorldDataManager = New GameWorld.WorldDataManager()
     Private gameDate_ = New DateTime(1950, 1, 1)
 
@@ -50,6 +52,7 @@ Public Class MainWindow
         ' Load province map
         coldWarWorld_.LoadAll("..\..\..\ColdWarPrototype\GameData")
         provinceMap_ = coldWarWorld_.provinceMap
+        coldWarWorld_.SetAllProvinceHandlers(tickHandler_)
 
         ' Render maps
         Dim MapRenderer = New CountryMapRenderer(Of GameWorld.CwpProvince, GameWorld.CwpCountry)(provinceMap_)
@@ -110,7 +113,7 @@ Public Class MainWindow
     End Sub
 
     Private Sub DateButton_Click(sender As Object, e As EventArgs) Handles DateButton.Click
-        coldWarWorld_.UpdateEverythingDaily()
+        tickHandler_.FinishTick()
         gameDate_ = gameDate_.Add(TimeSpan.FromDays(1))
 
         UpdateDateText()
