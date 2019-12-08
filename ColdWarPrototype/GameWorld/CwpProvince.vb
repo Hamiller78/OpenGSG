@@ -17,7 +17,7 @@
 Imports OpenGSGLibrary.GameLogic
 Imports OpenGSGLibrary.WorldData
 
-Namespace GameWorld
+Namespace WorldData
 
     ''' <summary>
     ''' Province class for cold war game. Adds specialised properties to base province class.

@@ -18,7 +18,7 @@ Imports System.IO
 
 Imports OpenGSGLibrary.WorldData
 
-Namespace GameWorld
+Namespace WorldData
 
     ''' <summary>
     ''' Country class for cold war game. Adds specialised properties to base country class.

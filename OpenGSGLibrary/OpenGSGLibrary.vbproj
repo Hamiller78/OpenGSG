@@ -69,6 +69,7 @@
     <Compile Include="GameDataManager\GameObjectFactory.vb" />
     <Compile Include="GameDataManager\GameObject.vb" />
     <Compile Include="GameDataManager\Province.vb" />
+    <Compile Include="GameDataManager\WorldLoader.vb" />
     <Compile Include="GameDataManager\WorldState.vb" />
     <Compile Include="GameFilesParser\Parser.vb" />
     <Compile Include="GameFilesParser\Scanner.vb" />

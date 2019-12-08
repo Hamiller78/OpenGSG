@@ -29,7 +29,7 @@ Public Class MainWindow
 
     ' General game data
     Private tickHandler_ As New TickHandler()
-    Private coldWarWorld_ As GameWorld.WorldDataManager = New GameWorld.WorldDataManager()
+    Private coldWarWorld_ As WorldData.WorldDataManager = New WorldData.WorldDataManager()
     Private gameDate_ = New DateTime(1950, 1, 1)
 
     ' GUI related members
@@ -55,7 +55,7 @@ Public Class MainWindow
         coldWarWorld_.SetAllProvinceHandlers(tickHandler_)
 
         ' Render maps
-        Dim MapRenderer = New CountryMapRenderer(Of GameWorld.CwpProvince, GameWorld.CwpCountry)(provinceMap_)
+        Dim MapRenderer = New CountryMapRenderer(Of WorldData.CwpProvince, WorldData.CwpCountry)(provinceMap_)
         MapRenderer.SetDataTables(coldWarWorld_.GetProvinceTable, coldWarWorld_.GetCountryTable)
         countryMap_ = MapRenderer.RenderMap()
 
@@ -175,7 +175,7 @@ Public Class MainWindow
     Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
         currentProvinceId_ = mouseProvinceId
         ProvinceName.Text = provinceMap_.GetProvinceName(currentProvinceId_)
-        Dim currentProvince As GameWorld.CwpProvince = coldWarWorld_.GetProvinceTable(currentProvinceId_)
+        Dim currentProvince As WorldData.CwpProvince = coldWarWorld_.GetProvinceTable(currentProvinceId_)
         ProvincePopulation.Text = Trim(Str(currentProvince.population))
         ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
         ProvinceEducation.Text = Trim(Str(currentProvince.education))
@@ -193,7 +193,7 @@ Public Class MainWindow
 
     Private Sub UpdateCountryInfo(mouseCountryTag As String)
         currentCountryTag_ = mouseCountryTag
-        Dim currentCountry As GameWorld.CwpCountry = coldWarWorld_.GetCountryTable(mouseCountryTag)
+        Dim currentCountry As WorldData.CwpCountry = coldWarWorld_.GetCountryTable(mouseCountryTag)
         CountryName.Text = currentCountry.longName
         CountryLeader.Text = currentCountry.leader
         CountryGovernment.Text = currentCountry.government

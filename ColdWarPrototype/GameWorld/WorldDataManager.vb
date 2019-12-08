@@ -21,7 +21,7 @@ Imports OpenGSGLibrary.Map
 Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.WorldData
 
-Namespace GameWorld
+Namespace WorldData
 
     ''' <summary>
     ''' Top class to handle all world game data (provinces, countries, units, etc...)

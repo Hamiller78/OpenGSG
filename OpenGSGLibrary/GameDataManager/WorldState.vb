@@ -16,15 +16,29 @@
 
 Namespace WorldData
 
-    Public MustInherit Class WorldState
+    Public Class WorldState _
+        (Of provType As {New, Province},
+            countryType As {New, Country})
 
-        Public Function GetProvinceTable() As Dictionary(Of Integer, Province)
+        Public Sub SetProvinceTable(provinceTable As Dictionary(Of Integer, provType))
+            provinceTable_ = provinceTable
+        End Sub
+
+        Public Function GetProvinceTable() As Dictionary(Of Integer, provType)
             Return provinceTable_
         End Function
 
-        Public Function GetCountryTable() As Dictionary(Of String, Country)
+        Public Sub SetCountryTable(countryTable As Dictionary(Of String, countryType))
+            countryTable_ = countryTable
+        End Sub
+
+        Public Function GetCountryTable() As Dictionary(Of String, countryType)
             Return countryTable_
         End Function
+
+        Public Sub SetArmyManager(armyManager As Military.ArmyManager)
+            armyManager_ = armyManager
+        End Sub
 
         Public Function GetArmyManager() As Military.ArmyManager
             Return armyManager_
@@ -34,8 +48,8 @@ Namespace WorldData
             Return runningOrders_
         End Function
 
-        Private provinceTable_ As New Dictionary(Of Integer, Province)
-        Private countryTable_ As New Dictionary(Of String, Country)
+        Private provinceTable_ As New Dictionary(Of Integer, provType)
+        Private countryTable_ As New Dictionary(Of String, countryType)
         Private armyManager_ As New Military.ArmyManager()
 
         Private runningOrders_ As New List(Of Orders.Order)
