@@ -34,7 +34,7 @@ Namespace WorldData
         ''' </summary>
         ''' <param name="gamedataPath"></param>
         ''' <returns></returns>
-        Public Function CreateState(gamedataPath As String) As WorldState(Of provType, countryType)
+        Public Function CreateWorldState(gamedataPath As String) As WorldState(Of provType, countryType)
             Dim newState As New WorldState(Of provType, countryType)()
 
             Try
@@ -48,7 +48,8 @@ Namespace WorldData
 
                 Return newState
             Catch ex As Exception
-                ' TODO: Logging and re-throw
+                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Could not load initial world state from: " & gamedataPath)
+                Throw ex
             End Try
 
         End Function
@@ -59,7 +60,8 @@ Namespace WorldData
                                                (Of provType) _
                                                (Path.Combine(gamedataPath, "history\provinces"))
             Catch ex As Exception
-                ' TODO: Logging and re-throw
+                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading province data.")
+                Throw ex
             End Try
         End Sub
 
@@ -69,7 +71,8 @@ Namespace WorldData
                                                   (Of String, countryType) _
                                                   (Path.Combine(gamedataPath, "common\countries"), "tag")
             Catch ex As Exception
-                ' TODO: Logging and re-throw
+                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading country data.")
+                Throw ex
             End Try
         End Sub
 
@@ -77,7 +80,8 @@ Namespace WorldData
             Try
                 armyManager_.LoadFolder(Path.Combine(gamedataPath, "history\units"))
             Catch ex As Exception
-                ' TODO: Logging and re-throw
+                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading army data.")
+                Throw ex
             End Try
         End Sub
 

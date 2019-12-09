@@ -103,6 +103,7 @@
     <Compile Include="Orders\MarchOrder.vb" />
     <Compile Include="Orders\OrderTypes.vb" />
     <Compile Include="Orders\Order.vb" />
+    <Compile Include="Tools\GlobalLog.vb" />
     <Compile Include="Tools\Logger.vb" />
     <Compile Include="WorldMap\CountryMapRenderer.vb" />
     <Compile Include="WorldMap\LayerBitmap.vb" />
