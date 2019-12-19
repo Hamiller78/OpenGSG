@@ -16,9 +16,17 @@
 
 Namespace Military
 
+    ''' <summary>
+    ''' Class to handle the complete military of one nation.
+    ''' </summary>
     Public Class NationMilitary
         Inherits WorldData.GameObject
 
+        ''' <summary>
+        ''' Sets the data of the object from parser data.
+        ''' </summary>
+        ''' <param name="fileName">String with name of the nation's army file.</param>
+        ''' <param name="parsedData">Lookup object with parser data.</param>
         Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
             MyBase.SetData(fileName, parsedData)
 
@@ -29,12 +37,16 @@ Namespace Military
             Next
         End Sub
 
+        ''' <summary>
+        ''' Gets the list of the nation's armies.
+        ''' </summary>
+        ''' <returns>Returns a List of Army objects.</returns>
         Public Function GetArmiesList() As List(Of Army)
             Return armies_
         End Function
 
         Private owner_ As String = ""
-        Private armies_ As List(Of Army)
+        Private armies_ As New List(Of Army)
     End Class
 
 End Namespace
