@@ -16,23 +16,21 @@
 
 Namespace WorldData
 
-    Public Class WorldState _
-        (Of provType As {New, Province},
-            countryType As {New, Country})
+    Public Class WorldState
 
-        Public Sub SetProvinceTable(provinceTable As Dictionary(Of Integer, provType))
+        Public Sub SetProvinceTable(provinceTable As IDictionary(Of Integer, Province))
             provinceTable_ = provinceTable
         End Sub
 
-        Public Function GetProvinceTable() As Dictionary(Of Integer, provType)
+        Public Function GetProvinceTable() As IDictionary(Of Integer, Province)
             Return provinceTable_
         End Function
 
-        Public Sub SetCountryTable(countryTable As Dictionary(Of String, countryType))
+        Public Sub SetCountryTable(countryTable As IDictionary(Of String, Country))
             countryTable_ = countryTable
         End Sub
 
-        Public Function GetCountryTable() As Dictionary(Of String, countryType)
+        Public Function GetCountryTable() As IDictionary(Of String, Country)
             Return countryTable_
         End Function
 
@@ -48,14 +46,13 @@ Namespace WorldData
             Return runningOrders_
         End Function
 
-        Private provinceTable_ As New Dictionary(Of Integer, provType)
-        Private countryTable_ As New Dictionary(Of String, countryType)
+        Private provinceTable_ As IDictionary(Of Integer, Province) = Nothing
+        Private countryTable_ As IDictionary(Of String, Country) = Nothing
         Private armyManager_ As New Military.ArmyManager()
 
         Private runningOrders_ As New List(Of Orders.Order)
 
         ' TODO: production
-        ' TODO: pending events
         ' TODO: global modifier
     End Class
 

@@ -34,8 +34,8 @@ Namespace WorldData
         ''' </summary>
         ''' <param name="gamedataPath"></param>
         ''' <returns></returns>
-        Public Function CreateWorldState(gamedataPath As String) As WorldState(Of provType, countryType)
-            Dim newState As New WorldState(Of provType, countryType)()
+        Public Function CreateWorldState(gamedataPath As String) As WorldState
+            Dim newState As New WorldState()
 
             Try
                 LoadProvinces(gamedataPath)
@@ -85,8 +85,8 @@ Namespace WorldData
             End Try
         End Sub
 
-        Private provinceTable_ As Dictionary(Of Integer, provType) = Nothing
-        Private countryTable_ As Dictionary(Of String, countryType) = Nothing
+        Private provinceTable_ As IDictionary(Of Integer, Province) = Nothing
+        Private countryTable_ As IDictionary(Of String, Country) = Nothing
         Private armyManager_ As New Military.ArmyManager()
 
     End Class

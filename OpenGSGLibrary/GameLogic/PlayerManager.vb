@@ -19,7 +19,7 @@ Namespace GameLogic
     Public Class PlayerManager
         Private Shared playerList_ As List(Of Player) = Nothing
 
-        Public Sub CalculateStrategies(ByRef currentWorldState As WorldData.WorldState)
+        Public Sub CalculateStrategies(currentWorldState As WorldData.WorldState)
             Throw New NotImplementedException()
         End Sub
 
