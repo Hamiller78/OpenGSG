@@ -14,8 +14,6 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Imports System.IO
-
 Imports OpenGSGLibrary.WorldData
 
 Namespace WorldData
@@ -30,8 +28,6 @@ Namespace WorldData
         Public Property government As String = ""
         Public Property allegiance As String = ""
         Public Property leader As String = ""
-
-        Public Property flag As Bitmap = Nothing
 
         Public Sub New()
             MyBase.New()
@@ -54,16 +50,6 @@ Namespace WorldData
             End If
             leader = parsedData("leader").Single()
 
-        End Sub
-
-        ''' <summary>
-        ''' Loads the flag PNG file for the country.
-        ''' The name of the file has to be tag + ".png"
-        ''' </summary>
-        ''' <param name="flagPath">String with the folder path for the flag files.</param>
-        Public Overrides Sub LoadFlags(flagPath As String)
-            Dim flagImage As Image = Image.FromFile(Path.Combine(flagPath, GetTag() & ".png"))
-            flag = New Bitmap(flagImage)
         End Sub
 
     End Class

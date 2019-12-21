@@ -33,7 +33,8 @@ Namespace Military
                 Throw New DirectoryNotFoundException("Given game data directory not found: " & unitsPath)
             End If
 
-            nationMilitaryTable_ = WorldData.GameObjectFactory.FromFolder(Of String, NationMilitary)(unitsPath, "tag")
+            nationMilitaryTable_ = WorldData.GameObjectFactory.FromFolder _
+                                     (Of String, NationMilitary, NationMilitary)(unitsPath, "tag")
 
             UpdateProvinceToArmyTable()
 
