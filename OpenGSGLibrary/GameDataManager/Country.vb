@@ -19,10 +19,13 @@ Imports System.IO
 Namespace WorldData
 
     ''' <summary>
-    ''' Base class for coutries. Handles the most basic country properties.
+    ''' Base class for countries. Handles the most basic country properties.
     ''' </summary>
     Public MustInherit Class Country
         Inherits GameObject
+
+        Public Sub New()
+        End Sub
 
         Public Function GetTag() As String
             Return tag_

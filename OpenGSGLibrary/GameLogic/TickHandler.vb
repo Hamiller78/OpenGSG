@@ -18,15 +18,17 @@ Imports OpenGSGLibrary.WorldData
 
 Namespace GameLogic
 
-    Public Class TickHandler _
-        (Of provType As {New, Province},
-            countryType As {New, Country})
+    Public Class TickHandler
 
         Public Event TickDone As EventHandler
 
         Private playerManager_ As New PlayerManager()
         Private currentWorldState_ As WorldState
         Private currentTick_ As Integer = 0
+
+        Public Function GetState() As WorldState
+            Return currentWorldState_
+        End Function
 
         Public Sub BeginNewTick()
             ' do timed game events

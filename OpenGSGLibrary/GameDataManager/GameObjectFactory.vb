@@ -56,6 +56,34 @@ Namespace WorldData
 
         End Function
 
+        Public Shared Function FromFolderWithFilenameId(Of baseType As {New, GameObject}, derivedType As {New, baseType}) _
+            (folderPath As String) As Dictionary(Of Integer, baseType)
+
+            If Not Directory.Exists(folderPath) Then
+                Throw New DirectoryNotFoundException("Given game data directory not found: " & folderPath)
+            End If
+
+            Dim objectTable = New Dictionary(Of Integer, baseType)
+
+            Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
+            For Each singleObjectData In parsedObjectData
+                Dim newObject = New derivedType()
+                newObject.SetData(singleObjectData.Key, singleObjectData.Value)
+                Dim key As String = ""
+                Dim filenameParts As String() = ExtractFromFilename(singleObjectData.Key)
+                Try
+                    key = Convert.ToInt32(filenameParts(0))
+                    objectTable.Add(key, newObject)
+                Catch ex As Exception
+                    Tools.GlobalLogger.GetInstance().WriteLine(
+                        Tools.LogLevel.Fatal, "Error while parsing file: " & singleObjectData.Key)
+                End Try
+            Next
+
+            Return objectTable
+
+        End Function
+
         ''' <summary>
         ''' Creates a table of generated objects from the parsed files in one directory.
         ''' </summary>
@@ -64,19 +92,19 @@ Namespace WorldData
         ''' <param name="folderPath">String with the directory path.</param>
         ''' <param name="keyField">Name of the field in the parsed file which value is used as key in the return value.</param>
         ''' <returns>Dictionary with generated objects.</returns>
-        Public Shared Function FromFolder(Of idtype, type As {New, GameObject}) _
-            (folderPath As String, keyField As String) As Dictionary(Of idtype, type)
+        Public Shared Function FromFolder(Of idtype, baseType As {New, GameObject}, derivedType As {New, baseType}) _
+            (folderPath As String, keyField As String) As Dictionary(Of idtype, baseType)
 
             If Not Directory.Exists(folderPath) Then
                 Throw New DirectoryNotFoundException("Given game data directory not found: " & folderPath)
             End If
 
-            Dim objectTable = New Dictionary(Of idtype, type)
+            Dim objectTable = New Dictionary(Of idtype, baseType)
 
             Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
             For Each singleObjectData In parsedObjectData
                 Dim countryData As Lookup(Of String, Object) = singleObjectData.Value
-                Dim newObject = New type()
+                Dim newObject = New baseType()
                 newObject.SetData(singleObjectData.Key, countryData)
                 Dim key As idtype = countryData(keyField).Single()
                 objectTable.Add(key, newObject)

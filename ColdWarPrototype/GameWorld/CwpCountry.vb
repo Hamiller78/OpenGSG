@@ -33,6 +33,10 @@ Namespace WorldData
 
         Public Property flag As Bitmap = Nothing
 
+        Public Sub New()
+            MyBase.New()
+        End Sub
+
         ''' <summary>
         ''' Sets the country properties from the parsed data.
         ''' </summary>

@@ -29,7 +29,7 @@ Public Class MainWindow
 
     ' General game data
     Private tickHandler_ As New TickHandler()
-    Private coldWarWorld_ As WorldData.WorldDataManager = New WorldData.WorldDataManager()
+    Private mapView_ As WorldData.WorldDataManager = New WorldData.WorldDataManager()
     Private gameDate_ = New DateTime(1950, 1, 1)
 
     ' GUI related members
@@ -50,13 +50,17 @@ Public Class MainWindow
         log.WriteLine(LogLevel.Info, "Session started, TODO: version information")
 
         ' Load province map
-        coldWarWorld_.LoadAll("..\..\..\ColdWarPrototype\GameData")
-        provinceMap_ = coldWarWorld_.provinceMap
-        coldWarWorld_.SetAllProvinceHandlers(tickHandler_)
+        Dim worldLoader As New OpenGSGLibrary.WorldData.WorldLoader(Of WorldData.CwpProvince, WorldData.CwpCountry)
+        Dim startState As OpenGSGLibrary.WorldData.WorldState =
+            worldLoader.CreateStartState("..\..\..\ColdWarPrototype\GameData")
+
+        mapView_.LoadAll("..\..\..\ColdWarPrototype\GameData") ' Only map views are still in WorldDataManager
+        provinceMap_ = mapView_.provinceMap
+        '        mapView_.SetAllProvinceHandlers(tickHandler_)  ' TODO: Re-insert setting of event handlers
 
         ' Render maps
-        Dim MapRenderer = New CountryMapRenderer(Of WorldData.CwpProvince, WorldData.CwpCountry)(provinceMap_)
-        MapRenderer.SetDataTables(coldWarWorld_.GetProvinceTable, coldWarWorld_.GetCountryTable)
+        Dim MapRenderer = New CountryMapRenderer(provinceMap_)
+        MapRenderer.SetDataTables(startState.GetProvinceTable(), startState.GetCountryTable())
         countryMap_ = MapRenderer.RenderMap()
 
         ' Set map
@@ -175,7 +179,7 @@ Public Class MainWindow
     Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
         currentProvinceId_ = mouseProvinceId
         ProvinceName.Text = provinceMap_.GetProvinceName(currentProvinceId_)
-        Dim currentProvince As WorldData.CwpProvince = coldWarWorld_.GetProvinceTable(currentProvinceId_)
+        Dim currentProvince As WorldData.CwpProvince = tickHandler_.GetState().GetProvinceTable(currentProvinceId_)
         ProvincePopulation.Text = Trim(Str(currentProvince.population))
         ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
         ProvinceEducation.Text = Trim(Str(currentProvince.education))
@@ -193,17 +197,17 @@ Public Class MainWindow
 
     Private Sub UpdateCountryInfo(mouseCountryTag As String)
         currentCountryTag_ = mouseCountryTag
-        Dim currentCountry As WorldData.CwpCountry = coldWarWorld_.GetCountryTable(mouseCountryTag)
+        Dim currentCountry As WorldData.CwpCountry = tickHandler_.GetState().GetCountryTable(mouseCountryTag)
         CountryName.Text = currentCountry.longName
         CountryLeader.Text = currentCountry.leader
         CountryGovernment.Text = currentCountry.government
         CountryAllegiance.Text = currentCountry.allegiance
-        CountryProduction.Text = coldWarWorld_.GetCountryProduction(currentCountryTag_)
+        '        CountryProduction.Text = tickHandler_.GetState().GetCountryProduction(currentCountryTag_)
         FlagPictureBox.Image = currentCountry.flag
     End Sub
 
     Private Sub UpdateArmyListBox(mouseProvinceId As Integer)
-        armiesInProvince_ = coldWarWorld_.GetArmyManager().GetArmiesInProvince(mouseProvinceId)
+        armiesInProvince_ = tickHandler_.GetState().GetArmyManager().GetArmiesInProvince(mouseProvinceId)
 
         ArmyListBox.Items.Clear()
         ArmyListBox.BeginUpdate()
@@ -218,7 +222,7 @@ Public Class MainWindow
 
     Private Sub MoveSelectedArmies(targetProvinceId As Integer)
         For Each movingArmy In selectedArmies_
-            coldWarWorld_.GetArmyManager().MoveArmy(movingArmy, targetProvinceId)
+            tickHandler_.GetState().GetArmyManager().MoveArmy(movingArmy, targetProvinceId)
         Next
     End Sub
 

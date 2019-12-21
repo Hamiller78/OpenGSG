@@ -34,12 +34,13 @@ Namespace WorldData
         ''' </summary>
         ''' <param name="gamedataPath"></param>
         ''' <returns></returns>
-        Public Function CreateWorldState(gamedataPath As String) As WorldState
+        Public Function CreateStartState(gamedataPath As String) As WorldState
             Dim newState As New WorldState()
 
             Try
                 LoadProvinces(gamedataPath)
                 LoadCountries(gamedataPath)
+                LoadCountryFlags(gamedataPath)
                 LoadArmies(gamedataPath)
 
                 newState.SetProvinceTable(provinceTable_)
@@ -57,7 +58,7 @@ Namespace WorldData
         Private Sub LoadProvinces(gamedataPath As String)
             Try
                 provinceTable_ = GameObjectFactory.FromFolderWithFilenameId _
-                                               (Of provType) _
+                                               (Of Province, provType) _
                                                (Path.Combine(gamedataPath, "history\provinces"))
             Catch ex As Exception
                 Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading province data.")
@@ -68,10 +69,22 @@ Namespace WorldData
         Private Sub LoadCountries(gamedataPath As String)
             Try
                 countryTable_ = GameObjectFactory.FromFolder _
-                                                  (Of String, countryType) _
+                                                  (Of String, Country, countryType) _
                                                   (Path.Combine(gamedataPath, "common\countries"), "tag")
             Catch ex As Exception
                 Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading country data.")
+                Throw ex
+            End Try
+        End Sub
+
+        Private Sub LoadCountryFlags(gamedataPath As String)
+            Try
+                Dim flagPath As String = Path.Combine(gamedataPath, "gfx\flags")
+                For Each country In countryTable_
+                    country.Value.LoadFlags(flagPath)
+                Next
+            Catch ex As Exception
+                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading nation flags.")
                 Throw ex
             End Try
         End Sub
