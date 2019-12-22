@@ -26,6 +26,10 @@ Namespace GameLogic
         Private currentWorldState_ As WorldState
         Private currentTick_ As Integer = 0
 
+        Public Sub SetState(newState As WorldState)
+            currentWorldState_ = newState
+        End Sub
+
         Public Function GetState() As WorldState
             Return currentWorldState_
         End Function

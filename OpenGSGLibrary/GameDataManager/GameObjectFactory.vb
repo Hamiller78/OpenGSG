@@ -23,39 +23,13 @@ Namespace WorldData
     ''' </summary>
     Public Class GameObjectFactory
 
-        '        ''' <summary>
-        '        ''' Creates a table of generated objects from the parsed files in one directory.
-        '        ''' </summary>
-        '        ''' <typeparam name="type">Variable type of the generated objects (e.g. Province)</typeparam>
-        '        ''' <param name="folderPath">String with the directory path.</param>
-        '        ''' <returns>Dictionary with generated objects using file names without extensions as key.</returns>
-        '        Public Shared Function FromFolderWithFilenameId(Of type As {New, GameObject}) _
-        '            (folderPath As String) As Dictionary(Of Integer, type)
-        '
-        '            If Not Directory.Exists(folderPath) Then
-        '                Throw New DirectoryNotFoundException("Given game data directory not found: " & folderPath)
-        '            End If
-        '
-        '            Dim objectTable = New Dictionary(Of Integer, type)
-        '
-        '            Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
-        '            For Each singleObjectData In parsedObjectData
-        '                Dim newObject = New type()
-        '                newObject.SetData(singleObjectData.Key, singleObjectData.Value)
-        '                Dim key As String = ""
-        '                Dim filenameParts As String() = ExtractFromFilename(singleObjectData.Key)
-        '                Try
-        '                    key = Convert.ToInt32(filenameParts(0))
-        '                    objectTable.Add(key, newObject)
-        '                Catch ex As Exception
-        '                    ' TODO: Log failed object
-        '                End Try
-        '            Next
-        '
-        '            Return objectTable
-        '
-        '        End Function
-
+        ''' <summary>
+        ''' Creates a table of generated objects from the parsed files in one directory.
+        ''' </summary>
+        ''' <typeparam name="baseType">Base variable type of the generated objects (e.g. Province) used for the returned dictionary</typeparam>
+        ''' <typeparam name="derivedType">Specialized variable type of the generated objects (e.g. CwpProvince) used for the generated objects.</typeparam>
+        ''' <param name="folderPath">String with the directory path.</param>
+        ''' <returns>Dictionary with generated objects using file names without extensions as key.</returns>
         Public Shared Function FromFolderWithFilenameId(Of baseType As {New, GameObject}, derivedType As {New, baseType}) _
             (folderPath As String) As Dictionary(Of Integer, baseType)
 
@@ -88,7 +62,8 @@ Namespace WorldData
         ''' Creates a table of generated objects from the parsed files in one directory.
         ''' </summary>
         ''' <typeparam name="idtype">Variable type of the id (e.g. Integer, String)</typeparam>
-        ''' <typeparam name="type">Variable type of the generated objects (e.g. Province)</typeparam>
+        ''' <typeparam name="baseType">Base variable type of the generated objects (e.g. Province) used for the returned dictionary</typeparam>
+        ''' <typeparam name="derivedType">Specialized variable type of the generated objects (e.g. CwpProvince) used for the generated objects.</typeparam>
         ''' <param name="folderPath">String with the directory path.</param>
         ''' <param name="keyField">Name of the field in the parsed file which value is used as key in the return value.</param>
         ''' <returns>Dictionary with generated objects.</returns>
@@ -104,7 +79,7 @@ Namespace WorldData
             Dim parsedObjectData As Dictionary(Of String, Object) = ParseFolder(folderPath)
             For Each singleObjectData In parsedObjectData
                 Dim countryData As Lookup(Of String, Object) = singleObjectData.Value
-                Dim newObject = New baseType()
+                Dim newObject = New derivedType()
                 newObject.SetData(singleObjectData.Key, countryData)
                 Dim key As idtype = countryData(keyField).Single()
                 objectTable.Add(key, newObject)

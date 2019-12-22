@@ -41,6 +41,7 @@ Namespace WorldData
             End If
 
             LoadWorldmap(Path.Combine(gamedataPath, "map"))
+            provinceMap.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
 
         End Sub
 

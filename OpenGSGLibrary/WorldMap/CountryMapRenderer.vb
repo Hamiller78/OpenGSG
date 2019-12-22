@@ -23,8 +23,6 @@ Namespace Map
     ''' Map renderer for the country map mode (aka political map).
     ''' The actually used derived province and country classes have to be specified.
     ''' </summary>
-    ''' <typeparam name="provinceType"></typeparam>
-    ''' <typeparam name="countryType"></typeparam>
     Public Class CountryMapRenderer
         Inherits MapRenderer
 
