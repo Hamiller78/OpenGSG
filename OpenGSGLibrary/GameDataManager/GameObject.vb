@@ -33,6 +33,16 @@ Namespace WorldData
             parsedData_ = parsedData
         End Sub
 
+        ''' <summary>
+        ''' Handler for tick done events by TickHandler.
+        ''' Should be reimplemented for all game elements which require an update with each game tick.
+        ''' E.g. provinces can have population growth, armies replenish their morale, etc.
+        ''' </summary>
+        ''' <param name="sender">sender object of the event</param>
+        ''' <param name="e">TickEventArgs, contain the new tick number</param>
+        Public Overridable Sub OnTickDone(sender As Object, e As GameLogic.TickEventArgs)
+        End Sub
+
         Private fileName_ As String = ""
         Private parsedData_ As Lookup(Of String, Object) = Nothing
 

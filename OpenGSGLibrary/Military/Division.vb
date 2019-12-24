@@ -16,6 +16,10 @@
 
 Namespace Military
 
+    ''' <summary>
+    ''' Class to describe divisions which together form an army.
+    ''' Each division consists of one unit type (e.g. one model of tanks)
+    ''' </summary>
     Public Class Division
         Inherits WorldData.GameObject
 
@@ -24,12 +28,23 @@ Namespace Military
         Private size_ As Integer = 0
         Private owner_ As String = ""
 
+        ''' <summary>
+        ''' Sets the properties of a division from the parser data of the unit file.
+        ''' This method handles name, unit type and size of division.
+        ''' Should be inherited to handle more game-specific properties.
+        ''' </summary>
+        ''' <param name="fileName">Name of file with data (unused).</param>
+        ''' <param name="parsedData">Lookup object with parser data of division.</param>
         Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
             name_ = parsedData("name").Single()
             type_ = parsedData("type").Single()
             size_ = parsedData("size").Single()
         End Sub
 
+        ''' <summary>
+        ''' Sets the owner of the division.
+        ''' </summary>
+        ''' <param name="tag">String with natio tag e.g. "USA".</param>
         Public Sub SetOwner(tag As String)
             owner_ = tag
         End Sub

@@ -17,6 +17,7 @@
 Imports System.Device.Location
 Imports System.IO
 
+Imports OpenGSGLibrary.GameLogic
 Imports OpenGSGLibrary.Map
 Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.Tools
@@ -27,7 +28,8 @@ Public Class MainWindow
     Public log As Logger = New Logger("CWPLog.log", Directory.GetCurrentDirectory())
 
     ' General game data
-    Private coldWarWorld_ As GameWorld.WorldDataManager = New GameWorld.WorldDataManager()
+    Private tickHandler_ As New TickHandler()
+    Private mapView_ As WorldData.WorldDataManager = New WorldData.WorldDataManager()
     Private gameDate_ = New DateTime(1950, 1, 1)
 
     ' GUI related members
@@ -48,12 +50,18 @@ Public Class MainWindow
         log.WriteLine(LogLevel.Info, "Session started, TODO: version information")
 
         ' Load province map
-        coldWarWorld_.LoadAll("..\..\..\ColdWarPrototype\GameData")
-        provinceMap_ = coldWarWorld_.provinceMap
+        Dim worldLoader As New OpenGSGLibrary.WorldData.WorldLoader(Of WorldData.CwpProvince, WorldData.CwpCountry)
+        Dim startState As OpenGSGLibrary.WorldData.WorldState =
+            worldLoader.CreateStartState("..\..\..\ColdWarPrototype\GameData")
+        tickHandler_.ConnectState(startState)
+
+        mapView_.LoadAll("..\..\..\ColdWarPrototype\GameData") ' Only map views are still in WorldDataManager
+        provinceMap_ = mapView_.provinceMap
+        '        mapView_.SetAllProvinceHandlers(tickHandler_)  ' TODO: Re-insert setting of event handlers
 
         ' Render maps
-        Dim MapRenderer = New CountryMapRenderer(Of GameWorld.CwpProvince, GameWorld.CwpCountry)(provinceMap_)
-        MapRenderer.SetDataTables(coldWarWorld_.GetProvinceTable, coldWarWorld_.GetCountryTable)
+        Dim MapRenderer = New CountryMapRenderer(provinceMap_)
+        MapRenderer.SetDataTables(startState.GetProvinceTable(), startState.GetCountryTable())
         countryMap_ = MapRenderer.RenderMap()
 
         ' Set map
@@ -110,7 +118,7 @@ Public Class MainWindow
     End Sub
 
     Private Sub DateButton_Click(sender As Object, e As EventArgs) Handles DateButton.Click
-        coldWarWorld_.UpdateEverythingDaily()
+        tickHandler_.FinishTick()
         gameDate_ = gameDate_.Add(TimeSpan.FromDays(1))
 
         UpdateDateText()
@@ -172,7 +180,7 @@ Public Class MainWindow
     Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
         currentProvinceId_ = mouseProvinceId
         ProvinceName.Text = provinceMap_.GetProvinceName(currentProvinceId_)
-        Dim currentProvince As GameWorld.CwpProvince = coldWarWorld_.GetProvinceTable(currentProvinceId_)
+        Dim currentProvince As WorldData.CwpProvince = tickHandler_.GetState().GetProvinceTable(currentProvinceId_)
         ProvincePopulation.Text = Trim(Str(currentProvince.population))
         ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
         ProvinceEducation.Text = Trim(Str(currentProvince.education))
@@ -190,17 +198,17 @@ Public Class MainWindow
 
     Private Sub UpdateCountryInfo(mouseCountryTag As String)
         currentCountryTag_ = mouseCountryTag
-        Dim currentCountry As GameWorld.CwpCountry = coldWarWorld_.GetCountryTable(mouseCountryTag)
+        Dim currentCountry As WorldData.CwpCountry = tickHandler_.GetState().GetCountryTable(mouseCountryTag)
         CountryName.Text = currentCountry.longName
         CountryLeader.Text = currentCountry.leader
         CountryGovernment.Text = currentCountry.government
         CountryAllegiance.Text = currentCountry.allegiance
-        CountryProduction.Text = coldWarWorld_.GetCountryProduction(currentCountryTag_)
+        '        CountryProduction.Text = tickHandler_.GetState().GetCountryProduction(currentCountryTag_)
         FlagPictureBox.Image = currentCountry.flag
     End Sub
 
     Private Sub UpdateArmyListBox(mouseProvinceId As Integer)
-        armiesInProvince_ = coldWarWorld_.GetArmyManager().GetArmiesInProvince(mouseProvinceId)
+        armiesInProvince_ = tickHandler_.GetState().GetArmyManager().GetArmiesInProvince(mouseProvinceId)
 
         ArmyListBox.Items.Clear()
         ArmyListBox.BeginUpdate()
@@ -215,7 +223,7 @@ Public Class MainWindow
 
     Private Sub MoveSelectedArmies(targetProvinceId As Integer)
         For Each movingArmy In selectedArmies_
-            coldWarWorld_.GetArmyManager().MoveArmy(movingArmy, targetProvinceId)
+            tickHandler_.GetState().GetArmyManager().MoveArmy(movingArmy, targetProvinceId)
         Next
     End Sub
 

@@ -40,7 +40,7 @@ Namespace Map
         ''' <summary>
         ''' Gets the province name for a RGB value.
         ''' </summary>
-        ''' <param name="provinceNumber">RGB value as a tuple of three bytes.</param>
+        ''' <param name="provinceNumber">Id number of province.</param>
         ''' <returns>Province name as string, empty string if not found.</returns>
         Public Function GetProvinceName(provinceNumber As Integer) As String
             Dim provinceName As String

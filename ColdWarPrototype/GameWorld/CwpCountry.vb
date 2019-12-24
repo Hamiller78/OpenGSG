@@ -14,11 +14,9 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Imports System.IO
-
 Imports OpenGSGLibrary.WorldData
 
-Namespace GameWorld
+Namespace WorldData
 
     ''' <summary>
     ''' Country class for cold war game. Adds specialised properties to base country class.
@@ -31,7 +29,9 @@ Namespace GameWorld
         Public Property allegiance As String = ""
         Public Property leader As String = ""
 
-        Public Property flag As Bitmap = Nothing
+        Public Sub New()
+            MyBase.New()
+        End Sub
 
         ''' <summary>
         ''' Sets the country properties from the parsed data.
@@ -50,16 +50,6 @@ Namespace GameWorld
             End If
             leader = parsedData("leader").Single()
 
-        End Sub
-
-        ''' <summary>
-        ''' Loads the flag PNG file for the country.
-        ''' The name of the file has to be tag + ".png"
-        ''' </summary>
-        ''' <param name="flagPath">String with the folder path for the flag files.</param>
-        Public Overrides Sub LoadFlags(flagPath As String)
-            Dim flagImage As Image = Image.FromFile(Path.Combine(flagPath, GetTag() & ".png"))
-            flag = New Bitmap(flagImage)
         End Sub
 
     End Class

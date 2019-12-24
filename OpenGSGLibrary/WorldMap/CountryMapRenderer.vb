@@ -23,9 +23,7 @@ Namespace Map
     ''' Map renderer for the country map mode (aka political map).
     ''' The actually used derived province and country classes have to be specified.
     ''' </summary>
-    ''' <typeparam name="provinceType"></typeparam>
-    ''' <typeparam name="countryType"></typeparam>
-    Public Class CountryMapRenderer(Of provinceType As WorldData.Province, countryType As WorldData.Country)
+    Public Class CountryMapRenderer
         Inherits MapRenderer
 
         Public Sub New(provinceMap As ProvinceMap)
@@ -38,8 +36,8 @@ Namespace Map
         ''' </summary>
         ''' <param name="provinceTable">Dictionary province id -> province objects.</param>
         ''' <param name="countryTable">Dictionary country tag -> country objects.</param>
-        Public Sub SetDataTables(provinceTable As Dictionary(Of Integer, provinceType),
-                                 countryTable As Dictionary(Of String, countryType))
+        Public Sub SetDataTables(provinceTable As IDictionary(Of Integer, WorldData.Province),
+                                 countryTable As IDictionary(Of String, WorldData.Country))
 
             provinceTable_ = provinceTable
             countryTable_ = countryTable
@@ -76,8 +74,8 @@ Namespace Map
         End Function
 
         Private provinceMap_ As ProvinceMap
-        Private provinceTable_ As Dictionary(Of Integer, provinceType)
-        Private countryTable_ As Dictionary(Of String, countryType)
+        Private provinceTable_ As IDictionary(Of Integer, WorldData.Province)
+        Private countryTable_ As IDictionary(Of String, WorldData.Country)
 
     End Class
 

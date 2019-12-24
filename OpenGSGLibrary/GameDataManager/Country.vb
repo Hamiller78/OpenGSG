@@ -14,15 +14,18 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+Imports System.Drawing
 Imports System.IO
 
 Namespace WorldData
 
     ''' <summary>
-    ''' Base class for coutries. Handles the most basic country properties.
+    ''' Base class for countries. Handles the most basic country properties.
     ''' </summary>
-    Public MustInherit Class Country
+    Public Class Country
         Inherits GameObject
+
+        Public Property flag As Bitmap = Nothing
 
         Public Function GetTag() As String
             Return tag_
@@ -60,10 +63,13 @@ Namespace WorldData
 
         ''' <summary>
         ''' Loads all flag images for the country from files.
-        ''' The exact implementation is game specific, e.g. HOI4 has variations for ideology
+        ''' The exact implementation may be game specific, e.g. HOI4 has variations for ideology
         ''' </summary>
         ''' <param name="flagPath">String with path to the folder containing the flag image files.</param>
-        Public MustOverride Sub LoadFlags(flagPath As String)
+        Public Overridable Sub LoadFlags(flagPath As String)
+            Dim flagImage As Image = Image.FromFile(Path.Combine(flagPath, GetTag() & ".png"))
+            flag = New Bitmap(flagImage)
+        End Sub
 
         Private tag_ As String
         Private name_ As String

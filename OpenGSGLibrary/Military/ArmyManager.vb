@@ -23,23 +23,39 @@ Namespace Military
     ''' </summary>
     Public Class ArmyManager
 
+        ''' <summary>
+        ''' Loads all nations's armies from one folder.
+        ''' There should be one file for each nation.
+        ''' </summary>
+        ''' <param name="unitsPath">Folder path for army data, e.g. history/units</param>
         Public Sub LoadFolder(unitsPath As String)
             If Not Directory.Exists(unitsPath) Then
                 Throw New DirectoryNotFoundException("Given game data directory not found: " & unitsPath)
             End If
 
-            nationMilitaryTable_ = WorldData.GameObjectFactory.FromFolder(Of String, NationMilitary)(unitsPath, "tag")
+            nationMilitaryTable_ = WorldData.GameObjectFactory.FromFolder _
+                                     (Of String, NationMilitary, NationMilitary)(unitsPath, "tag")
 
             UpdateProvinceToArmyTable()
 
         End Sub
 
+        ''' <summary>
+        ''' Gets a list of all armies in one province.
+        ''' </summary>
+        ''' <param name="provinceId">Integer with province ID.</param>
+        ''' <returns>List of Army objects in province (or Nothing if empty).</returns>
         Public Function GetArmiesInProvince(provinceId As Integer) As List(Of Army)
             Dim resultList As List(Of Army) = Nothing
             Dim result As Boolean = provinceIdToArmiesTable_.TryGetValue(provinceId, resultList)
             Return resultList
         End Function
 
+        ''' <summary>
+        ''' Moves an army to a new province.
+        ''' </summary>
+        ''' <param name="movingArmy">Army object of moving army.</param>
+        ''' <param name="targetProvinceId">Integer with iD of target province.</param>
         Public Sub MoveArmy(movingArmy As Army, targetProvinceId As Integer)
             Dim oldLocation As Integer = movingArmy.GetLocation()
 

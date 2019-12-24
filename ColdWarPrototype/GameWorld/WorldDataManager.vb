@@ -16,11 +16,12 @@
 
 Imports System.IO
 
+Imports OpenGSGLibrary.GameLogic
 Imports OpenGSGLibrary.Map
 Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.WorldData
 
-Namespace GameWorld
+Namespace WorldData
 
     ''' <summary>
     ''' Top class to handle all world game data (provinces, countries, units, etc...)
@@ -28,20 +29,6 @@ Namespace GameWorld
     Public Class WorldDataManager
 
         ReadOnly Property provinceMap As New ProvinceMap
-
-        Public Function GetProvinceTable() As Dictionary(Of Integer, CwpProvince)
-            Return provinceTable_
-        End Function
-
-        Public Function GetCountryTable() As Dictionary(Of String, CwpCountry)
-            Return countryTable_
-        End Function
-
-        ReadOnly Property countryData As New Dictionary(Of String, CwpCountry)
-
-        Public Function GetArmyManager() As ArmyManager
-            Return armyManager_
-        End Function
 
         ''' <summary>
         ''' Loads game data from game files.
@@ -56,54 +43,10 @@ Namespace GameWorld
             LoadWorldmap(Path.Combine(gamedataPath, "map"))
             provinceMap.LoadProvinceRGBs(Path.Combine(gamedataPath, "map\definitions.csv"))
 
-            provinceTable_ = GameObjectFactory.FromFolderWithFilenameId(Of CwpProvince) _
-                                (Path.Combine(gamedataPath, "history\provinces"))
-            countryTable_ = GameObjectFactory.FromFolder(Of String, CwpCountry) _
-                                (Path.Combine(gamedataPath, "common\countries"), "tag")
-            LoadCountryFlags(Path.Combine(gamedataPath, "gfx\flags"))
-
-            armyManager_.LoadFolder(Path.Combine(gamedataPath, "history\units"))
-
         End Sub
-
-        ''' <summary>
-        ''' Method to be called each day of game time.
-        ''' Prototype for an event handler.
-        ''' </summary>
-        Public Sub UpdateEverythingDaily()
-            For Each provinceEntry In provinceTable_
-                provinceEntry.Value.UpdateDaily()
-            Next
-        End Sub
-
-        ''' <summary>
-        ''' Getter for a countrys' production.
-        ''' Calculates the value by adding the province values of that country.
-        ''' </summary>
-        ''' <param name="countryTag">String with the country tag (e.g. "GDR").</param>
-        ''' <returns></returns>
-        Public Function GetCountryProduction(countryTag As String) As Long
-            Dim countryProduction As Long = 0
-            For Each province In provinceTable_
-                If province.Value.GetController() = countryTag Then
-                    countryProduction += province.Value.production
-                End If
-            Next
-            Return countryProduction
-        End Function
-
-        Private provinceTable_ As New Dictionary(Of Integer, CwpProvince)
-        Private countryTable_ As New Dictionary(Of String, CwpCountry)
-        Private armyManager_ As New ArmyManager()
 
         Private Sub LoadWorldmap(filePath As String)
             provinceMap.FromFile(Path.Combine(filePath, "provinces.bmp"))
-        End Sub
-
-        Private Sub LoadCountryFlags(flagPath As String)
-            For Each country In countryTable_
-                country.Value.LoadFlags(flagPath)
-            Next
         End Sub
 
     End Class

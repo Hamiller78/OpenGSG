@@ -36,7 +36,6 @@ Namespace Map
         Public Sub FromFile(filePathAndName As String)
             sourceBitmap_ = Image.FromFile(filePathAndName)
             sourceBitmap_ = New Bitmap(sourceBitmap_)
-            Console.WriteLine(sourceBitmap_.PixelFormat.ToString())
         End Sub
 
         ''' <summary>
