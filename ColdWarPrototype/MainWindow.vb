@@ -53,7 +53,7 @@ Public Class MainWindow
         Dim worldLoader As New OpenGSGLibrary.WorldData.WorldLoader(Of WorldData.CwpProvince, WorldData.CwpCountry)
         Dim startState As OpenGSGLibrary.WorldData.WorldState =
             worldLoader.CreateStartState("..\..\..\ColdWarPrototype\GameData")
-        tickHandler_.SetState(startState)
+        tickHandler_.ConnectState(startState)
 
         mapView_.LoadAll("..\..\..\ColdWarPrototype\GameData") ' Only map views are still in WorldDataManager
         provinceMap_ = mapView_.provinceMap

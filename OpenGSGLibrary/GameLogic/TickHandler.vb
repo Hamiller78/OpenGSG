@@ -26,14 +26,31 @@ Namespace GameLogic
         Private currentWorldState_ As WorldState
         Private currentTick_ As Integer = 0
 
-        Public Sub SetState(newState As WorldState)
+        ''' <summary>
+        ''' Connects world state to tick handler which includes setting the state in TickHandlers
+        ''' and associating event handlers. 
+        ''' </summary>
+        ''' <param name="newState">WorldState to set in TickHandler.</param>
+        Public Sub ConnectState(newState As WorldState)
             currentWorldState_ = newState
+
+            Dim provinceDict As IDictionary(Of Integer, Province) = currentWorldState_.GetProvinceTable()
+            For Each province In provinceDict.Values
+                AddHandler TickDone, AddressOf province.OnTickDone
+            Next
         End Sub
 
+        ''' <summary>
+        ''' Returns the world state used by the tick handler
+        ''' </summary>
+        ''' <returns>WorldState object for the current tick which will be modified each tick.</returns>
         Public Function GetState() As WorldState
             Return currentWorldState_
         End Function
 
+        ''' <summary>
+        ''' Method to do stuff when an new tick starts.
+        ''' </summary>
         Public Sub BeginNewTick()
             ' do timed game events
             ' launch AI threads
@@ -55,6 +72,9 @@ Namespace GameLogic
             Return True
         End Function
 
+        ''' <summary>
+        ''' Method to do stuff when a tick is completed and the next WorldState is calculated.
+        ''' </summary>
         Public Sub FinishTick()
             ' lock GUI input
             ' calculate world in next tick
@@ -66,6 +86,10 @@ Namespace GameLogic
 
     End Class
 
+    ''' <summary>
+    ''' Helper class passed with the TickDone event.
+    ''' Extra argument is the current tick number.
+    ''' </summary>
     Public Class TickEventArgs
         Inherits EventArgs
 
