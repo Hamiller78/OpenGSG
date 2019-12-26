@@ -16,7 +16,7 @@
 
 Namespace Orders
 
-    Module OrderTypes
+    Public Module OrderTypes
 
         Public Enum OrderType
             EmptyOrder

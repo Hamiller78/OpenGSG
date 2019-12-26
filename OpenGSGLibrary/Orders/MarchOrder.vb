@@ -18,20 +18,22 @@ Namespace Orders
     Public Class MarchOrder
         Inherits Order
 
-        Public Sub New(army As Military.Army, targetProvince As Integer)
+        Public Sub New(completionTick As Long, army As Military.Army, targetProvince As Integer)
+            type_ = OrderType.MarchOrder
+            completionTick_ = completionTick
             army_ = army
             targetProvince_ = targetProvince
         End Sub
 
-        Public Overrides Sub FinalizeOrder(ByRef currentWorld As WorldData.WorldState)
+        Public Overrides Sub FinalizeOrder(currentWorld As WorldData.WorldState)
 
             Dim armyManager As Military.ArmyManager = currentWorld.GetArmyManager()
             armyManager.MoveArmy(army_, targetProvince_)
 
         End Sub
 
-        Private army_ As Military.Army
-        Private targetProvince_ As Integer
+        Private army_ As Military.Army = Nothing
+        Private targetProvince_ As Integer = 0
 
     End Class
 

@@ -15,18 +15,45 @@
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Namespace Orders
 
+    ''' <summary>
+    ''' Base class for orders.
+    ''' Orders asre build orders, army move orders, etc.
+    ''' They usually take a number of ticks to complete.
+    ''' </summary>
     Public MustInherit Class Order
 
-        Public Function GetCompletionTick() As Integer
-            Return completeTick_
+        ''' <summary>
+        ''' Returns the tick in whose beginning the order will be completed.
+        ''' </summary>
+        ''' <returns>Tick number as long.</returns>
+        Public Function GetCompletionTick() As Long
+            Return completionTick_
         End Function
 
-        Public MustOverride Sub FinalizeOrder(ByRef currentWorld As WorldData.WorldState)
+        ''' <summary>
+        ''' Returns the progress of the order in percent.
+        ''' </summary>
+        ''' <param name="currentTick">Long with tick to calclulate the progress for.</param>
+        ''' <returns>Single value with order progress in percent.</returns>
+        Public Function GetProgressInPercent(currentTick As Long) As Single
+            If completionTick_ > startTick_ Then
+                Return (currentTick - startTick_) / (completionTick_ - startTick_)
+            Else
+                Return 100.0
+            End If
+        End Function
 
-        Private startTick_ As New Long
-        Private completeTick_ As New Long
+        ''' <summary>
+        ''' Virtual method for derived classes.
+        ''' Executes the order when it reaches its completion tick.
+        ''' </summary>
+        ''' <param name="currentWorld">Current world state to which the order will be applied.</param>
+        Public MustOverride Sub FinalizeOrder(currentWorld As WorldData.WorldState)
 
-        Private type_ As New OrderType
+        Protected startTick_ As New Long
+        Protected completionTick_ As New Long
+
+        Protected type_ As New OrderType
 
     End Class
 

@@ -101,6 +101,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Orders\MarchOrder.vb" />
+    <Compile Include="Orders\OrderManager.vb" />
     <Compile Include="Orders\OrderTypes.vb" />
     <Compile Include="Orders\Order.vb" />
     <Compile Include="Tools\GlobalLog.vb" />
