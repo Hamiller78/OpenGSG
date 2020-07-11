@@ -1,5 +1,5 @@
 ﻿'    OpenSGSGLibrary is an open-source library for Grand Strategy Games
-'    Copyright (C) 2019  Torben Kneesch
+'    Copyright (C) 2019-2020  Torben Kneesch
 '
 '    This program is free software: you can redistribute it and/or modify
 '    it under the terms of the GNU General Public License as published by

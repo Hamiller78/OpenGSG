@@ -1,5 +1,5 @@
 ﻿'    OpenSGSGLibrary is an open-source library for Grand Strategy Games
-'    Copyright (C) 2019  Torben Kneesch
+'    Copyright (C) 2019-2020  Torben Kneesch
 '
 '    This program is free software: you can redistribute it and/or modify
 '    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
 '
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 Imports System.Device.Location
 Imports System.IO
 
@@ -21,6 +20,7 @@ Imports OpenGSGLibrary.GameLogic
 Imports OpenGSGLibrary.Map
 Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.Tools
+Imports ColdWarGameLogic.WorldData
 
 Public Class MainWindow
 
@@ -29,8 +29,11 @@ Public Class MainWindow
 
     ' General game data
     Private tickHandler_ As New TickHandler()
-    Private mapView_ As WorldData.WorldDataManager = New WorldData.WorldDataManager()
+    Private mapView_ As WorldDataManager = New WorldDataManager()
     Private gameDate_ = New DateTime(1950, 1, 1)
+
+    Private provinceMap_ As ProvinceMap
+    Private mapProjection_ As RobinsonProjection = New RobinsonProjection
 
     ' GUI related members
     Private currentProvinceId_ As Integer = -1
@@ -39,18 +42,15 @@ Public Class MainWindow
     Private armiesInProvince_ As New List(Of Army)
     Private selectedArmies_ As New List(Of Army)
 
-    ' Map related members
-    Private provinceMap_ As ProvinceMap
     Private countryMap_ As Bitmap
     Private mapScaling_ As Double = 0.0
-    Private mapProjection_ As RobinsonProjection = New RobinsonProjection
 
     ' GUI event handlers
     Private Sub MainWindow_Load(sender As Object, e As EventArgs) Handles Me.Load
         log.WriteLine(LogLevel.Info, "Session started, TODO: version information")
 
-        ' Load province map
-        Dim worldLoader As New OpenGSGLibrary.WorldData.WorldLoader(Of WorldData.CwpProvince, WorldData.CwpCountry)
+        ' Load game data
+        Dim worldLoader As New OpenGSGLibrary.WorldData.WorldLoader(Of CwpProvince, CwpCountry)
         Dim startState As OpenGSGLibrary.WorldData.WorldState =
             worldLoader.CreateStartState("..\..\..\ColdWarPrototype\GameData")
         tickHandler_.ConnectState(startState)
@@ -180,7 +180,7 @@ Public Class MainWindow
     Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
         currentProvinceId_ = mouseProvinceId
         ProvinceName.Text = provinceMap_.GetProvinceName(currentProvinceId_)
-        Dim currentProvince As WorldData.CwpProvince = tickHandler_.GetState().GetProvinceTable(currentProvinceId_)
+        Dim currentProvince As CwpProvince = tickHandler_.GetState().GetProvinceTable(currentProvinceId_)
         ProvincePopulation.Text = Trim(Str(currentProvince.population))
         ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
         ProvinceEducation.Text = Trim(Str(currentProvince.education))
@@ -198,7 +198,7 @@ Public Class MainWindow
 
     Private Sub UpdateCountryInfo(mouseCountryTag As String)
         currentCountryTag_ = mouseCountryTag
-        Dim currentCountry As WorldData.CwpCountry = tickHandler_.GetState().GetCountryTable(mouseCountryTag)
+        Dim currentCountry As CwpCountry = tickHandler_.GetState().GetCountryTable(mouseCountryTag)
         CountryName.Text = currentCountry.longName
         CountryLeader.Text = currentCountry.leader
         CountryGovernment.Text = currentCountry.government
