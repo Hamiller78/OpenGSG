@@ -18,16 +18,17 @@ Imports System.Drawing
 Namespace Map
 
     ''' <summary>
-    ''' Base class for map renderers.
-    ''' Each map renderer should correspond to a map mode in the game.
+    ''' Base class for making maps for different view modes (e.g. political, economical).
+    ''' Each derived class should correspond to a map mode in the game.
+    ''' Maps are stored as System.Drawing.Image objects.
     ''' </summary>
-    Public MustInherit Class MapRenderer
+    Public MustInherit Class ModeMapMaker
 
         Public Sub New(sourceMap As LayerBitmap)
             sourceMap_ = sourceMap
         End Sub
 
-        Public MustOverride Function RenderMap() As Image
+        Public MustOverride Function MakeMap() As Image
 
         Protected sourceMap_ As LayerBitmap
 

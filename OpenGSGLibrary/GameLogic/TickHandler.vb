@@ -30,7 +30,7 @@ Namespace GameLogic
         ''' and associating event handlers. 
         ''' </summary>
         ''' <param name="newState">WorldState to set in TickHandler.</param>
-        Public Sub ConnectState(newState As WorldState)
+        Public Sub ConnectProvinceEventHandlers(newState As WorldState)
             currentWorldState_ = newState
 
             Dim provinceDict As IDictionary(Of Integer, Province) = currentWorldState_.GetProvinceTable()

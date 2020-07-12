@@ -20,6 +20,7 @@ Imports OpenGSGLibrary.GameLogic
 Imports OpenGSGLibrary.Map
 Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.Tools
+Imports ColdWarGameLogic.Simulation
 Imports ColdWarGameLogic.WorldData
 
 Public Class MainWindow
@@ -27,13 +28,9 @@ Public Class MainWindow
     ' Global objects
     Public log As Logger = New Logger("CWPLog.log", Directory.GetCurrentDirectory())
 
-    ' General game data
-    Private tickHandler_ As New TickHandler()
-    Private mapView_ As WorldDataManager = New WorldDataManager()
-    Private gameDate_ = New DateTime(1950, 1, 1)
+    Public Event ProvinceUnderMouseChanged As EventHandler
 
-    Private provinceMap_ As ProvinceMap
-    Private mapProjection_ As RobinsonProjection = New RobinsonProjection
+    Private gameController_ As New MasterController
 
     ' GUI related members
     Private currentProvinceId_ As Integer = -1
@@ -49,20 +46,7 @@ Public Class MainWindow
     Private Sub MainWindow_Load(sender As Object, e As EventArgs) Handles Me.Load
         log.WriteLine(LogLevel.Info, "Session started, TODO: version information")
 
-        ' Load game data
-        Dim worldLoader As New OpenGSGLibrary.WorldData.WorldLoader(Of CwpProvince, CwpCountry)
-        Dim startState As OpenGSGLibrary.WorldData.WorldState =
-            worldLoader.CreateStartState("..\..\..\ColdWarPrototype\GameData")
-        tickHandler_.ConnectState(startState)
-
-        mapView_.LoadAll("..\..\..\ColdWarPrototype\GameData") ' Only map views are still in WorldDataManager
-        provinceMap_ = mapView_.provinceMap
-        '        mapView_.SetAllProvinceHandlers(tickHandler_)  ' TODO: Re-insert setting of event handlers
-
-        ' Render maps
-        Dim MapRenderer = New CountryMapRenderer(provinceMap_)
-        MapRenderer.SetDataTables(startState.GetProvinceTable(), startState.GetCountryTable())
-        countryMap_ = MapRenderer.RenderMap()
+        gameController_.Init()
 
         ' Set map
         SetMapPicture()
@@ -81,6 +65,11 @@ Public Class MainWindow
         Dim mouseProvinceId As Integer = GetProvinceUnderMouse(mapX, mapY)
         If (mouseProvinceId <> -1) And (mouseProvinceId <> currentProvinceId_) Then
             UpdateProvinceInfo(mouseProvinceId)
+        End If
+
+        If mouseCountryTag <> currentCountryTag_ Then
+            UpdateCountryInfo(mouseCountryTag)
+
         End If
 
         Dim mapCoords = New Tuple(Of Double, Double)(mapX - 642, mapY - 362)
@@ -119,7 +108,6 @@ Public Class MainWindow
 
     Private Sub DateButton_Click(sender As Object, e As EventArgs) Handles DateButton.Click
         tickHandler_.FinishTick()
-        gameDate_ = gameDate_.Add(TimeSpan.FromDays(1))
 
         UpdateDateText()
         UpdateCountryInfo(currentCountryTag_)
@@ -176,25 +164,6 @@ Public Class MainWindow
         Dim mouseProvinceId As Integer = provinceMap_.GetProvinceNumber(pixelTuple)
         Return mouseProvinceId
     End Function
-
-    Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
-        currentProvinceId_ = mouseProvinceId
-        ProvinceName.Text = provinceMap_.GetProvinceName(currentProvinceId_)
-        Dim currentProvince As CwpProvince = tickHandler_.GetState().GetProvinceTable(currentProvinceId_)
-        ProvincePopulation.Text = Trim(Str(currentProvince.population))
-        ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
-        ProvinceEducation.Text = Trim(Str(currentProvince.education))
-        ProvinceProduction.Text = currentProvince.production
-        ProvinceTerrain.Text = currentProvince.terrain
-
-        Dim mouseCountryTag As String = currentProvince.GetOwner()
-        ProvinceController.Text = currentProvince.GetController()
-
-        If mouseCountryTag <> currentCountryTag_ Then
-            UpdateCountryInfo(mouseCountryTag)
-            ProvinceOwner.Text = currentCountryTag_
-        End If
-    End Sub
 
     Private Sub UpdateCountryInfo(mouseCountryTag As String)
         currentCountryTag_ = mouseCountryTag

@@ -16,14 +16,16 @@
 Imports System.Drawing
 Imports System.Diagnostics
 
+Imports OpenGSGLibrary.WorldData
+
 Namespace Map
 
     ''' <summary>
-    ''' Map renderer for the country map mode (aka political map).
+    ''' Map mode maker for the country map mode (aka political map).
     ''' The actually used derived province and country classes have to be specified.
     ''' </summary>
-    Public Class CountryMapRenderer
-        Inherits MapRenderer
+    Public Class CountryModeMapMaker
+        Inherits ModeMapMaker
 
         Public Sub New(provinceMap As ProvinceMap)
             MyBase.New(provinceMap)
@@ -44,32 +46,33 @@ Namespace Map
         End Sub
 
         ''' <summary>
-        ''' Renders the country map as an image object.
+        ''' Makes the country map as an image object.
         ''' </summary>
-        ''' <returns>Image object with rendered map.</returns>
-        Public Overrides Function RenderMap() As Image
+        ''' <returns>Image object with country map.</returns>
+        Public Overrides Function MakeMap() As Image
             Dim mapSize As Size = provinceMap_.sourceBitmap.Size
 
-            Dim renderedImage As New Bitmap(mapSize.Width, mapSize.Height, Imaging.PixelFormat.Format32bppArgb)
+            Dim countryMap As New Bitmap(mapSize.Width, mapSize.Height, Imaging.PixelFormat.Format32bppArgb)
             For y = 0 To mapSize.Height - 1
                 For x = 0 To mapSize.Width - 1
-                    ' get country from province color
                     Dim provinceRgb As Tuple(Of Byte, Byte, Byte) = provinceMap_.GetPixelRgb(x, y)
                     Dim provinceId As Integer = provinceMap_.GetProvinceNumber(provinceRgb)
-                    Dim drawColor As Color = Color.AntiqueWhite
-                    If provinceId <> -1 Then
-                        Dim countryTag As String = provinceTable_(provinceId).GetOwner()
-                        ' get country color code
-                        Dim country As WorldData.Country = countryTable_(countryTag)
-                        Dim countryColor As Tuple(Of Byte, Byte, Byte) = country.GetColor()
-                        ' draw pixel in that color in destination map
-                        drawColor = Color.FromArgb(countryColor.Item1, countryColor.Item2, countryColor.Item3)
-                    End If
-                    renderedImage.SetPixel(x, y, drawColor)
+                    countryMap.SetPixel(x, y, GetCountryDrawColor(provinceId))
                 Next
             Next
 
-            Return renderedImage
+            Return countryMap
+        End Function
+
+        Private Function GetCountryDrawColor(provinceId As Integer) As Color
+            Dim drawColor As Color = Color.AntiqueWhite
+            If provinceId <> -1 Then
+                Dim countryTag As String = provinceTable_(provinceId).GetOwner()
+                Dim country As Country = countryTable_(countryTag)
+                Dim countryColor As Tuple(Of Byte, Byte, Byte) = country.GetColor()
+                drawColor = Color.FromArgb(countryColor.Item1, countryColor.Item2, countryColor.Item3)
+            End If
+            Return drawColor
         End Function
 
         Private provinceMap_ As ProvinceMap

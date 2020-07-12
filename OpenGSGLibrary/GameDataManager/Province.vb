@@ -45,6 +45,7 @@ Namespace WorldData
         ''' <param name="fileName"></param>
         ''' <param name="parsedData"></param>
         Public Overrides Sub SetData(fileName As String, parsedData As Lookup(Of String, Object))
+
             MyBase.SetData(fileName, parsedData)
             Dim fileNameParts As String() = GameObjectFactory.ExtractFromFilename(fileName)
             id_ = Val(fileNameParts(0))

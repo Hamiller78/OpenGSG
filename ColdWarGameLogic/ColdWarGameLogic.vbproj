@@ -64,7 +64,7 @@
     <Folder Include="My Project\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameLogic\GameMaster.vb" />
+    <Compile Include="GameLogic\MasterController.vb" />
     <Compile Include="GameWorld\CwpCountry.vb" />
     <Compile Include="GameWorld\CwpProvince.vb" />
     <Compile Include="GameWorld\WorldDataManager.vb" />
@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

@@ -1,0 +1,61 @@
+﻿'    OpenSGSGLibrary is an open-source library for Grand Strategy Games
+'    Copyright (C) 2019-2020  Torben Kneesch
+'
+'    This program is free software: you can redistribute it and/or modify
+'    it under the terms of the GNU General Public License as published by
+'    the Free Software Foundation, either version 3 of the License, or
+'    (at your option) any later version.
+'
+'    This program is distributed in the hope that it will be useful,
+'    but WITHOUT ANY WARRANTY; without even the implied warranty of
+'    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'    GNU General Public License for more details.
+'
+'    You should have received a copy of the GNU General Public License
+'    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+Imports System.Drawing
+
+Imports OpenGSGLibrary.WorldData
+Imports OpenGSGLibrary.GameLogic
+Imports OpenGSGLibrary.Map
+Imports ColdWarGameLogic.WorldData
+
+Namespace Simulation
+
+    Public Class MasterController
+
+        Private Const GAMEDATA_PATH As String = "..\..\..\ColdWarPrototype\GameData"
+
+        Public ReadOnly worldData As New WorldDataManager
+
+        Public Sub Init()
+            Dim startState As OpenGSGLibrary.WorldData.WorldState =
+              worldLoader_.CreateStartState(GAMEDATA_PATH)
+            tickHandler_.ConnectProvinceEventHandlers(startState)  'TODO: Set state in separate method
+
+            worldData_.LoadAll(GAMEDATA_PATH) ' Only map views are still in WorldDataManager
+
+            UpdateCountryMap()
+
+        End Sub
+
+        Private Sub UpdateCountryMap()
+            Dim currentState As WorldState = tickHandler_.GetState()
+            Dim ModeMapRenderer = New CountryModeMapMaker(currentState.GetProvinceTable())
+            ModeMapRenderer.SetDataTables(currentState.GetProvinceTable(), currentState.GetCountryTable())
+            countryModeMap_ = ModeMapRenderer.MakeMap()
+        End Sub
+
+        Private worldLoader_ As New OpenGSGLibrary.WorldData.WorldLoader(Of CwpProvince, CwpCountry)
+        Private worldData_ As WorldDataManager = New WorldDataManager()
+
+        Private tickHandler_ As New TickHandler
+
+        Private countryModeMap_ As Image = Nothing
+        Private mapProjection_ As RobinsonProjection = New RobinsonProjection
+
+
+
+    End Class
+
+End Namespace
