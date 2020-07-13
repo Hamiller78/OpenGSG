@@ -13,7 +13,7 @@
 '
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-Imports System.Device.Location
+
 Imports System.IO
 
 Imports OpenGSGLibrary.GameLogic
@@ -35,9 +35,6 @@ Public Class MainWindow
     ' GUI related members
     Private currentProvinceId_ As Integer = -1
     Private currentCountryTag_ As String = ""
-    Private isChoosingTarget_ As Boolean = False
-    Private armiesInProvince_ As New List(Of Army)
-    Private selectedArmies_ As New List(Of Army)
 
     Private countryMap_ As Bitmap
     Private mapScaling_ As Double = 0.0
@@ -50,7 +47,6 @@ Public Class MainWindow
 
         ' Set map
         SetMapPicture()
-        mapProjection_.SetCapitalR(720)
 
         ' Set text of date button
         UpdateDateText()
@@ -72,9 +68,7 @@ Public Class MainWindow
 
         End If
 
-        Dim mapCoords = New Tuple(Of Double, Double)(mapX - 642, mapY - 362)
-        Dim mouseGeoCoord As GeoCoordinate = mapProjection_.getGlobeCoordinates(mapCoords)
-        CoordinateDisplay.Text = mouseGeoCoord.ToString()
+
 
     End Sub
 
@@ -129,66 +123,13 @@ Public Class MainWindow
     End Sub
 
     ' helper functions
-    Private Sub SetMapPicture()
-        Dim renderedBitmap As Bitmap
 
-        ' check if the required stuff is loaded
-        If IsNothing(provinceMap_) Then Return
-
-        ' Set new map
-        If MapModePolitical.Checked Then
-            renderedBitmap = countryMap_
-        Else
-            renderedBitmap = provinceMap_.sourceBitmap
-        End If
-
-        ' Resize map for screen output
-        Dim sourceSize As Size = provinceMap_.sourceBitmap.Size
-        SetMapScalingFactor(MapPictureBox.Size, sourceSize)
-        Dim newSize As Size = New Size(sourceSize.Width / mapScaling_, sourceSize.Height / mapScaling_)
-        Dim resizedBitmap As Bitmap = New Bitmap(renderedBitmap, newSize)
-
-        ' Set the resized map in PictureBox
-        MapPictureBox.Image = resizedBitmap
-        MapPictureBox.Invalidate()
-    End Sub
-
-    Private Sub SetMapScalingFactor(newSize As Size, originalSize As Size)
-        Dim xFactor As Double = originalSize.Width / newSize.Width
-        Dim yFactor As Double = originalSize.Height / newSize.Height
-        mapScaling_ = Math.Max(xFactor, yFactor)
-    End Sub
 
     Private Function GetProvinceUnderMouse(mapX As Integer, mapY As Integer) As Integer
         Dim pixelTuple As Tuple(Of Byte, Byte, Byte) = provinceMap_.GetPixelRgb(mapX, mapY)
         Dim mouseProvinceId As Integer = provinceMap_.GetProvinceNumber(pixelTuple)
         Return mouseProvinceId
     End Function
-
-    Private Sub UpdateCountryInfo(mouseCountryTag As String)
-        currentCountryTag_ = mouseCountryTag
-        Dim currentCountry As CwpCountry = tickHandler_.GetState().GetCountryTable(mouseCountryTag)
-        CountryName.Text = currentCountry.longName
-        CountryLeader.Text = currentCountry.leader
-        CountryGovernment.Text = currentCountry.government
-        CountryAllegiance.Text = currentCountry.allegiance
-        '        CountryProduction.Text = tickHandler_.GetState().GetCountryProduction(currentCountryTag_)
-        FlagPictureBox.Image = currentCountry.flag
-    End Sub
-
-    Private Sub UpdateArmyListBox(mouseProvinceId As Integer)
-        armiesInProvince_ = tickHandler_.GetState().GetArmyManager().GetArmiesInProvince(mouseProvinceId)
-
-        ArmyListBox.Items.Clear()
-        ArmyListBox.BeginUpdate()
-        If armiesInProvince_ IsNot Nothing Then
-            For Each Army In armiesInProvince_
-                ArmyListBox.Items.Add(Army.ToString())
-            Next
-        End If
-        ArmyListBox.EndUpdate()
-
-    End Sub
 
     Private Sub MoveSelectedArmies(targetProvinceId As Integer)
         For Each movingArmy In selectedArmies_

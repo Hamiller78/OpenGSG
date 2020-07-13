@@ -14,12 +14,12 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Imports ColdWarGameLogic.WorldData
+Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.WorldData
 
 Namespace MainWindowView
 
-    Public Class ProvinceInfo
+    Public Class ArmyList
 
         Public Sub New(ByRef motherWindow As MainWindow, ByRef viewedState As WorldState)
             motherWindow_ = motherWindow
@@ -30,18 +30,21 @@ Namespace MainWindowView
         Private viewedState_ As WorldState = Nothing
         Private currentProvinceId_ As Integer
 
-        Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
-            currentProvinceId_ = mouseProvinceId
-            Dim currentProvince As CwpProvince = viewedState_.GetProvinceTable(currentProvinceId_)
+        Private isChoosingTarget_ As Boolean = False
+        Private armiesInProvince_ As New List(Of Army)
+        Private selectedArmies_ As New List(Of Army)
 
-            motherWindow_.ProvinceName.Text = currentProvince.GetName()
-            motherWindow_.ProvincePopulation.Text = Trim(Str(currentProvince.population))
-            motherWindow_.ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
-            motherWindow_.ProvinceEducation.Text = Trim(Str(currentProvince.education))
-            motherWindow_.ProvinceProduction.Text = currentProvince.production
-            motherWindow_.ProvinceTerrain.Text = currentProvince.terrain
-            motherWindow_.ProvinceOwner.Text = currentProvince.GetOwner()
-            motherWindow_.ProvinceController.Text = currentProvince.GetController()
+        Private Sub UpdateArmyListBox(mouseProvinceId As Integer)
+            armiesInProvince_ = viewedState_.GetArmyManager().GetArmiesInProvince(mouseProvinceId)
+
+            motherWindow_.ArmyListBox.Items.Clear()
+            motherWindow_.ArmyListBox.BeginUpdate()
+            If armiesInProvince_ IsNot Nothing Then
+                For Each Army In armiesInProvince_
+                    motherWindow_.ArmyListBox.Items.Add(Army.ToString())
+                Next
+            End If
+            motherWindow_.ArmyListBox.EndUpdate()
 
         End Sub
 

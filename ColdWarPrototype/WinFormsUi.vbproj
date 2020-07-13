@@ -95,7 +95,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Views\ArmyList.vb" />
+    <Compile Include="Views\CountryInfo.vb" />
+    <Compile Include="Views\GeoCoordinates.vb" />
     <Compile Include="Views\ProvinceInfo.vb" />
+    <Compile Include="Views\WorldMap.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainWindow.resx">

@@ -19,7 +19,7 @@ Imports OpenGSGLibrary.WorldData
 
 Namespace MainWindowView
 
-    Public Class ProvinceInfo
+    Public Class CountryInfo
 
         Public Sub New(ByRef motherWindow As MainWindow, ByRef viewedState As WorldState)
             motherWindow_ = motherWindow
@@ -28,21 +28,17 @@ Namespace MainWindowView
 
         Private motherWindow_ As MainWindow = Nothing
         Private viewedState_ As WorldState = Nothing
-        Private currentProvinceId_ As Integer
+        Private currentCountryTag_ As String
 
-        Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
-            currentProvinceId_ = mouseProvinceId
-            Dim currentProvince As CwpProvince = viewedState_.GetProvinceTable(currentProvinceId_)
-
-            motherWindow_.ProvinceName.Text = currentProvince.GetName()
-            motherWindow_.ProvincePopulation.Text = Trim(Str(currentProvince.population))
-            motherWindow_.ProvinceIndustrialization.Text = Trim(Str(currentProvince.industrialization))
-            motherWindow_.ProvinceEducation.Text = Trim(Str(currentProvince.education))
-            motherWindow_.ProvinceProduction.Text = currentProvince.production
-            motherWindow_.ProvinceTerrain.Text = currentProvince.terrain
-            motherWindow_.ProvinceOwner.Text = currentProvince.GetOwner()
-            motherWindow_.ProvinceController.Text = currentProvince.GetController()
-
+        Private Sub UpdateCountryInfo(mouseCountryTag As String)
+            currentCountryTag_ = mouseCountryTag
+            Dim currentCountry As CwpCountry = viewedState_.GetCountryTable(mouseCountryTag)
+            motherWindow_.CountryName.Text = currentCountry.longName
+            motherWindow_.CountryLeader.Text = currentCountry.leader
+            motherWindow_.CountryGovernment.Text = currentCountry.government
+            motherWindow_.CountryAllegiance.Text = currentCountry.allegiance
+            '        CountryProduction.Text = tickHandler_.GetState().GetCountryProduction(currentCountryTag_)
+            motherWindow_.FlagPictureBox.Image = currentCountry.flag
         End Sub
 
     End Class

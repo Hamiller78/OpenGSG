@@ -35,26 +35,12 @@ Namespace Simulation
 
             worldData_.LoadAll(GAMEDATA_PATH) ' Only map views are still in WorldDataManager
 
-            UpdateCountryMap()
-
-        End Sub
-
-        Private Sub UpdateCountryMap()
-            Dim currentState As WorldState = tickHandler_.GetState()
-            Dim ModeMapRenderer = New CountryModeMapMaker(currentState.GetProvinceTable())
-            ModeMapRenderer.SetDataTables(currentState.GetProvinceTable(), currentState.GetCountryTable())
-            countryModeMap_ = ModeMapRenderer.MakeMap()
         End Sub
 
         Private worldLoader_ As New OpenGSGLibrary.WorldData.WorldLoader(Of CwpProvince, CwpCountry)
         Private worldData_ As WorldDataManager = New WorldDataManager()
 
         Private tickHandler_ As New TickHandler
-
-        Private countryModeMap_ As Image = Nothing
-        Private mapProjection_ As RobinsonProjection = New RobinsonProjection
-
-
 
     End Class
 
