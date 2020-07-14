@@ -37,6 +37,10 @@ Namespace Simulation
 
         End Sub
 
+        Public Function GetWorldManager() As WorldDataManager
+            Return worldData_
+        End Function
+
         Private worldLoader_ As New OpenGSGLibrary.WorldData.WorldLoader(Of CwpProvince, CwpCountry)
         Private worldData_ As WorldDataManager = New WorldDataManager()
 

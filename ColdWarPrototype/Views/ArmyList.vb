@@ -21,21 +21,12 @@ Namespace MainWindowView
 
     Public Class ArmyList
 
-        Public Sub New(ByRef motherWindow As MainWindow, ByRef viewedState As WorldState)
+        Public Sub New(ByRef motherWindow As MainWindow)
             motherWindow_ = motherWindow
-            viewedState_ = viewedState
         End Sub
 
-        Private motherWindow_ As MainWindow = Nothing
-        Private viewedState_ As WorldState = Nothing
-        Private currentProvinceId_ As Integer
-
-        Private isChoosingTarget_ As Boolean = False
-        Private armiesInProvince_ As New List(Of Army)
-        Private selectedArmies_ As New List(Of Army)
-
-        Private Sub UpdateArmyListBox(mouseProvinceId As Integer)
-            armiesInProvince_ = viewedState_.GetArmyManager().GetArmiesInProvince(mouseProvinceId)
+        Public Sub UpdateArmyListBox(ByRef currentState As WorldState, mouseProvinceId As Integer)
+            armiesInProvince_ = currentState.GetArmyManager().GetArmiesInProvince(mouseProvinceId)
 
             motherWindow_.ArmyListBox.Items.Clear()
             motherWindow_.ArmyListBox.BeginUpdate()
@@ -47,6 +38,13 @@ Namespace MainWindowView
             motherWindow_.ArmyListBox.EndUpdate()
 
         End Sub
+
+        Private motherWindow_ As MainWindow = Nothing
+        Private currentProvinceId_ As Integer
+
+        Private isChoosingTarget_ As Boolean = False
+        Private armiesInProvince_ As New List(Of Army)
+        Private selectedArmies_ As New List(Of Army)
 
     End Class
 

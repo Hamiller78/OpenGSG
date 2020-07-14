@@ -21,18 +21,13 @@ Namespace MainWindowView
 
     Public Class ProvinceInfo
 
-        Public Sub New(ByRef motherWindow As MainWindow, ByRef viewedState As WorldState)
+        Public Sub New(ByRef motherWindow As MainWindow)
             motherWindow_ = motherWindow
-            viewedState_ = viewedState
         End Sub
 
-        Private motherWindow_ As MainWindow = Nothing
-        Private viewedState_ As WorldState = Nothing
-        Private currentProvinceId_ As Integer
-
-        Private Sub UpdateProvinceInfo(mouseProvinceId As Integer)
-            currentProvinceId_ = mouseProvinceId
-            Dim currentProvince As CwpProvince = viewedState_.GetProvinceTable(currentProvinceId_)
+        Public Sub UpdateProvinceInfo(ByRef currentState As WorldState, provinceId As Integer)
+            currentProvinceId_ = provinceId
+            Dim currentProvince As CwpProvince = currentState.GetProvinceTable(currentProvinceId_)
 
             motherWindow_.ProvinceName.Text = currentProvince.GetName()
             motherWindow_.ProvincePopulation.Text = Trim(Str(currentProvince.population))
@@ -44,6 +39,9 @@ Namespace MainWindowView
             motherWindow_.ProvinceController.Text = currentProvince.GetController()
 
         End Sub
+
+        Private motherWindow_ As MainWindow = Nothing
+        Private currentProvinceId_ As Integer
 
     End Class
 

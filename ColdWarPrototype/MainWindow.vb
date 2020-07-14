@@ -20,6 +20,7 @@ Imports OpenGSGLibrary.GameLogic
 Imports OpenGSGLibrary.Map
 Imports OpenGSGLibrary.Military
 Imports OpenGSGLibrary.Tools
+Imports OpenGSGLibrary.WorldData
 Imports ColdWarGameLogic.Simulation
 Imports ColdWarGameLogic.WorldData
 
@@ -39,6 +40,13 @@ Public Class MainWindow
     Private countryMap_ As Bitmap
     Private mapScaling_ As Double = 0.0
 
+    ' Views
+    Private provinceInfo_ As MainWindowView.ProvinceInfo = Nothing
+    Private countryInfo_ As MainWindowView.CountryInfo = Nothing
+    Private armyBox_ As MainWindowView.ArmyList = Nothing
+    Private coordinateView_ As MainWindowView.GeoCoordinates = Nothing
+    Private worldMapView_ As MainWindowView.WorldMap = Nothing
+
     ' GUI event handlers
     Private Sub MainWindow_Load(sender As Object, e As EventArgs) Handles Me.Load
         log.WriteLine(LogLevel.Info, "Session started, TODO: version information")
@@ -52,6 +60,17 @@ Public Class MainWindow
         UpdateDateText()
 
         log.WriteLine(LogLevel.Info, "Main window loaded")
+    End Sub
+
+    Private Sub SetupViews()
+
+        provinceInfo_ = New MainWindowView.ProvinceInfo(Me)
+        countryInfo_ = New MainWindowView.CountryInfo(Me)
+        armyBox_ = New MainWindowView.ArmyList(Me)
+        coordinateView_ = New MainWindowView.GeoCoordinates(Me)
+
+        worldMapView_ = New MainWindowView.WorldMap(Me)
+        worldMapView_.SetSourceProvinceMap(gameController_.GetWorldManager().provinceMap.sourceBitmap)  'ugly
     End Sub
 
     Private Sub MapPictureBox_MouseMove(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseMove

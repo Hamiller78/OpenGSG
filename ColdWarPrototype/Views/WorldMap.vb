@@ -23,9 +23,8 @@ Namespace MainWindowView
 
         ' TODO: ModeMapMaker belong into this class, they are only for display
 
-        Public Sub New(ByRef motherWindow As MainWindow, ByRef viewedState As WorldState)
+        Public Sub New(ByRef motherWindow As MainWindow)
             motherWindow_ = motherWindow
-            viewedState_ = viewedState
         End Sub
 
         Public Sub SetSourceProvinceMap(newProvinceMap As ProvinceMap)
@@ -69,9 +68,9 @@ Namespace MainWindowView
             mapScaling_ = Math.Max(xFactor, yFactor)
         End Sub
 
-        Private Sub UpdateCountryMap()
-            Dim ModeMapRenderer = New CountryModeMapMaker(viewedState_.GetProvinceTable())
-            ModeMapRenderer.SetDataTables(viewedState_.GetProvinceTable(), viewedState_.GetCountryTable())
+        Private Sub UpdateCountryMap(ByRef currentState As WorldState)
+            Dim ModeMapRenderer = New CountryModeMapMaker(currentState.GetProvinceTable())
+            ModeMapRenderer.SetDataTables(currentState.GetProvinceTable(), currentState.GetCountryTable())
             countryModeMap_ = ModeMapRenderer.MakeMap()
         End Sub
 

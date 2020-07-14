@@ -21,18 +21,13 @@ Namespace MainWindowView
 
     Public Class CountryInfo
 
-        Public Sub New(ByRef motherWindow As MainWindow, ByRef viewedState As WorldState)
+        Public Sub New(ByRef motherWindow As MainWindow)
             motherWindow_ = motherWindow
-            viewedState_ = viewedState
         End Sub
 
-        Private motherWindow_ As MainWindow = Nothing
-        Private viewedState_ As WorldState = Nothing
-        Private currentCountryTag_ As String
-
-        Private Sub UpdateCountryInfo(mouseCountryTag As String)
-            currentCountryTag_ = mouseCountryTag
-            Dim currentCountry As CwpCountry = viewedState_.GetCountryTable(mouseCountryTag)
+        Public Sub UpdateCountryInfo(ByRef currentState As WorldState, ByRef countryTag As String)
+            currentCountryTag_ = countryTag
+            Dim currentCountry As CwpCountry = currentState.GetCountryTable(countryTag)
             motherWindow_.CountryName.Text = currentCountry.longName
             motherWindow_.CountryLeader.Text = currentCountry.leader
             motherWindow_.CountryGovernment.Text = currentCountry.government
@@ -40,6 +35,9 @@ Namespace MainWindowView
             '        CountryProduction.Text = tickHandler_.GetState().GetCountryProduction(currentCountryTag_)
             motherWindow_.FlagPictureBox.Image = currentCountry.flag
         End Sub
+
+        Private motherWindow_ As MainWindow = Nothing
+        Private currentCountryTag_ As String
 
     End Class
 
