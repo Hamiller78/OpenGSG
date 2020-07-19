@@ -15,6 +15,8 @@
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Imports System.Drawing
 
+Imports OpenGSGLibrary.WorldData
+
 Namespace Map
 
     ''' <summary>
@@ -28,7 +30,7 @@ Namespace Map
             sourceMap_ = sourceMap
         End Sub
 
-        Public MustOverride Function MakeMap() As Image
+        Public MustOverride Function MakeMap(ByRef sourceState As WorldState) As Image
 
         Protected sourceMap_ As LayerBitmap
 

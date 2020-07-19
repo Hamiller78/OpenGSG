@@ -27,24 +27,22 @@ Namespace Simulation
         Private Const GAMEDATA_PATH As String = "..\..\..\ColdWarPrototype\GameData"
 
         Public ReadOnly worldData As New WorldDataManager
+        Public ReadOnly tickHandler As New TickHandler
 
         Public Sub Init()
             Dim startState As OpenGSGLibrary.WorldData.WorldState =
               worldLoader_.CreateStartState(GAMEDATA_PATH)
-            tickHandler_.ConnectProvinceEventHandlers(startState)  'TODO: Set state in separate method
+            tickHandler.ConnectProvinceEventHandlers(startState)  'TODO: Set state in separate method
 
-            worldData_.LoadAll(GAMEDATA_PATH) ' Only map views are still in WorldDataManager
+            worldData.LoadAll(GAMEDATA_PATH) ' Only map views are still in WorldDataManager
 
         End Sub
 
-        Public Function GetWorldManager() As WorldDataManager
-            Return worldData_
+        Public Function GetWorldManager() As WorldDataManager  'TODO: is public property now, this is unnecessary
+            Return worldData
         End Function
 
         Private worldLoader_ As New OpenGSGLibrary.WorldData.WorldLoader(Of CwpProvince, CwpCountry)
-        Private worldData_ As WorldDataManager = New WorldDataManager()
-
-        Private tickHandler_ As New TickHandler
 
     End Class
 

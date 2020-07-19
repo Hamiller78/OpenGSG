@@ -14,6 +14,7 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+Imports ColdWarGameLogic.Simulation
 Imports ColdWarGameLogic.WorldData
 Imports OpenGSGLibrary.WorldData
 
@@ -21,8 +22,13 @@ Namespace MainWindowView
 
     Public Class ProvinceInfo
 
-        Public Sub New(ByRef motherWindow As MainWindow)
+        Public Sub New(ByRef motherWindow As MainWindow, ByRef gameController As MasterController)
             motherWindow_ = motherWindow
+            gameController_ = gameController
+        End Sub
+
+        Public Sub HandleProvinceChanged(sender As Object, e As Gui.ProvinceEventArgs)
+            UpdateProvinceInfo(gameController_.tickHandler.GetState(), e.provinceId)
         End Sub
 
         Public Sub UpdateProvinceInfo(ByRef currentState As WorldState, provinceId As Integer)
@@ -41,6 +47,7 @@ Namespace MainWindowView
         End Sub
 
         Private motherWindow_ As MainWindow = Nothing
+        Private gameController_ As MasterController = Nothing
         Private currentProvinceId_ As Integer
 
     End Class
