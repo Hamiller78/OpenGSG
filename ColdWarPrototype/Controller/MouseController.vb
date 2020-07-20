@@ -59,7 +59,7 @@ Namespace Gui
 
         Private Function GetCountryTagFromProvinceId(provinceId As Integer) As String
             Dim provTable As IDictionary(Of Integer, Province) = GetCurrentProvinceTable()
-            If provinceId < 0 Or provinceId >= provTable.Count Then
+            If provinceId < 0 Or provinceId > provTable.Count Then
                 Return String.Empty
             End If
             Dim prov As Province = provTable(provinceId)

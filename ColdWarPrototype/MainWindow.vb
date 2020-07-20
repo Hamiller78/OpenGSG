@@ -52,7 +52,7 @@ Public Class MainWindow
     Private Sub SetupViews()
 
         provinceInfo_ = New MainWindowView.ProvinceInfo(Me, gameController_)
-        countryInfo_ = New MainWindowView.CountryInfo(Me)
+        countryInfo_ = New MainWindowView.CountryInfo(Me, gameController_)
         armyBox_ = New MainWindowView.ArmyList(Me)
         coordinateView_ = New MainWindowView.GeoCoordinates(Me)
 
@@ -68,6 +68,7 @@ Public Class MainWindow
 
     Private Sub SetupEventHandlers()
         AddHandler mouseController_.HoveredProvinceChanged, AddressOf provinceInfo_.HandleProvinceChanged
+        AddHandler mouseController_.HoveredCountryChanged, AddressOf countryInfo_.HandleCountryChanged
     End Sub
 
     Private Sub MapPictureBox_MouseMove(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseMove

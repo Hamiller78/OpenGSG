@@ -14,6 +14,7 @@
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+Imports ColdWarGameLogic.Simulation
 Imports ColdWarGameLogic.WorldData
 Imports OpenGSGLibrary.WorldData
 
@@ -21,8 +22,13 @@ Namespace MainWindowView
 
     Public Class CountryInfo
 
-        Public Sub New(ByRef motherWindow As MainWindow)
+        Public Sub New(ByRef motherWindow As MainWindow, ByRef gameController As MasterController)
             motherWindow_ = motherWindow
+            gameController_ = gameController
+        End Sub
+
+        Public Sub HandleCountryChanged(sender As Object, e As Gui.CountryEventArgs)
+            UpdateCountryInfo(gameController_.tickHandler.GetState(), e.countryTag)
         End Sub
 
         Public Sub UpdateCountryInfo(ByRef currentState As WorldState, ByRef countryTag As String)
@@ -37,6 +43,7 @@ Namespace MainWindowView
         End Sub
 
         Private motherWindow_ As MainWindow = Nothing
+        Private gameController_ As MasterController = Nothing
         Private currentCountryTag_ As String
 
     End Class
