@@ -31,6 +31,10 @@ Namespace MainWindowView
             UpdateCountryInfo(gameController_.tickHandler.GetState(), e.countryTag)
         End Sub
 
+        Public Sub UpdateCurrentCountry(ByRef currentState As WorldState)
+            UpdateCountryInfo(currentState, currentCountryTag_)
+        End Sub
+
         Public Sub UpdateCountryInfo(ByRef currentState As WorldState, ByRef countryTag As String)
             currentCountryTag_ = countryTag
             Dim currentCountry As CwpCountry = currentState.GetCountryTable(countryTag)

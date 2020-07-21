@@ -42,6 +42,11 @@ Namespace Simulation
             Return worldData
         End Function
 
+        Public Function GetGameDateTime() As DateTime
+            Dim elapsedTimespan As New TimeSpan(tickHandler.GetCurrentTick(), 0, 0, 0)
+            Return New DateTime(1950, 1, 1) + elapsedTimespan
+        End Function
+
         Private worldLoader_ As New OpenGSGLibrary.WorldData.WorldLoader(Of CwpProvince, CwpCountry)
 
     End Class

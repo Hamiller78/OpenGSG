@@ -46,6 +46,8 @@ Public Class MainWindow
         SetupControllers()
         SetupEventHandlers()
 
+        UpdateDateText()
+
         log.WriteLine(LogLevel.Info, "Main window loaded")
     End Sub
 
@@ -103,13 +105,13 @@ Public Class MainWindow
     '        SetMapPicture()
     '    End Sub
 
-    '    Private Sub DateButton_Click(sender As Object, e As EventArgs) Handles DateButton.Click
-    '        tickHandler_.FinishTick()
-    '
-    '        UpdateDateText()
-    '        UpdateCountryInfo(currentCountryTag_)
-    '        UpdateProvinceInfo(currentProvinceId_)
-    '    End Sub
+    Private Sub DateButton_Click(sender As Object, e As EventArgs) Handles DateButton.Click
+        gameController_.tickHandler.FinishTick()
+
+        UpdateDateText()
+        provinceInfo_.UpdateCurrentProvince(gameController_.tickHandler.GetState())
+        countryInfo_.UpdateCurrentCountry(gameController_.tickHandler.GetState())
+    End Sub
 
     '    Private Sub MoveArmiesButton_Click(sender As Object, e As EventArgs) Handles MoveArmiesButton.Click
     '        Dim selectedArmyIndices As ListBox.SelectedIndexCollection = ArmyListBox.SelectedIndices
@@ -133,9 +135,9 @@ Public Class MainWindow
     '            tickHandler_.GetState().GetArmyManager().MoveArmy(movingArmy, targetProvinceId)
     '        Next
     '    End Sub
-    '
-    '    Private Sub UpdateDateText()
-    '        DateButton.Text = gameDate_.ToString()
-    '    End Sub
+
+    Private Sub UpdateDateText()
+        DateButton.Text = gameController_.GetGameDateTime().ToString()
+    End Sub
 
 End Class

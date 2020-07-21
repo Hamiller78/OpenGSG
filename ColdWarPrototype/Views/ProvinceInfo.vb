@@ -31,6 +31,10 @@ Namespace MainWindowView
             UpdateProvinceInfo(gameController_.tickHandler.GetState(), e.provinceId)
         End Sub
 
+        Public Sub UpdateCurrentProvince(ByRef currentState As WorldState)
+            UpdateProvinceInfo(currentState, currentProvinceId_)
+        End Sub
+
         Public Sub UpdateProvinceInfo(ByRef currentState As WorldState, provinceId As Integer)
             currentProvinceId_ = provinceId
             Dim currentProvince As CwpProvince = currentState.GetProvinceTable(currentProvinceId_)

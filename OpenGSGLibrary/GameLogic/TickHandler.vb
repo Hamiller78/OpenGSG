@@ -23,7 +23,7 @@ Namespace GameLogic
 
         Private playerManager_ As New PlayerManager()
         Private currentWorldState_ As WorldState
-        Private currentTick_ As Integer = 0
+        Private currentTick_ As Long = 0
 
         ''' <summary>
         ''' Connects world state to tick handler which includes setting the state in TickHandlers
@@ -82,6 +82,15 @@ Namespace GameLogic
             RaiseEvent TickDone(Me, New TickEventArgs(currentTick_))
 
         End Sub
+
+        ''' <summary>
+        ''' Gets the current tick number.
+        ''' Conversion to a date is the responsibility of the game-specific logic.
+        ''' </summary>
+        ''' <returns>Current tick as a long integer.</returns>
+        Public Function GetCurrentTick() As Long
+            Return currentTick_
+        End Function
 
     End Class
 
