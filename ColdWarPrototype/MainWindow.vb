@@ -60,6 +60,7 @@ Public Class MainWindow
 
         worldMapView_ = New MainWindowView.WorldMap(Me)
         worldMapView_.SetSourceProvinceMap(gameController_.GetWorldManager().provinceMap)  'ugly
+        worldMapView_.UpdateCountryMap(gameController_.tickHandler.GetState())             'not much better
     End Sub
 
     Private Sub SetupControllers()
@@ -75,6 +76,14 @@ Public Class MainWindow
 
     Private Sub MapPictureBox_MouseMove(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseMove
         mouseController_.HandleMouseMovedOverMap(e)
+    End Sub
+
+    Private Sub MapModePolitical_CheckedChanged(sender As Object, e As EventArgs) Handles MapModePolitical.CheckedChanged
+        worldMapView_?.SetMapPicture()
+    End Sub
+
+    Private Sub MapModeRaw_CheckedChanged(sender As Object, e As EventArgs) Handles MapModeRaw.CheckedChanged
+        worldMapView_?.SetMapPicture()
     End Sub
 
     '    Private Sub MapPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles MapPictureBox.MouseClick
@@ -95,14 +104,6 @@ Public Class MainWindow
     '            UpdateArmyListBox(mouseProvinceId)
     '        End If
     '
-    '    End Sub
-
-    '    Private Sub MapModePolitical_CheckedChanged(sender As Object, e As EventArgs) Handles MapModePolitical.CheckedChanged
-    '        SetMapPicture()
-    '    End Sub
-    '
-    '    Private Sub MapModeRaw_CheckedChanged(sender As Object, e As EventArgs) Handles MapModeRaw.CheckedChanged
-    '        SetMapPicture()
     '    End Sub
 
     Private Sub DateButton_Click(sender As Object, e As EventArgs) Handles DateButton.Click

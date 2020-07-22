@@ -21,6 +21,13 @@ Namespace MainWindowView
 
     Public Class WorldMap
 
+        Private motherWindow_ As MainWindow
+        Private viewedState_ As WorldState = Nothing
+
+        Private provinceMap_ As ProvinceMap = Nothing
+        Private countryModeMap_ As Image = Nothing
+        Private mapScaling_ As Double = 0.0
+
         Public Sub New(ByRef motherWindow As MainWindow)
             motherWindow_ = motherWindow
         End Sub
@@ -28,6 +35,11 @@ Namespace MainWindowView
         Public Sub SetSourceProvinceMap(newProvinceMap As ProvinceMap)
             provinceMap_ = newProvinceMap
             SetMapPicture()
+        End Sub
+
+        Public Sub UpdateCountryMap(ByRef currentState As WorldState)
+            Dim ModeMapRenderer = New CountryModeMapMaker(provinceMap_)
+            countryModeMap_ = ModeMapRenderer.MakeMap(currentState)
         End Sub
 
         Public Sub SetMapPicture()
@@ -54,22 +66,10 @@ Namespace MainWindowView
             motherWindow_.MapPictureBox.Invalidate()
         End Sub
 
-        Private motherWindow_ As MainWindow
-        Private viewedState_ As WorldState = Nothing
-
-        Private provinceMap_ As ProvinceMap = Nothing
-        Private countryModeMap_ As Image = Nothing
-        Private mapScaling_ As Double = 0.0
-
         Private Sub SetMapScalingFactor(newSize As Size, originalSize As Size)
             Dim xFactor As Double = originalSize.Width / newSize.Width
             Dim yFactor As Double = originalSize.Height / newSize.Height
             mapScaling_ = Math.Max(xFactor, yFactor)
-        End Sub
-
-        Private Sub UpdateCountryMap(ByRef currentState As WorldState)
-            Dim ModeMapRenderer = New CountryModeMapMaker(currentState.GetProvinceTable())
-            countryModeMap_ = ModeMapRenderer.MakeMap(currentState)
         End Sub
 
     End Class
