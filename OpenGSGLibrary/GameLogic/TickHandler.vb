@@ -1,5 +1,5 @@
 ﻿'    OpenSGSGLibrary is an open-source library for Grand Strategy Games
-'    Copyright (C) 2019  Torben Kneesch
+'    Copyright (C) 2020  Torben Kneesch
 '
 '    This program is free software: you can redistribute it and/or modify
 '    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
 '
 '    You should have received a copy of the GNU General Public License
 '    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 Imports OpenGSGLibrary.WorldData
 
 Namespace GameLogic
@@ -24,14 +23,14 @@ Namespace GameLogic
 
         Private playerManager_ As New PlayerManager()
         Private currentWorldState_ As WorldState
-        Private currentTick_ As Integer = 0
+        Private currentTick_ As Long = 0
 
         ''' <summary>
         ''' Connects world state to tick handler which includes setting the state in TickHandlers
         ''' and associating event handlers. 
         ''' </summary>
         ''' <param name="newState">WorldState to set in TickHandler.</param>
-        Public Sub ConnectState(newState As WorldState)
+        Public Sub ConnectProvinceEventHandlers(newState As WorldState)
             currentWorldState_ = newState
 
             Dim provinceDict As IDictionary(Of Integer, Province) = currentWorldState_.GetProvinceTable()
@@ -83,6 +82,15 @@ Namespace GameLogic
             RaiseEvent TickDone(Me, New TickEventArgs(currentTick_))
 
         End Sub
+
+        ''' <summary>
+        ''' Gets the current tick number.
+        ''' Conversion to a date is the responsibility of the game-specific logic.
+        ''' </summary>
+        ''' <returns>Current tick as a long integer.</returns>
+        Public Function GetCurrentTick() As Long
+            Return currentTick_
+        End Function
 
     End Class
 

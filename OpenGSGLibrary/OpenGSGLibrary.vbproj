@@ -105,10 +105,10 @@
     <Compile Include="Orders\Order.vb" />
     <Compile Include="Tools\GlobalLog.vb" />
     <Compile Include="Tools\Logger.vb" />
-    <Compile Include="WorldMap\CountryMapRenderer.vb" />
+    <Compile Include="WorldMap\CountryModeMapMaker.vb" />
     <Compile Include="WorldMap\LayerBitmap.vb" />
     <Compile Include="WorldMap\Navigator.vb" />
-    <Compile Include="WorldMap\MapRenderer.vb" />
+    <Compile Include="WorldMap\ModeMapMaker.vb" />
     <Compile Include="WorldMap\Projection.vb" />
     <Compile Include="WorldMap\ProvinceMap.vb" />
     <Compile Include="WorldMap\RobinsonProjection.vb" />
@@ -122,6 +122,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\_vs\GSGPrototypes.sln.licenseheader">
+      <Link>GSGPrototypes.sln.licenseheader</Link>
+    </None>
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
