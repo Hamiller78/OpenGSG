@@ -22,7 +22,7 @@ Namespace Map
     ''' </summary>
     Public Class LayerBitmap
 
-        Public ReadOnly Property sourceBitmap
+        Public ReadOnly Property sourceBitmap As Bitmap
             Get
                 Return sourceBitmap_
             End Get
