@@ -68,7 +68,6 @@ namespace WPFUi
             MainWindow win = (MainWindow)Application.Current.MainWindow;
             image_worldmap.Stretch = Stretch.Uniform;
             image_worldmap.Source = provBitmap_.SourceBitmap;
-            image_worldmap.Source = nationMap_.modeBitmap;
         }
 
         private IDictionary<int, string> GetProvinceOwners(WorldState currentState)
@@ -82,6 +81,18 @@ namespace WPFUi
             }
 
             return provOwners;
+        }
+
+        private void UpdateMapMode(object sender, RoutedEventArgs e)
+        {
+            if (radioButton_mapProvince.IsChecked == true)
+            {
+                image_worldmap.Source = provBitmap_.SourceBitmap;
+            }
+            else
+            {
+                image_worldmap.Source = nationMap_.modeBitmap;
+            }
         }
 
     }

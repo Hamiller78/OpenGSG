@@ -7,15 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
-        <RadioButton x:Name="radioButton_mapProvince" Content="Province" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <RadioButton x:Name="radioButton_mapCountry" Content="Country" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBox_province" HorizontalAlignment="Left" Margin="10,60,0,0" TextWrapping="Wrap" Text="Province Info" VerticalAlignment="Top" Height="123" Width="115"/>
         <TextBox x:Name="textBox_country" HorizontalAlignment="Left" Height="112" Margin="11,193,0,0" TextWrapping="Wrap" Text="Country Info" VerticalAlignment="Top" Width="114"/>
         <Button x:Name="button_date" Content="DD-MM-YYYY" HorizontalAlignment="Left" Margin="11,389,0,0" VerticalAlignment="Top" Width="114"/>
         <Viewbox x:Name="viewbox_worldmap" HorizontalAlignment="Left" Height="378" Margin="130,20,0,0" VerticalAlignment="Top" Width="643">
             <Image x:Name="image_worldmap" Height="100" Width="170"/>
         </Viewbox>
-
+        <RadioButton x:Name="radioButton_mapProvince" Checked="UpdateMapMode" Content="Province" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <RadioButton x:Name="radioButton_mapCountry" Checked="UpdateMapMode" Content="Country" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
