@@ -45,6 +45,7 @@ namespace WPFUi
         private readonly MasterController gameController_ = new MasterController();
 
         private ProvinceBitmap provBitmap_ = new ProvinceBitmap();
+        private Views.Worldmap worldmapView_ = null;
         private NationModeMap nationMap_ = null;
 
         public MainWindow()
@@ -68,6 +69,13 @@ namespace WPFUi
             MainWindow win = (MainWindow)Application.Current.MainWindow;
             image_worldmap.Stretch = Stretch.Uniform;
             image_worldmap.Source = provBitmap_.SourceBitmap;
+
+            worldmapView_ = new WPFUi.Views.Worldmap(provBitmap_, provRgbMap);
+            Tuple<double, double> newSize =
+                new Tuple<double, double>(image_worldmap.ActualWidth, image_worldmap.ActualHeight);
+            Tuple<double, double> originalSize =
+                new Tuple<double, double>(provBitmap_.SourceBitmap.Width, provBitmap_.SourceBitmap.Height);
+            worldmapView_.SetMapScalingFactor(newSize, originalSize);
         }
 
         private IDictionary<int, string> GetProvinceOwners(WorldState currentState)
@@ -93,6 +101,11 @@ namespace WPFUi
             {
                 image_worldmap.Source = nationMap_.modeBitmap;
             }
+        }
+
+        private void MouseMoved(object sender, MouseEventArgs e)
+        {
+            worldmapView_.MouseMoved(e.GetPosition(null));
         }
 
     }

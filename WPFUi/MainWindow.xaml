@@ -4,13 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFUi"
+        xmlns:views="clr-namespace:WPFUi.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <views:ProvinceToText x:Key="ProvinceToText" />
+    </Window.Resources>
     <Grid>
         <TextBox x:Name="textBox_province" HorizontalAlignment="Left" Margin="10,60,0,0" TextWrapping="Wrap" Text="Province Info" VerticalAlignment="Top" Height="123" Width="115"/>
         <TextBox x:Name="textBox_country" HorizontalAlignment="Left" Height="112" Margin="11,193,0,0" TextWrapping="Wrap" Text="Country Info" VerticalAlignment="Top" Width="114"/>
         <Button x:Name="button_date" Content="DD-MM-YYYY" HorizontalAlignment="Left" Margin="11,389,0,0" VerticalAlignment="Top" Width="114"/>
-        <Viewbox x:Name="viewbox_worldmap" HorizontalAlignment="Left" Height="378" Margin="130,20,0,0" VerticalAlignment="Top" Width="643">
+        <Viewbox x:Name="viewbox_worldmap" MouseMove="MouseMoved" HorizontalAlignment="Left" Height="378" Margin="130,20,0,0" VerticalAlignment="Top" Width="643">
             <Image x:Name="image_worldmap" Height="100" Width="170"/>
         </Viewbox>
         <RadioButton x:Name="radioButton_mapProvince" Checked="UpdateMapMode" Content="Province" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
