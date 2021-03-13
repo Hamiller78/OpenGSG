@@ -1,0 +1,46 @@
+﻿<dx:ThemedWindow 
+    x:Class="DevExpressCountryManager.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+    xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+    xmlns:local="clr-namespace:DevExpressCountryManager"
+    Title="MainWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
+    <DockPanel>
+        <dxr:RibbonControl DockPanel.Dock="Top" RibbonStyle="Office2019">
+            <dxr:RibbonControl.ToolbarItems>
+                <dxb:BarButtonItemLink BarItemName="newItem"/>
+            </dxr:RibbonControl.ToolbarItems>
+            <dxr:RibbonDefaultPageCategory>
+                <dxr:RibbonPage Caption="Home">
+                    <dxr:RibbonPageGroup Caption="File">
+                        <dxb:BarButtonItem x:Name="newItem" Content="New" Glyph="{dx:DXImage 'SvgImages/Actions/New.svg'}"/>
+                        <dxb:BarItemSeparator/>
+                        <dxr:BarButtonGroup x:Name="editorGroup">
+                            <dxb:BarEditItem x:Name="editItem" EditSettings="{dxe:ComboBoxSettings}" EditWidth="80"/>
+                        </dxr:BarButtonGroup>
+                        <dxr:BarButtonGroup x:Name="alignmentGroup">
+                            <dxb:BarCheckItem x:Name="leftCheckItem" Content="Align Left" Glyph="{dx:DXImage 'SvgImages/Format/AlignLeft.svg'}" GroupIndex="1" IsChecked="True"/>
+                            <dxb:BarCheckItem x:Name="rightCheckItem" Content="Align Right" Glyph="{dx:DXImage 'SvgImages/Format/AlignRight.svg'}" GroupIndex="1"/>
+                            <dxb:BarCheckItem x:Name="justifyCheckItem" Content="Align Justify" Glyph="{dx:DXImage 'SvgImages/Format/AlignJustify.svg'}" GroupIndex="1"/>
+                        </dxr:BarButtonGroup>
+                        <dxb:BarItemSeparator/>
+                        <dxb:BarButtonItem x:Name="saveAsItem" Content="Save As" LargeGlyph="{dx:DXImage 'SvgImages/Save/SaveAs.svg'}"/>
+                    </dxr:RibbonPageGroup>
+                </dxr:RibbonPage>
+            </dxr:RibbonDefaultPageCategory>
+        </dxr:RibbonControl>
+        <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom">
+            <dxr:RibbonStatusBarControl.RightItems>
+                <dxb:BarButtonItem x:Name="printItem" Content="Print" Glyph="{dx:DXImage 'SvgImages/Print/Print.svg'}"/>
+            </dxr:RibbonStatusBarControl.RightItems>
+        </dxr:RibbonStatusBarControl>
+        <ListBox x:Name="listBox" Width="145" RenderTransformOrigin="0,0"
+                 ItemsSource="{Binding Countries}"/>
+    </DockPanel>
+</dx:ThemedWindow>
