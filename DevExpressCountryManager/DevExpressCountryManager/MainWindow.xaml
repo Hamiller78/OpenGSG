@@ -7,7 +7,11 @@
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
     xmlns:local="clr-namespace:DevExpressCountryManager"
+    xmlns:converter="clr-namespace:DevExpressCountryManager.ValueConverter"
     Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <converter:BitmapToImageSource x:Key="BitmapToImageSourceConverter" />
+    </Window.Resources>
     <Window.DataContext>
         <local:MainWindowViewModel/>
     </Window.DataContext>
@@ -31,16 +35,43 @@
                         </dxr:BarButtonGroup>
                         <dxb:BarItemSeparator/>
                         <dxb:BarButtonItem x:Name="saveAsItem" Content="Save As" LargeGlyph="{dx:DXImage 'SvgImages/Save/SaveAs.svg'}"/>
+                        <dxb:BarItemSeparator/>
+                        <dxb:BarButtonItem x:Name="propChangeItem" Content="Prop Change" LargeGlyph="{dx:DXImage 'SvgImages/Snap/ModifyTableStyle.svg'}" ItemClick="ModifyGermanAllegiance"/>
                     </dxr:RibbonPageGroup>
                 </dxr:RibbonPage>
             </dxr:RibbonDefaultPageCategory>
         </dxr:RibbonControl>
+        <ListBox x:Name="countryListBox"
+                 Width="145"
+                 DockPanel.Dock="Left"
+                 RenderTransformOrigin="0,0"
+                 ItemsSource="{Binding Countries}"/>
+        <StackPanel x:Name="countryDetails"
+                    DataContext="{Binding Source={x:Reference countryListBox}, Path=SelectedItem}"
+                    Width="500">
+            <Label Content="Country Information">
+                <Label.Style>
+                    <Style>
+                        <Setter Property="Label.FontSize" Value="36" />
+                    </Style>
+                </Label.Style>
+            </Label>
+            <TextBox x:Name="longNameTextBox" Text="{Binding Path=LongName}"/>
+            <TextBox x:Name="governmentTextBox" Text="{Binding Path=Government}"/>
+            <TextBox x:Name="leaderTextBox" Text="{Binding Path=Leader}"/>
+            <TextBox x:Name="allegianceTextBox" Text="{Binding Path=Allegiance}"/>
+        </StackPanel>
+        <StackPanel x:Name="countryImages"
+                    DataContext="{Binding Source={x:Reference countryListBox}, Path=SelectedItem}"
+                    Width="150"
+                    DockPanel.Dock="Right">
+            <Image x:Name="countryFlag" Source="{Binding Path=flag, Converter={StaticResource BitmapToImageSourceConverter}}"/>
+        </StackPanel>
+
         <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom">
             <dxr:RibbonStatusBarControl.RightItems>
                 <dxb:BarButtonItem x:Name="printItem" Content="Print" Glyph="{dx:DXImage 'SvgImages/Print/Print.svg'}"/>
             </dxr:RibbonStatusBarControl.RightItems>
         </dxr:RibbonStatusBarControl>
-        <ListBox x:Name="listBox" Width="145" RenderTransformOrigin="0,0"
-                 ItemsSource="{Binding Countries}"/>
     </DockPanel>
 </dx:ThemedWindow>

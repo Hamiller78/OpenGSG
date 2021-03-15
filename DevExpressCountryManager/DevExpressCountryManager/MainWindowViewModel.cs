@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using OpenGSGLibrary.WorldData;
@@ -37,6 +38,16 @@ namespace DevExpressCountryManager
             {
                 MessageBox.Show("Exception while loading data: " + ex.Message);
                 // TODO: Do something about the error
+            }
+        }
+
+        // Just a test
+        public void ModifyGermanAllegiance(string newAllegiance)
+        {
+            DXCountry germany = Countries.Where(c => c.GetTag() == "FRG").FirstOrDefault();
+            if (germany != null)
+            {
+                germany.Allegiance = newAllegiance;
             }
         }
     }

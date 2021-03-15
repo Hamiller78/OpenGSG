@@ -24,5 +24,16 @@ namespace DevExpressCountryManager
         {
             InitializeComponent();
         }
+
+        private void ModifyGermanAllegiance(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
+        {
+            MainWindowViewModel vm = this.DataContext as MainWindowViewModel;
+            if (vm == null)
+            {
+                return;
+            }
+
+            vm.ModifyGermanAllegiance("EU");
+        }
     }
 }
