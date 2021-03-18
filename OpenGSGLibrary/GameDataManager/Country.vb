@@ -24,14 +24,12 @@ Namespace WorldData
     Public Class Country
         Inherits GameObject
 
+        Public Property Name As String
+
         Public Property flag As Bitmap = Nothing
 
         Public Function GetTag() As String
             Return tag_
-        End Function
-
-        Public Function GetName() As String
-            Return name_
         End Function
 
         Public Function GetColor() As Tuple(Of Byte, Byte, Byte)
@@ -49,7 +47,7 @@ Namespace WorldData
             MyBase.SetData(fileName, parsedData)
 
             Dim fileNameParts As String() = GameObjectFactory.ExtractFromFilename(fileName)
-            name_ = Path.GetFileNameWithoutExtension(fileName)
+            Name = Path.GetFileNameWithoutExtension(fileName)
 
             tag_ = parsedData("tag").Single()
             Dim colorList As List(Of Integer) = parsedData("color").Single()
@@ -70,8 +68,7 @@ Namespace WorldData
             flag = New Bitmap(flagImage)
         End Sub
 
-        Private tag_ As String
-        Private name_ As String
+        Protected tag_ As String
         Private color_ As Tuple(Of Byte, Byte, Byte)
 
     End Class
