@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using DevExpressCountryManager.Database;
 using DevExpressCountryManager.Models.WorldData;
 using DevExpressCountryManager.Models.Common;
+using DevExpressCountryManager.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 
@@ -55,8 +56,9 @@ namespace DevExpressCountryManager
             }
 
             DXCountry newCountry = new DXCountry();
-            vm.Countries.Add(newCountry);
-            countryListBox.SelectedItem = newCountry;
+            DXCountryViewModel newCountryVM = DXCountryViewModel.Create();
+            vm.Countries.Add(newCountryVM);
+            countryListBox.SelectedItem = newCountryVM;
         }
 
         private void DeleteCountry(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
@@ -66,42 +68,19 @@ namespace DevExpressCountryManager
             {
                 return;
             }
-            DXCountry selectedCountry = countryListBox.SelectedItem as DXCountry;
+            DXCountryViewModel selectedCountry = countryListBox.SelectedItem as DXCountryViewModel;
 
             vm.Countries.Remove(selectedCountry);
         }
 
-        private void ModifyGermanAllegiance(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
-        {
-            MainWindowViewModel vm = DataContext as MainWindowViewModel;
-            if (vm == null)
-            {
-                return;
-            }
-
-            vm.ModifyGermanAllegiance("EU");
-        }
-
         private void SaveInDb(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
         {
-            DXCountry selectedCountry = countryListBox.SelectedItem as DXCountry;
+            DXCountryViewModel selectedCountry = countryListBox.SelectedItem as DXCountryViewModel;
             if (selectedCountry == null)
             {
                 return;
             }
-            CountryContext dbContext = new CountryContext();
-
-            string countryTag = selectedCountry.Tag;
-            DXCountry dbCountry = dbContext.Find<DXCountry>(countryTag);
-            if (dbCountry == null)
-            {
-                dbContext.Add(selectedCountry);
-            }
-            else
-            {
-                dbCountry = selectedCountry;
-            }
-            dbContext.SaveChanges();
+            selectedCountry.SaveToDb();
         }
 
         private void ImportFlagClick(object sender, RoutedEventArgs args)
@@ -111,7 +90,7 @@ namespace DevExpressCountryManager
             {
                 return;
             }
-            DXCountry selectedCountry = countryListBox.SelectedItem as DXCountry;
+            DXCountryViewModel selectedCountry = countryListBox.SelectedItem as DXCountryViewModel;
 
             OpenFileDialog importFlagDialog = new OpenFileDialog();
             bool? result = importFlagDialog.ShowDialog();

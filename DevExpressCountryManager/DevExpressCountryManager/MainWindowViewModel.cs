@@ -8,6 +8,7 @@ using System.Windows;
 using OpenGSGLibrary.WorldData;
 using DevExpressCountryManager.Models.WorldData;
 using DevExpressCountryManager.Database;
+using DevExpressCountryManager.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevExpressCountryManager
@@ -16,7 +17,7 @@ namespace DevExpressCountryManager
     {
         private const string GAMEDATA_PATH = @"..\..\..\..\..\ColdWarPrototype\GameData";
 
-        public ObservableCollection<DXCountry> Countries { get; set; } = new ObservableCollection<DXCountry>();
+        public ObservableCollection<DXCountryViewModel> Countries { get; set; } = new ObservableCollection<DXCountryViewModel>();
 
         private WorldLoader<Province, DXCountry> _worldLoader = new WorldLoader<Province, DXCountry>();
 
@@ -36,29 +37,26 @@ namespace DevExpressCountryManager
                 Countries.Clear();
                 foreach (KeyValuePair<string, Country> itemPair in countryDictionary)
                 {
-                    Countries.Add((DXCountry)(itemPair.Value));
+                    DXCountryViewModel countryVM = DXCountryViewModel.Create();
+                    countryVM.AttachModel((DXCountry)itemPair.Value);
+                    Countries.Add(countryVM);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Exception while loading data: " + ex.Message);
-                // TODO: Do something about the error
             }
         }
 
         public void LoadCountriesFromDb(CountryContext dbContext)
         {
             Countries.Clear();
-            Countries = new ObservableCollection<DXCountry>(dbContext.Countries.Include(x => x.Flag).ToList());  // eager loading
-        }
-
-        // Just a test
-        public void ModifyGermanAllegiance(string newAllegiance)
-        {
-            DXCountry germany = Countries.Where(c => c.GetTag() == "FRG").FirstOrDefault();
-            if (germany != null)
+            List<DXCountry> modelList = dbContext.Countries.Include(x => x.Flag).ToList();
+            foreach (DXCountry countryModel in modelList)
             {
-                germany.Allegiance = newAllegiance;
+                DXCountryViewModel countryVM = DXCountryViewModel.Create();
+                countryVM.AttachModel(countryModel);
+                Countries.Add(countryVM);
             }
         }
     }

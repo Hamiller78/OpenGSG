@@ -16,9 +16,6 @@ namespace DevExpressCountryManager.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // optionsBuilder.UseSqlServer("server=localhost;database=OpenGSGTest;trusted_connection=true;");
-            // string connectionString = ConfigurationManager.AppSettings["AzureSqlConnection"];
-
             string connectionString = MainWindow.Configuration.GetSection("AzureSqlConnection").Value;
 
             optionsBuilder.UseSqlServer(connectionString);

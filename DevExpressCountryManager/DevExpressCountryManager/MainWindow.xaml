@@ -39,7 +39,6 @@
                         <dxb:BarItemSeparator/>
                         <dxb:BarButtonItem x:Name="saveAsItem" Content="Save As" LargeGlyph="{dx:DXImage 'SvgImages/Save/SaveAs.svg'}"/>
                         <dxb:BarItemSeparator/>
-                        <dxb:BarButtonItem x:Name="propChangeItem" Content="Prop Change" LargeGlyph="{dx:DXImage 'SvgImages/Snap/ModifyTableStyle.svg'}" ItemClick="ModifyGermanAllegiance"/>
                         <dxb:BarButtonItem x:Name="saveDbItem" Content="Save In DB" LargeGlyph="{dx:DXImage 'SvgImages/Dashboards/NewDataSource.svg'}" ItemClick="SaveInDb"/>
                     </dxr:RibbonPageGroup>
                 </dxr:RibbonPage>
@@ -49,7 +48,8 @@
                  Width="145"
                  DockPanel.Dock="Left"
                  RenderTransformOrigin="0,0"
-                 ItemsSource="{Binding Countries}"/>
+                 ItemsSource="{Binding Countries}"
+                 DisplayMemberPath="Tag"/>
         <StackPanel x:Name="countryDetails"
                     DataContext="{Binding Source={x:Reference countryListBox}, Path=SelectedItem}"
                     Width="500">
