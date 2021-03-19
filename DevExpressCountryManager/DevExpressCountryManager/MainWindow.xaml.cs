@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DevExpressCountryManager.Database;
 using DevExpressCountryManager.Models.WorldData;
+using DevExpressCountryManager.Models.Common;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.Win32;
 
 namespace DevExpressCountryManager
 {
@@ -58,6 +59,18 @@ namespace DevExpressCountryManager
             countryListBox.SelectedItem = newCountry;
         }
 
+        private void DeleteCountry(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
+        {
+            MainWindowViewModel vm = DataContext as MainWindowViewModel;
+            if (vm == null)
+            {
+                return;
+            }
+            DXCountry selectedCountry = countryListBox.SelectedItem as DXCountry;
+
+            vm.Countries.Remove(selectedCountry);
+        }
+
         private void ModifyGermanAllegiance(object sender, DevExpress.Xpf.Bars.ItemClickEventArgs e)
         {
             MainWindowViewModel vm = DataContext as MainWindowViewModel;
@@ -89,6 +102,43 @@ namespace DevExpressCountryManager
                 dbCountry = selectedCountry;
             }
             dbContext.SaveChanges();
+        }
+
+        private void ImportFlagClick(object sender, RoutedEventArgs args)
+        {
+            MainWindowViewModel vm = DataContext as MainWindowViewModel;
+            if (vm == null)
+            {
+                return;
+            }
+            DXCountry selectedCountry = countryListBox.SelectedItem as DXCountry;
+
+            OpenFileDialog importFlagDialog = new OpenFileDialog();
+            bool? result = importFlagDialog.ShowDialog();
+            if (result == false)
+            {
+                return;
+            }
+
+            string filePath = importFlagDialog.FileName;
+            try
+            {
+                BlobbableImage newFlag = null;
+                if (selectedCountry.Flag == null)
+                {
+                    newFlag = new BlobbableImage();
+                }
+                else
+                {
+                    newFlag = selectedCountry.Flag;
+                }
+                newFlag.ImageObj = new Bitmap(filePath);
+                selectedCountry.Flag = newFlag;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Exception while loading flag: " + ex.Message);
+            }
         }
     }
 }

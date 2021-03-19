@@ -26,6 +26,7 @@
                 <dxr:RibbonPage Caption="Home">
                     <dxr:RibbonPageGroup Caption="File">
                         <dxb:BarButtonItem x:Name="newItem" Content="New" Glyph="{dx:DXImage 'SvgImages/Actions/New.svg'}"  ItemClick="CreateCountry"/>
+                        <dxb:BarButtonItem x:Name="deleteItem" Content="Delete" Glyph="{dx:DXImage 'SvgImages/Icon Builder/Actions_Delete.svg'}"  ItemClick="DeleteCountry"/>
                         <dxb:BarItemSeparator/>
                         <dxr:BarButtonGroup x:Name="editorGroup">
                             <dxb:BarEditItem x:Name="editItem" EditSettings="{dxe:ComboBoxSettings}" EditWidth="80"/>
@@ -59,6 +60,7 @@
                     </Style>
                 </Label.Style>
             </Label>
+            <TextBox x:Name="tagTextBox" Text="{Binding Path=Tag}"/>
             <TextBox x:Name="nameTextBox" Text="{Binding Path=Name}"/>
             <TextBox x:Name="longNameTextBox" Text="{Binding Path=LongName}"/>
             <TextBox x:Name="governmentTextBox" Text="{Binding Path=Government}"/>
@@ -69,6 +71,7 @@
                     DataContext="{Binding Source={x:Reference countryListBox}, Path=SelectedItem}"
                     Width="150"
                     DockPanel.Dock="Right">
+            <Button Content="Import Flag" Click="ImportFlagClick"/>
             <Border BorderThickness="2" BorderBrush="Black" >
                 <Image x:Name="countryFlag" Source="{Binding Path=Flag.ImageObj, Converter={StaticResource ImageToImageSourceConverter}}"/>
             </Border>
