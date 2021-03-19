@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using OpenGSGLibrary.WorldData;
 using DevExpressCountryManager.Models.WorldData;
+using DevExpressCountryManager.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace DevExpressCountryManager
 {
@@ -19,10 +22,12 @@ namespace DevExpressCountryManager
 
         public MainWindowViewModel()
         {
-            LoadCountries(GAMEDATA_PATH);
+            // LoadCountriesFromFiles(GAMEDATA_PATH);
+            CountryContext dbContext = new CountryContext();
+            LoadCountriesFromDb(dbContext);
         }
 
-        public void LoadCountries(string filepath)
+        public void LoadCountriesFromFiles(string filepath)
         {
             try
             {
@@ -39,6 +44,12 @@ namespace DevExpressCountryManager
                 MessageBox.Show("Exception while loading data: " + ex.Message);
                 // TODO: Do something about the error
             }
+        }
+
+        public void LoadCountriesFromDb(CountryContext dbContext)
+        {
+            Countries.Clear();
+            Countries = new ObservableCollection<DXCountry>(dbContext.Countries.Include(x => x.Flag).ToList());  // eager loading
         }
 
         // Just a test

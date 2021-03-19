@@ -6,6 +6,7 @@
     <RootNamespace>DevExpressCountryManager</RootNamespace>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <UserSecretsId>47b2e016-12ef-431a-9b53-8f49ed178b85</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="20.2.0-pre-*" />
@@ -18,6 +19,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\OpenGSGLibrary\OpenGSGLibrary.vbproj" />

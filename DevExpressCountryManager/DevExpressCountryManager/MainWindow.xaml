@@ -25,7 +25,7 @@
             <dxr:RibbonDefaultPageCategory>
                 <dxr:RibbonPage Caption="Home">
                     <dxr:RibbonPageGroup Caption="File">
-                        <dxb:BarButtonItem x:Name="newItem" Content="New" Glyph="{dx:DXImage 'SvgImages/Actions/New.svg'}"/>
+                        <dxb:BarButtonItem x:Name="newItem" Content="New" Glyph="{dx:DXImage 'SvgImages/Actions/New.svg'}"  ItemClick="CreateCountry"/>
                         <dxb:BarItemSeparator/>
                         <dxr:BarButtonGroup x:Name="editorGroup">
                             <dxb:BarEditItem x:Name="editItem" EditSettings="{dxe:ComboBoxSettings}" EditWidth="80"/>
@@ -59,6 +59,7 @@
                     </Style>
                 </Label.Style>
             </Label>
+            <TextBox x:Name="nameTextBox" Text="{Binding Path=Name}"/>
             <TextBox x:Name="longNameTextBox" Text="{Binding Path=LongName}"/>
             <TextBox x:Name="governmentTextBox" Text="{Binding Path=Government}"/>
             <TextBox x:Name="leaderTextBox" Text="{Binding Path=Leader}"/>
@@ -68,7 +69,9 @@
                     DataContext="{Binding Source={x:Reference countryListBox}, Path=SelectedItem}"
                     Width="150"
                     DockPanel.Dock="Right">
-            <Image x:Name="countryFlag" Source="{Binding Path=Flag.ImageObj, Converter={StaticResource ImageToImageSourceConverter}}"/>
+            <Border BorderThickness="2" BorderBrush="Black" >
+                <Image x:Name="countryFlag" Source="{Binding Path=Flag.ImageObj, Converter={StaticResource ImageToImageSourceConverter}}"/>
+            </Border>
         </StackPanel>
 
         <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom">

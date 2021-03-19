@@ -11,7 +11,7 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WinFormsUi", "..\ColdWarPro
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ColdWarGameLogic", "..\ColdWarGameLogic\ColdWarGameLogic.vbproj", "{B307F9C6-8BD3-4928-BCAB-45F0E2AEA8D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevExpressCountryManager", "..\DevExpressCountryManager\DevExpressCountryManager\DevExpressCountryManager.csproj", "{7ED1E46A-8E07-44A7-B6FE-1FBF74D889B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevExpressCountryManager", "..\DevExpressCountryManager\DevExpressCountryManager\DevExpressCountryManager.csproj", "{7ED1E46A-8E07-44A7-B6FE-1FBF74D889B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
