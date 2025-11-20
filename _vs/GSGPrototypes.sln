@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36408.4 d17.14
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11206.111 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OpenGSGLibrary", "..\OpenGSGLibrary\OpenGSGLibrary.vbproj", "{85167AB3-CFC3-498D-A827-0B0D04215EAB}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ColdWarGameLogic", "..\ColdWarGameLogic\ColdWarGameLogic.vbproj", "{B307F9C6-8BD3-4928-BCAB-45F0E2AEA8D9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColdWarGameLogic2", "..\ColdWarGameLogic2\ColdWarGameLogic2.csproj", "{5712316D-7A69-4901-9492-F143DABA7330}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGSGLibrary2", "..\OpenGSGLibrary2\OpenGSGLibrary2.csproj", "{6BB02825-28DB-4F90-B25E-7FCACEA42256}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{5712316D-7A69-4901-9492-F143DABA7330}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5712316D-7A69-4901-9492-F143DABA7330}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5712316D-7A69-4901-9492-F143DABA7330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BB02825-28DB-4F90-B25E-7FCACEA42256}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BB02825-28DB-4F90-B25E-7FCACEA42256}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BB02825-28DB-4F90-B25E-7FCACEA42256}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BB02825-28DB-4F90-B25E-7FCACEA42256}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

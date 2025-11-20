@@ -128,9 +128,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ColdWarGameLogic\ColdWarGameLogic.vbproj">
-      <Project>{b307f9c6-8bd3-4928-bcab-45f0e2aea8d9}</Project>
-      <Name>ColdWarGameLogic</Name>
+    <ProjectReference Include="..\ColdWarGameLogic2\ColdWarGameLogic2.csproj">
+      <Project>{5712316d-7a69-4901-9492-f143daba7330}</Project>
+      <Name>ColdWarGameLogic2</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenGSGLibrary\OpenGSGLibrary.vbproj">
       <Project>{85167ab3-cfc3-498d-a827-0b0d04215eab}</Project>
