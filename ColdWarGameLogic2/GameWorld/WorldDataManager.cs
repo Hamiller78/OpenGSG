@@ -1,8 +1,8 @@
 ﻿using System.IO;
-using OpenGSGLibrary.GameLogic;
-using OpenGSGLibrary.Map;
-using OpenGSGLibrary.Military;
-using OpenGSGLibrary.WorldData;
+using GameLogic;
+using Map;
+using Military;
+using WorldData;
 
 namespace WorldData
 {

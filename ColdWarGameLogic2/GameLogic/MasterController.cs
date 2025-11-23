@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenGSGLibrary.GameLogic;
+using GameLogic;
 using WorldData;
 
 namespace Simulation
@@ -11,13 +11,10 @@ namespace Simulation
         public readonly WorldDataManager worldData = new WorldDataManager();
         public readonly TickHandler tickHandler = new TickHandler();
 
-        private readonly OpenGSGLibrary.WorldData.WorldLoader<
+        private readonly WorldData.WorldLoader<
             WorldData.CwpProvince,
             WorldData.CwpCountry
-        > worldLoader_ = new OpenGSGLibrary.WorldData.WorldLoader<
-            WorldData.CwpProvince,
-            WorldData.CwpCountry
-        >();
+        > worldLoader_ = new WorldData.WorldLoader<WorldData.CwpProvince, WorldData.CwpCountry>();
 
         public void Init()
         {

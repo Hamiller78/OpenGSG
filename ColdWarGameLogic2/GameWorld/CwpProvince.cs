@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using OpenGSGLibrary.GameLogic;
-using OpenGSGLibrary.WorldData;
+using GameLogic;
+using WorldData;
 
 namespace WorldData
 {
@@ -33,7 +33,10 @@ namespace WorldData
         /// </summary>
         /// <param name="fileName">Name of the source file of province object.</param>
         /// <param name="parsedData">Object with the parsed data from that file.</param>
-        public override void SetData(string fileName, Lookup<string, object> parsedData)
+        public override void SetData(
+            string fileName,
+            System.Linq.ILookup<string, object> parsedData
+        )
         {
             base.SetData(fileName, parsedData);
 
@@ -49,7 +52,7 @@ namespace WorldData
         /// </summary>
         /// <param name="sender">sender TickHandler</param>
         /// <param name="e">TickEventArgs containing current game time</param>
-        public override void OnTickDone(object sender, TickEventArgs e)
+        public override void OnTickDone(object sender, EventArgs e)
         {
             UpdateDaily();
         }

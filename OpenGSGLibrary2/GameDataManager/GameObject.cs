@@ -27,8 +27,8 @@ namespace WorldData
         /// </summary>
         /// <param name="sender">sender object of the event</param>
         /// <param name="e">TickEventArgs, contain the new tick number</param>
-        // Use object for event args in this stage of migration to avoid depending on not-yet-migrated GameLogic types.
-        public virtual void OnTickDone(object sender, object e)
+        // Handler for tick done events. Uses System.EventArgs to avoid cross-project type coupling.
+        public virtual void OnTickDone(object sender, EventArgs e)
         {
         }
 

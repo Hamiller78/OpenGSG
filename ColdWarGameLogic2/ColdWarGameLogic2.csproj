@@ -7,8 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpenGSGLibrary\OpenGSGLibrary.vbproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenGSGLibrary2\OpenGSGLibrary2.csproj" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <Folder Include="Tools\" />

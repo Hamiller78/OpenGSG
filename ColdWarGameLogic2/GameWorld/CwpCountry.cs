@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.Metrics;
 using System.Linq;
-using OpenGSGLibrary.WorldData;
+using WorldData;
 
 namespace WorldData
 {
@@ -22,7 +22,7 @@ namespace WorldData
         /// </summary>
         /// <param name="fileName">Name of the source file of country object.</param>
         /// <param name="parsedData">Object with the parsed data from that file.</param>
-        public override void SetData(string fileName, Lookup<string, object> parsedData)
+        public override void SetData(string fileName, System.Linq.ILookup<string, object> parsedData)
         {
             base.SetData(fileName, parsedData);
 

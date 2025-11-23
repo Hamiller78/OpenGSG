@@ -123,12 +123,6 @@
     </None>
     <None Include="OpenGSGLibrary.licenseheader" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpenGSGLibrary\OpenGSGLibrary.vbproj">
-      <Project>{85167ab3-cfc3-498d-a827-0b0d04215eab}</Project>
-      <Name>OpenGSGLibrary</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
