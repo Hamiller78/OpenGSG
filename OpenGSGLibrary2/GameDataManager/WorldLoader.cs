@@ -12,6 +12,12 @@ namespace WorldData
         where TProv : Province, new()
         where TCountry : Country, new()
     {
+        /// <summary>
+        /// Creates a world state from the data in the game data or mod directories.
+        /// This should be the start state for a game.
+        /// </summary>
+        /// <param name="gamedataPath"></param>
+        /// <returns></returns>
         public WorldState CreateStartState(string gamedataPath)
         {
             var newState = new WorldState();

@@ -10,6 +10,11 @@ namespace Parser
     /// </summary>
     public class Scanner
     {
+        /// <summary>
+        /// Main Scan method of the Scanner class.
+        /// </summary>
+        /// <param name="reader">Text in the form of an implementation of TextReader i.e. StringBuilder</param>
+        /// <returns></returns>
         public IEnumerator<Token> Scan(TextReader reader)
         {
             while (reader.Peek() != -1)

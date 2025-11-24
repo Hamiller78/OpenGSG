@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GameLogic;
 
 namespace WorldData
 {
@@ -26,13 +27,11 @@ namespace WorldData
         /// E.g. provinces can have population growth, armies replenish their morale, etc.
         /// </summary>
         /// <param name="sender">sender object of the event</param>
-        /// <param name="e">TickEventArgs, contain the new tick number</param>
+        /// <param name="e">EventArgs passed by the tick handler (may be TickEventArgs in some implementations)</param>
         // Handler for tick done events. Uses System.EventArgs to avoid cross-project type coupling.
-        public virtual void OnTickDone(object sender, EventArgs e)
-        {
-        }
+        public virtual void OnTickDone(object sender, TickEventArgs e) { }
 
         private string fileName_ = string.Empty;
-        private ILookup<string, object> parsedData_ = null;
+        private ILookup<string, object> parsedData_ = null!;
     }
 }
