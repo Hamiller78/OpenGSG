@@ -4,6 +4,9 @@ using WorldData;
 
 namespace Map
 {
+    /// <summary>
+    /// Creates an image where each province is coloured by its owner's country colour.
+    /// </summary>
     public class CountryModeMapMaker : ModeMapMaker
     {
         private ProvinceMap provinceMap_;
@@ -13,6 +16,9 @@ namespace Map
             provinceMap_ = provinceMap;
         }
 
+        /// <summary>
+        /// Generates a country-coloured map image from the given world state.
+        /// </summary>
         public override Image MakeMap(WorldState sourceState)
         {
             var mapSize = sourceMap_.sourceBitmap!.Size;

@@ -2,6 +2,9 @@ using System;
 
 namespace Military
 {
+    /// <summary>
+    /// Represents a military branch type (Army, Navy, Airforce, Space) and helpers to parse from string.
+    /// </summary>
     public class Branch
     {
         public enum Type
@@ -40,6 +43,9 @@ namespace Military
             }
         }
 
+        /// <summary>
+        /// Gets the branch type enum value.
+        /// </summary>
         public Type GetBranchType() => type_;
     }
 }

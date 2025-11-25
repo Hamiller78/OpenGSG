@@ -29,7 +29,7 @@ namespace WorldData
         /// <param name="sender">sender object of the event</param>
         /// <param name="e">EventArgs passed by the tick handler (may be TickEventArgs in some implementations)</param>
         // Handler for tick done events. Uses System.EventArgs to avoid cross-project type coupling.
-        public virtual void OnTickDone(object sender, TickEventArgs e) { }
+        public virtual void OnTickDone(object sender, EventArgs e) { }
 
         private string fileName_ = string.Empty;
         private ILookup<string, object> parsedData_ = null!;

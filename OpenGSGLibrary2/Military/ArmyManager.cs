@@ -4,11 +4,30 @@ using System.IO;
 
 namespace Military
 {
+    /// <summary>
+    /// Manages armies loaded from data files and provides lookup by province.
+    /// </summary>
     public class ArmyManager
     {
+        /// <summary>
+        /// Maps a province id to the list of armies currently located there.
+        /// Populated by <see cref="UpdateProvinceToArmyTable"/> after loading units.
+        /// </summary>
         private Dictionary<int, List<Army>>? provinceIdToArmiesTable_ = null;
+
+        /// <summary>
+        /// Table of nation military objects keyed by nation tag.
+        /// Populated by <see cref="LoadFolder"/>.
+        /// </summary>
         private Dictionary<string, NationMilitary>? nationMilitaryTable_ = null;
 
+        /// <summary>
+        /// Load nation military definitions from the given folder.
+        /// This reads unit files using the <see cref="WorldData.GameObjectFactory"/> and
+        /// rebuilds the province->armies index for fast lookup.
+        /// </summary>
+        /// <param name="unitsPath">File system path to the units folder.</param>
+        /// <exception cref="DirectoryNotFoundException">Thrown when the given folder does not exist.</exception>
         public void LoadFolder(string unitsPath)
         {
             if (!Directory.Exists(unitsPath))
@@ -18,6 +37,12 @@ namespace Military
             UpdateProvinceToArmyTable();
         }
 
+        /// <summary>
+        /// Returns the list of armies currently located in the specified province.
+        /// Returns null when the army index has not been initialised.
+        /// </summary>
+        /// <param name="provinceId">Province identifier.</param>
+        /// <returns>List of <see cref="Army"/> in the province or null.</returns>
         public List<Army>? GetArmiesInProvince(int provinceId)
         {
             if (provinceIdToArmiesTable_ == null)
@@ -27,6 +52,11 @@ namespace Military
             return resultList;
         }
 
+        /// <summary>
+        /// Move an army from its current province to the target province and update the index.
+        /// </summary>
+        /// <param name="movingArmy">Army to move.</param>
+        /// <param name="targetProvinceId">Target province id.</param>
         public void MoveArmy(Army movingArmy, int targetProvinceId)
         {
             var oldLocation = movingArmy.GetLocation();
@@ -45,6 +75,11 @@ namespace Military
             newProvinceList.Add(movingArmy);
         }
 
+        /// <summary>
+        /// Rebuilds the lookup table from province id to armies based on the current
+        /// <see cref="nationMilitaryTable_"/>. This is used after loading unit definitions
+        /// to enable fast queries for armies per province.
+        /// </summary>
         private void UpdateProvinceToArmyTable()
         {
             provinceIdToArmiesTable_ = new Dictionary<int, List<Army>>();

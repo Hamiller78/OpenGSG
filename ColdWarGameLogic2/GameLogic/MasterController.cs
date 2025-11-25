@@ -6,7 +6,7 @@ namespace Simulation
 {
     public class MasterController
     {
-        private const string GAMEDATA_PATH = @"..\..\..\ColdWarPrototype\GameData";
+        private const string GAMEDATA_PATH = @"..\..\..\..\ColdWarPrototype2\GameData";
 
         public readonly WorldDataManager worldData = new WorldDataManager();
         public readonly TickHandler tickHandler = new TickHandler();

@@ -1,0 +1,49 @@
+﻿###### Start unit locations ######
+tag = USA
+
+### European Armies ###
+army = {			
+	name = "Seventh Army"
+	location = 4
+	
+	division = {
+		name = "1st Europe Infantry Division"
+		type = infantry
+		size = 10000
+	}
+	division = {
+		name = "2nd Europe Infantry Division"
+		type = infantry
+		size = 10000
+	}
+	division = {
+		name = "3rd Europe Infantry Division"
+		type = infantry
+		size = 10000
+	}
+	division = {
+		name = "4th Europe Infantry Division"
+		type = infantry
+		size = 10000
+	}
+	division = {
+		name = "5th Europe Infantry Division"
+		type = infantry
+		size = 10000
+	}
+	division = {
+		name = "6th Europe Infantry Division"
+		type = infantry
+		size = 10000
+	}
+	division = {
+		name = "7th Europe Infantry Division"
+		type = infantry
+		size = 10000
+	}
+	division = {
+		name = "1st Europe Armor Division"
+		type = armor
+		size = 3000
+	}
+}

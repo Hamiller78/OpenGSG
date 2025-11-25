@@ -17,6 +17,9 @@ namespace Map
             sourceMap_ = sourceMap;
         }
 
+        /// <summary>
+        /// Generate an Image for the provided world state using the source map.
+        /// </summary>
         public abstract Image MakeMap(WorldState sourceState);
     }
 }

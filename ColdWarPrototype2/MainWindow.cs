@@ -22,10 +22,10 @@ namespace ColdWarPrototype2
         {
             InitializeComponent();
             log = new Logger("CWPLog.log", Directory.GetCurrentDirectory());
-            Load += Form1_Load;
+            Load += MainWindow_Load;
         }
 
-        private void Form1_Load(object? sender, EventArgs e)
+        private void MainWindow_Load(object? sender, EventArgs e)
         {
             log.WriteLine(LogLevel.Info, "Session started (migrated UI)");
             try

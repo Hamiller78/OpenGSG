@@ -3,10 +3,16 @@ using System.Device.Location;
 
 namespace Map
 {
+    /// <summary>
+    /// Helper methods for geographic navigation and distance calculations.
+    /// </summary>
     public static class Navigator
     {
         private const double EarthRadiusInKm = 6371D;
 
+        /// <summary>
+        /// Calculates great-circle distance between two points specified as lat/long in degrees.
+        /// </summary>
         public static double GetDistanceInKm(double firstLatitude, double firstLongitude, double secondLatitude, double secondLongitude)
         {
             var latitude1 = firstLatitude * Math.PI / 180.0;
@@ -22,6 +28,9 @@ namespace Map
             return Math.Abs(distanceAngleRad * EarthRadiusInKm);
         }
 
+        /// <summary>
+        /// Convenience wrapper using System.Device.Location.GeoCoordinate.
+        /// </summary>
         public static double GetDistanceInKm(GeoCoordinate firstLocation, GeoCoordinate secondLocation)
         {
             return firstLocation.GetDistanceTo(secondLocation) / 1000D;

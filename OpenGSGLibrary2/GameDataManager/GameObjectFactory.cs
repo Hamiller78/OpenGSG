@@ -11,8 +11,7 @@ namespace WorldData
     /// </summary>
     public static class GameObjectFactory
     {
-		
-		        ''' <summary>
+        /// <summary>
         /// Creates a table of generated objects from the parsed files in one directory.
         /// </summary>
         /// <typeparam name="baseType">Base variable type of the generated objects (e.g. Province) used for the returned dictionary</typeparam>
@@ -132,52 +131,24 @@ namespace WorldData
                 SearchOption.AllDirectories
             );
 
-            // Use reflection to invoke Parser.Scanner and Parser.Parser if available at runtime.
-            Type? scannerType = null;
-            Type? parserType = null;
-            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                if (scannerType == null)
-                    scannerType = asm.GetType("Parser.Scanner");
-                if (parserType == null)
-                    parserType = asm.GetType("Parser.Parser");
-                if (scannerType != null && parserType != null)
-                    break;
-            }
-
             foreach (var textFile in txtFilesInDir)
             {
                 try
                 {
                     using var rawFile = File.OpenText(textFile);
 
-                    if (scannerType != null && parserType != null)
+                    // Use the Parser.Scanner and Parser.Parser types which are included in the project
+                    var scanner = new Parser.Scanner();
+                    var parser = new Parser.Parser();
+
+                    var tokenStream = scanner.Scan(rawFile);
+                    var nextParseData = parser.Parse(tokenStream);
+                    if (nextParseData != null)
                     {
-                        var scanner = Activator.CreateInstance(scannerType);
-                        var parser = Activator.CreateInstance(parserType);
-
-                        var scanMethod = scannerType.GetMethod(
-                            "Scan",
-                            new Type[] { typeof(TextReader) }
+                        dictionaryOfParsedData.Add(
+                            Path.GetFileNameWithoutExtension(textFile),
+                            nextParseData
                         );
-                        var parseMethod = parserType.GetMethod(
-                            "Parse",
-                            new Type[] { typeof(IEnumerator<object>) }
-                        );
-
-                        // Fallback: call Parse with the returned enumerator using dynamic invoke
-                        var tokenStream = scanMethod.Invoke(scanner, new object[] { rawFile });
-                        var nextParseData = parseMethod.Invoke(
-                            parser,
-                            new object[] { tokenStream }
-                        );
-                        if (nextParseData != null)
-                        {
-                            dictionaryOfParsedData.Add(
-                                Path.GetFileNameWithoutExtension(textFile),
-                                nextParseData
-                            );
-                        }
                     }
                 }
                 catch (Exception)
@@ -190,7 +161,7 @@ namespace WorldData
         }
 
         /// <summary>
-        /// Returns parts of a file name separated by - without path and extension 
+        /// Returns parts of a file name separated by - without path and extension
         /// </summary>
         /// <param name="filePath">File name with extension and possibly path.</param>
         /// <returns>Array of strings with the parts of the file names.</returns>

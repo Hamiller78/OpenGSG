@@ -1,0 +1,6 @@
+#Armor
+type = army
+
+strength = 3
+
+speed = 15
