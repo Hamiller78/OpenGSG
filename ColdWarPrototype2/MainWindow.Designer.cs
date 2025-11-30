@@ -128,10 +128,9 @@
             // 
             // DateButton
             // 
-            DateButton.Location = new Point(5, 1098);
-            DateButton.Margin = new Padding(4, 3, 4, 3);
+            DateButton.Location = new Point(4, 952);
             DateButton.Name = "DateButton";
-            DateButton.Size = new Size(252, 43);
+            DateButton.Size = new Size(216, 37);
             DateButton.TabIndex = 3;
             DateButton.Text = "DD-MM-YYYY";
             DateButton.UseVisualStyleBackColor = true;
