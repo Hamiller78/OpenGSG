@@ -1,8 +1,10 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Windows.Forms;
 using ColdWarPrototype2.Views;
+using Gui;
 using Simulation;
 using Tools;
 
@@ -14,9 +16,14 @@ namespace ColdWarPrototype2
         private MasterController gameController_ = new MasterController();
 
         // view helpers
-        private Views.ProvinceInfo? provinceInfo_;
-        private Views.CountryInfo? countryInfo_;
-        private Views.ArmyList? armyListView_;
+        private ProvinceInfo? provinceInfo_;
+        private CountryInfo? countryInfo_;
+        private ArmyList? armyBox_;
+        private GeoCoordinates coordinateView_;
+        private WorldMap worldMapView_;
+
+        // Controllers
+        private MouseController mouseController_;
 
         public MainWindow()
         {
@@ -27,10 +34,16 @@ namespace ColdWarPrototype2
 
         private void MainWindow_Load(object? sender, EventArgs e)
         {
-            log.WriteLine(LogLevel.Info, "Session started (migrated UI)");
+            log.WriteLine(LogLevel.Info, "Session started.");
             try
             {
                 gameController_.Init();
+
+                SetupViews();
+                SetupControllers();
+                SetupEventHandlers();
+
+                UpdateDateText();
 
                 // Load province map and set on picture box
                 var provinceMap = gameController_.GetWorldManager().provinceMap;
@@ -43,7 +56,7 @@ namespace ColdWarPrototype2
                 // create views
                 provinceInfo_ = new Views.ProvinceInfo(this, gameController_);
                 countryInfo_ = new Views.CountryInfo(this, gameController_);
-                armyListView_ = new Views.ArmyList(this);
+                armyBox_ = new Views.ArmyList(this);
 
                 // wire simple mouse handling directly: update views on hover
                 MapPictureBox.MouseMove += (s, ev) =>
@@ -64,8 +77,8 @@ namespace ColdWarPrototype2
                         if (provTable != null && provTable.TryGetValue(provinceId, out var prov))
                         {
                             var owner = prov.GetOwner();
-                            countryInfo_?.UpdateCurrentCountry(state, owner);
-                            armyListView_?.FillListBox(ArmyListBox, state, provinceId);
+                            countryInfo_?.UpdateCountryInfo(state, owner);
+                            armyBox_?.FillListBox(ArmyListBox, state, provinceId);
                         }
                     }
                 };
@@ -82,7 +95,7 @@ namespace ColdWarPrototype2
                 ) => { /* TODO: raw map */
                 };
 
-                var worldMapView = new Views.WorldMapView(this);
+                var worldMapView = new Views.WorldMap(this);
                 worldMapView.SetSourceProvinceMap(provinceMap);
                 worldMapView.UpdateCountryMap(gameController_.tickHandler.GetState());
             }
@@ -92,9 +105,57 @@ namespace ColdWarPrototype2
             }
         }
 
+        private void SetupViews()
+        {
+            provinceInfo_ = new ProvinceInfo(this, gameController_);
+            countryInfo_ = new CountryInfo(this, gameController_);
+            armyBox_ = new ArmyList(this);
+            coordinateView_ = new GeoCoordinates(this);
+
+            worldMapView_ = new WorldMap(this);
+            worldMapView_.SetSourceProvinceMap(gameController_.GetWorldManager().provinceMap); // ugly
+            worldMapView_.UpdateCountryMap(gameController_.tickHandler.GetState()); // not much better
+        }
+
+        private void SetupControllers()
+        {
+            mouseController_ = new Gui.MouseController(gameController_);
+            Size sourceMapSize = gameController_.worldData.provinceMap.sourceBitmap.Size;
+            mouseController_.SetMapScalingFactor(MapPictureBox.Size, sourceMapSize);
+        }
+
+        private void SetupEventHandlers()
+        {
+            mouseController_.HoveredProvinceChanged += provinceInfo_.HandleProvinceChanged;
+            mouseController_.HoveredCountryChanged += countryInfo_.HandleCountryChanged;
+        }
+
+        private void MapPictureBox_MouseMove(object? sender, MouseEventArgs e)
+        {
+            mouseController_.HandleMouseMovedOverMap(e);
+        }
+
+        private void MapModePolitical_CheckedChanged(object? sender, EventArgs e)
+        {
+            worldMapView_?.SetMapPicture();
+        }
+
+        private void MapModeRaw_CheckedChanged(object? sender, EventArgs e)
+        {
+            worldMapView_?.SetMapPicture();
+        }
+
         private void DateButton_Click(object? sender, EventArgs e)
         {
             gameController_.tickHandler.FinishTick();
+
+            UpdateDateText();
+            provinceInfo_?.UpdateCurrentProvince(gameController_.tickHandler.GetState());
+            countryInfo_?.UpdateCurrentCountry(gameController_.tickHandler.GetState());
+        }
+
+        private void UpdateDateText()
+        {
             DateButton.Text = gameController_.GetGameDateTime().ToString();
         }
     }

@@ -8,16 +8,14 @@ namespace ColdWarPrototype2.Views
     public class GeoCoordinates
     {
         private readonly MainWindow motherWindow_;
-        private readonly MasterController controller_;
         private int currentProvinceId_ = -1;
 
         public double? Latitude { get; private set; }
         public double? Longitude { get; private set; }
 
-        public GeoCoordinates(MainWindow motherWindow, MasterController controller)
+        public GeoCoordinates(MainWindow motherWindow)
         {
             motherWindow_ = motherWindow;
-            controller_ = controller;
         }
 
         public void UpdateCurrentCoordinates(WorldState state, int provinceId)

@@ -6,14 +6,14 @@ using WorldData;
 
 namespace ColdWarPrototype2.Views
 {
-    public class WorldMapView
+    public class WorldMap
     {
         private MainWindow motherWindow_;
-        private ProvinceMap provinceMap_;
+        private ProvinceMap provinceMap_ = default!;
         private Image? countryModeMap_;
         private double mapScaling_;
 
-        public WorldMapView(MainWindow motherWindow)
+        public WorldMap(MainWindow motherWindow)
         {
             motherWindow_ = motherWindow;
         }

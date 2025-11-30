@@ -7,7 +7,7 @@ namespace ColdWarPrototype2.Views
     public class CountryInfo
     {
         private readonly MainWindow motherWindow_;
-        private readonly MasterController controller_;
+        private readonly MasterController gameController_;
 
         public string CurrentTag { get; private set; } = string.Empty;
         public string CurrentName { get; private set; } = string.Empty;
@@ -16,33 +16,43 @@ namespace ColdWarPrototype2.Views
         public CountryInfo(MainWindow motherWindow, MasterController controller)
         {
             motherWindow_ = motherWindow;
-            controller_ = controller;
+            gameController_ = controller;
         }
 
-        public void UpdateCurrentCountry(WorldState state, string countryTag)
+        public void HandleCountryChanged(object? sender, Gui.CountryEventArgs e)
         {
-            CurrentTag = countryTag ?? string.Empty;
-            CurrentName = string.Empty;
-            CurrentColor = null;
-
-            if (
-                state?.GetCountryTable() is { } table
-                && table.TryGetValue(countryTag, out var country)
-            )
-            {
-                CurrentName = country.GetName();
-                var c = country.GetColor();
-                CurrentColor = (c.Item1, c.Item2, c.Item3);
-
-                // Optionally update UI on motherWindow_ here if you have controls:
-                // motherWindow_.Text = CurrentName;
-            }
+            UpdateCountryInfo(gameController_.tickHandler.GetState(), e.CountryTag);
         }
 
         public void UpdateCurrentCountry(WorldState state)
         {
             if (!string.IsNullOrEmpty(CurrentTag))
-                UpdateCurrentCountry(state, CurrentTag);
+                UpdateCountryInfo(state, CurrentTag);
+        }
+
+        public void UpdateCountryInfo(WorldState state, string countryTag)
+        {
+            CurrentTag = countryTag ?? string.Empty;
+            var currentCountry = (CwpCountry)state.GetCountryTable()[countryTag];
+            motherWindow_.CountryName.Text = currentCountry.longName;
+            motherWindow_.CountryLeader.Text = currentCountry.leader;
+            motherWindow_.CountryGovernment.Text = currentCountry.government;
+            motherWindow_.CountryAllegiance.Text = currentCountry.allegiance;
+            // CountryProduction.Text = tickHandler_.GetState().GetCountryProduction(currentCountryTag_)
+            motherWindow_.FlagPictureBox.Image = currentCountry.Flag;
+
+            //CurrentName = string.Empty;
+            //CurrentColor = null;
+
+            //if (
+            //    state?.GetCountryTable() is { } table
+            //    && table.TryGetValue(countryTag, out var country)
+            //)
+            //{
+            //    CurrentName = country.GetName();
+            //    var c = country.GetColor();
+            //    CurrentColor = (c.Item1, c.Item2, c.Item3);
+            //}
         }
     }
 }
