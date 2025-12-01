@@ -58,42 +58,11 @@ namespace ColdWarPrototype2
                 countryInfo_ = new Views.CountryInfo(this, gameController_);
                 armyBox_ = new Views.ArmyList(this);
 
-                // wire simple mouse handling directly: update views on hover
-                MapPictureBox.MouseMove += (s, ev) =>
-                {
-                    var state = gameController_.tickHandler.GetState();
-                    var mapX = (int)(
-                        ev.X * ((double)provinceMap.sourceBitmap!.Width / MapPictureBox.Width)
-                    );
-                    var mapY = (int)(
-                        ev.Y * ((double)provinceMap.sourceBitmap.Height / MapPictureBox.Height)
-                    );
-                    var rgb = provinceMap.GetPixelRgb(mapX, mapY);
-                    var provinceId = provinceMap.GetProvinceNumber(rgb);
-                    if (provinceId != -1)
-                    {
-                        provinceInfo_?.UpdateCurrentProvince(state, provinceId);
-                        var provTable = state.GetProvinceTable();
-                        if (provTable != null && provTable.TryGetValue(provinceId, out var prov))
-                        {
-                            var owner = prov.GetOwner();
-                            countryInfo_?.UpdateCountryInfo(state, owner);
-                            armyBox_?.FillListBox(ArmyListBox, state, provinceId);
-                        }
-                    }
-                };
+                MapPictureBox.MouseMove += MapPictureBox_MouseMove;
                 DateButton.Text = gameController_.GetGameDateTime().ToString();
                 DateButton.Click += DateButton_Click;
-                MapModePolitical.CheckedChanged += (
-                    s,
-                    ev
-                ) => { /* TODO: political map */
-                };
-                MapModeRaw.CheckedChanged += (
-                    s,
-                    ev
-                ) => { /* TODO: raw map */
-                };
+                MapModePolitical.CheckedChanged += MapModePolitical_CheckedChanged;
+                MapModeRaw.CheckedChanged += MapModeRaw_CheckedChanged;
 
                 var worldMapView = new Views.WorldMap(this);
                 worldMapView.SetSourceProvinceMap(provinceMap);
@@ -128,10 +97,13 @@ namespace ColdWarPrototype2
         {
             mouseController_.HoveredProvinceChanged += provinceInfo_.HandleProvinceChanged;
             mouseController_.HoveredCountryChanged += countryInfo_.HandleCountryChanged;
+
+            DateButton.Click += DateButton_Click;
         }
 
         private void MapPictureBox_MouseMove(object? sender, MouseEventArgs e)
         {
+            CoordsLabel.Text = $"X: {e.X}, Y: {e.Y}";
             mouseController_.HandleMouseMovedOverMap(e);
         }
 

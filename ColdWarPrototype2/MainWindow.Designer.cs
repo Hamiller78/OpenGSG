@@ -73,6 +73,7 @@
             CountryLeader = new Label();
             CountryName = new Label();
             ArmyListBox = new ListBox();
+            CoordsLabel = new Label();
             ((System.ComponentModel.ISupportInitialize)MapPictureBox).BeginInit();
             MapModeGroup.SuspendLayout();
             ProvinceBox.SuspendLayout();
@@ -82,11 +83,9 @@
             // 
             // MapPictureBox
             // 
-            MapPictureBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             MapPictureBox.Location = new Point(268, 0);
-            MapPictureBox.Margin = new Padding(4, 3, 4, 3);
             MapPictureBox.Name = "MapPictureBox";
-            MapPictureBox.Size = new Size(1930, 1154);
+            MapPictureBox.Size = new Size(1425, 625);
             MapPictureBox.TabIndex = 0;
             MapPictureBox.TabStop = false;
             // 
@@ -302,11 +301,21 @@
             ArmyListBox.Size = new Size(259, 229);
             ArmyListBox.TabIndex = 17;
             // 
+            // CoordsLabel
+            // 
+            CoordsLabel.AutoSize = true;
+            CoordsLabel.Location = new Point(5, 634);
+            CoordsLabel.Name = "CoordsLabel";
+            CoordsLabel.Size = new Size(33, 15);
+            CoordsLabel.TabIndex = 18;
+            CoordsLabel.Text = "(0, 0)";
+            // 
             // MainWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1924, 1061);
+            Controls.Add(CoordsLabel);
             Controls.Add(MapPictureBox);
             Controls.Add(MapModeGroup);
             Controls.Add(DateButton);
@@ -324,8 +333,11 @@
             ((System.ComponentModel.ISupportInitialize)FlagPictureBox).EndInit();
             CountryBox.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private Label CoordsLabel;
     }
 }
