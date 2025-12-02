@@ -1,4 +1,6 @@
-namespace ColdWarPrototype2
+using ColdWarPrototype2;
+
+namespace ColdWarPrototype
 {
     internal static class Program
     {

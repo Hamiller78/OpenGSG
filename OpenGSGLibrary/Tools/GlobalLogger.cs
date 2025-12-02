@@ -1,6 +1,6 @@
 using System;
 
-namespace Tools
+namespace OpenGSGLibrary.Tools
 {
     /// <summary>
     /// Singleton log class using the normal logger class.

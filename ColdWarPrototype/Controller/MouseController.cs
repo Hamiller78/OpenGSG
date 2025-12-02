@@ -1,12 +1,7 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using ColdWarPrototype2;
-using Map;
-using Simulation;
-using WorldData;
+﻿using ColdWarGameLogic.GameLogic;
+using OpenGSGLibrary.WorldMap;
 
-namespace Gui
+namespace ColdWarPrototype.Controller
 {
     public class ProvinceEventArgs : EventArgs
     {

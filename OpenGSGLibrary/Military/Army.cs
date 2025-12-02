@@ -1,13 +1,14 @@
+using OpenGSGLibrary.GameDataManager;
 using System;
 using System.Collections.Generic;
 
-namespace Military
+namespace OpenGSGLibrary.Military
 {
     /// <summary>
     /// Represents an army composed of divisions and belonging to a nation.
     /// The army can be located in a province and contains a list of divisions.
     /// </summary>
-    public class Army : WorldData.GameObject
+    public class Army : GameObject
     {
         /// <summary>
         /// Publicly accessible list of divisions (nullable when not loaded via parser).
@@ -28,7 +29,7 @@ namespace Military
         {
             name_ = parsedData.Contains("name") ? parsedData["name"].Single()?.ToString() ?? string.Empty : string.Empty;
             location_ = parsedData.Contains("location") ? Convert.ToInt32(parsedData["location"].Single()) : 0;
-            divisions_ = WorldData.GameObjectFactory.ListFromLookup<Division>(parsedData, "division");
+            divisions_ = GameObjectFactory.ListFromLookup<Division>(parsedData, "division");
         }
 
         /// <summary>

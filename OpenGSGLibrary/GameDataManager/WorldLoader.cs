@@ -1,8 +1,10 @@
+using OpenGSGLibrary.Military;
+using OpenGSGLibrary.Tools;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace WorldData
+namespace OpenGSGLibrary.GameDataManager
 {
     /// <summary>
     /// Class to create a world state from gamedata files.
@@ -36,7 +38,7 @@ namespace WorldData
             }
             catch (Exception ex)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Could not load initial world state from: " + gamedataPath);
+                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Could not load initial world state from: " + gamedataPath);
                 throw;
             }
         }
@@ -49,7 +51,7 @@ namespace WorldData
             }
             catch (Exception)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading province data.");
+                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Error while loading province data.");
                 throw;
             }
         }
@@ -62,7 +64,7 @@ namespace WorldData
             }
             catch (Exception)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading country data.");
+                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Error while loading country data.");
                 throw;
             }
         }
@@ -82,7 +84,7 @@ namespace WorldData
             }
             catch (Exception)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading nation flags.");
+                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Error while loading nation flags.");
                 throw;
             }
         }
@@ -95,13 +97,13 @@ namespace WorldData
             }
             catch (Exception)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(Tools.LogLevel.Fatal, "Error while loading army data.");
+                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Error while loading army data.");
                 throw;
             }
         }
 
         private IDictionary<int, Province>? provinceTable_ = null;
         private IDictionary<string, Country>? countryTable_ = null;
-        private Military.ArmyManager armyManager_ = new Military.ArmyManager();
+        private ArmyManager armyManager_ = new Military.ArmyManager();
     }
 }

@@ -1,10 +1,12 @@
-namespace Military
+using OpenGSGLibrary.GameDataManager;
+
+namespace OpenGSGLibrary.Military
 {
     /// <summary>
     /// Represents a military division with a name, type and size.
-    /// Instances are populated from parsed game data using <see cref="WorldData.GameObject.SetData"/>.
+    /// Instances are populated from parsed game data using <see cref="GameObject.SetData"/>.
     /// </summary>
-    public class Division : WorldData.GameObject
+    public class Division : GameObject
     {
         private string name_ = string.Empty;
         private string type_ = string.Empty;

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Reflection;
-using Simulation;
-using WorldData;
+﻿using System.Reflection;
+using ColdWarPrototype2;
+using OpenGSGLibrary.GameDataManager;
 
-namespace ColdWarPrototype2.Views
+namespace ColdWarPrototype.Views
 {
     public class GeoCoordinates
     {

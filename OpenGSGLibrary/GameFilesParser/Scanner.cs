@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Parser
+namespace OpenGSGLibrary.GameFilesParser
 {
     /// <summary>
     /// Prepares a text for parsing by converting it into a stream of tokens representing control characters,

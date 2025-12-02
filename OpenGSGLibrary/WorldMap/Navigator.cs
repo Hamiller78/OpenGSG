@@ -1,7 +1,7 @@
+using OpenGSGLibrary.SystemDeviceLocation;
 using System;
-using System.Device.Location;
 
-namespace Map
+namespace OpenGSGLibrary.WorldMap
 {
     /// <summary>
     /// Helper methods for geographic navigation and distance calculations.

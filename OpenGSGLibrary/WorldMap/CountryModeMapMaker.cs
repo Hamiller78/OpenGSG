@@ -1,8 +1,8 @@
+using OpenGSGLibrary.GameDataManager;
 using System.Collections.Generic;
 using System.Drawing;
-using WorldData;
 
-namespace Map
+namespace OpenGSGLibrary.WorldMap
 {
     /// <summary>
     /// Creates an image where each province is coloured by its owner's country colour.

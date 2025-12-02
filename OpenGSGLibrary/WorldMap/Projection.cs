@@ -1,6 +1,6 @@
-using System.Device.Location;
+using OpenGSGLibrary.SystemDeviceLocation;
 
-namespace Map
+namespace OpenGSGLibrary.WorldMap
 {
     /// <summary>
     /// Base projection for converting between globe coordinates (latitude/longitude)

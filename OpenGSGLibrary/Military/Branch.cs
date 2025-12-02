@@ -1,6 +1,6 @@
 using System;
 
-namespace Military
+namespace OpenGSGLibrary.Military
 {
     /// <summary>
     /// Represents a military branch type (Army, Navy, Airforce, Space) and helpers to parse from string.

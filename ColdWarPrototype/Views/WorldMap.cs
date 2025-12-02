@@ -1,10 +1,8 @@
-using System.Drawing;
-using System.Windows.Forms;
-using Map;
-using Simulation;
-using WorldData;
+using ColdWarPrototype2;
+using OpenGSGLibrary.GameDataManager;
+using OpenGSGLibrary.WorldMap;
 
-namespace ColdWarPrototype2.Views
+namespace ColdWarPrototype.Views
 {
     public class WorldMap
     {
@@ -24,7 +22,7 @@ namespace ColdWarPrototype2.Views
             SetMapPicture();
         }
 
-        public void UpdateCountryMap(WorldData.WorldState currentState)
+        public void UpdateCountryMap(WorldState currentState)
         {
             var renderer = new CountryModeMapMaker(provinceMap_);
             countryModeMap_ = renderer.MakeMap(currentState);

@@ -1,8 +1,9 @@
+using OpenGSGLibrary.GameDataManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Military
+namespace OpenGSGLibrary.Military
 {
     /// <summary>
     /// Manages armies loaded from data files and provides lookup by province.
@@ -23,7 +24,7 @@ namespace Military
 
         /// <summary>
         /// Load nation military definitions from the given folder.
-        /// This reads unit files using the <see cref="WorldData.GameObjectFactory"/> and
+        /// This reads unit files using the <see cref="GameDataManager.GameObjectFactory"/> and
         /// rebuilds the province->armies index for fast lookup.
         /// </summary>
         /// <param name="unitsPath">File system path to the units folder.</param>
@@ -33,7 +34,7 @@ namespace Military
             if (!Directory.Exists(unitsPath))
                 throw new DirectoryNotFoundException("Given game data directory not found: " + unitsPath);
 
-            nationMilitaryTable_ = WorldData.GameObjectFactory.FromFolder<string, NationMilitary, NationMilitary>(unitsPath, "tag");
+            nationMilitaryTable_ = GameObjectFactory.FromFolder<string, NationMilitary, NationMilitary>(unitsPath, "tag");
             UpdateProvinceToArmyTable();
         }
 

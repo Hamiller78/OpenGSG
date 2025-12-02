@@ -1,7 +1,7 @@
+using OpenGSGLibrary.SystemDeviceLocation;
 using System;
-using System.Device.Location;
 
-namespace Map
+namespace OpenGSGLibrary.WorldMap
 {
     public class RobinsonProjection : Projection
     {

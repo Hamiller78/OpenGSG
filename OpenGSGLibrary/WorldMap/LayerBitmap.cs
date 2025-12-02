@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 
-namespace Map
+namespace OpenGSGLibrary.WorldMap
 {
     /// <summary>
     /// Base class for bitmaps of world map.

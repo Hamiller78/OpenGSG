@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-using GameLogic;
-using WorldData;
+﻿using OpenGSGLibrary.GameDataManager;
 
-namespace WorldData;
+namespace ColdWarGameLogic.GameWorld;
 
 /// <summary>
 /// Province class for cold war game. Adds specialised properties to base province class.

@@ -1,8 +1,10 @@
-﻿using System;
-using Simulation;
-using WorldData;
+﻿using ColdWarGameLogic.GameLogic;
+using ColdWarGameLogic.GameWorld;
+using ColdWarPrototype.Controller;
+using ColdWarPrototype2;
+using OpenGSGLibrary.GameDataManager;
 
-namespace ColdWarPrototype2.Views
+namespace ColdWarPrototype.Views
 {
     public class CountryInfo
     {
@@ -19,7 +21,7 @@ namespace ColdWarPrototype2.Views
             gameController_ = controller;
         }
 
-        public void HandleCountryChanged(object? sender, Gui.CountryEventArgs e)
+        public void HandleCountryChanged(object? sender, CountryEventArgs e)
         {
             UpdateCountryInfo(gameController_.tickHandler.GetState(), e.CountryTag);
         }

@@ -1,8 +1,6 @@
-﻿using System.Diagnostics.Metrics;
-using System.Linq;
-using WorldData;
+﻿using OpenGSGLibrary.GameDataManager;
 
-namespace WorldData
+namespace ColdWarGameLogic.GameWorld
 {
     /// <summary>
     /// Country class for cold war game. Adds specialised properties to base country class.
@@ -22,7 +20,10 @@ namespace WorldData
         /// </summary>
         /// <param name="fileName">Name of the source file of country object.</param>
         /// <param name="parsedData">Object with the parsed data from that file.</param>
-        public override void SetData(string fileName, System.Linq.ILookup<string, object> parsedData)
+        public override void SetData(
+            string fileName,
+            System.Linq.ILookup<string, object> parsedData
+        )
         {
             base.SetData(fileName, parsedData);
 

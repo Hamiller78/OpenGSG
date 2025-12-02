@@ -1,7 +1,7 @@
+using OpenGSGLibrary.GameDataManager;
 using System.Drawing;
-using WorldData;
 
-namespace Map
+namespace OpenGSGLibrary.WorldMap
 {
     /// <summary>
     /// Base class for making maps for different view modes (e.g. political, economical).

@@ -1,6 +1,6 @@
-using WorldData;
+using OpenGSGLibrary.GameDataManager;
 
-namespace GameLogic
+namespace OpenGSGLibrary.GameLogic
 {
     /// <summary>
     /// Base class for players.

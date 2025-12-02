@@ -1,7 +1,8 @@
-﻿using GameLogic;
-using WorldData;
+﻿using ColdWarGameLogic.GameWorld;
+using OpenGSGLibrary.GameDataManager;
+using OpenGSGLibrary.GameLogic;
 
-namespace Simulation
+namespace ColdWarGameLogic.GameLogic
 {
     public class MasterController
     {
@@ -10,8 +11,8 @@ namespace Simulation
         public readonly WorldDataManager worldData = new WorldDataManager();
         public readonly TickHandler tickHandler = new TickHandler();
 
-        private readonly WorldLoader<WorldData.CwpProvince, WorldData.CwpCountry> worldLoader_ =
-            new WorldLoader<WorldData.CwpProvince, WorldData.CwpCountry>();
+        private readonly WorldLoader<CwpProvince, CwpCountry> worldLoader_ =
+            new WorldLoader<CwpProvince, CwpCountry>();
 
         public void Init()
         {

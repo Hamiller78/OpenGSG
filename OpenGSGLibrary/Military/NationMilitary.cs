@@ -1,11 +1,12 @@
+using OpenGSGLibrary.GameDataManager;
 using System.Collections.Generic;
 
-namespace Military
+namespace OpenGSGLibrary.Military
 {
     /// <summary>
     /// Represents the military forces of a single nation. Contains a list of armies.
     /// </summary>
-    public class NationMilitary : WorldData.GameObject
+    public class NationMilitary : GameObject
     {
         private string owner_ = string.Empty;
         private List<Army> armies_ = new List<Army>();
@@ -19,7 +20,7 @@ namespace Military
         {
             base.SetData(fileName, parsedData);
             owner_ = parsedData.Contains("tag") ? parsedData["tag"].Single()?.ToString() ?? string.Empty : string.Empty;
-            armies_ = WorldData.GameObjectFactory.ListFromLookup<Army>(parsedData, "army");
+            armies_ = GameObjectFactory.ListFromLookup<Army>(parsedData, "army");
             foreach (var army in armies_) army.SetOwner(owner_);
         }
 

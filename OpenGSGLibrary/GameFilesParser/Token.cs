@@ -1,4 +1,4 @@
-namespace Parser
+namespace OpenGSGLibrary.GameFilesParser
 {
     /// <summary>
     /// Enumeration for the different Kinds of Tokens

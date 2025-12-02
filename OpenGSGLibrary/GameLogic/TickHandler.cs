@@ -1,8 +1,8 @@
+using OpenGSGLibrary.GameDataManager;
 using System;
 using System.Collections.Generic;
-using WorldData;
 
-namespace GameLogic
+namespace OpenGSGLibrary.GameLogic
 {
     /// <summary>
     /// Migrated TickHandler from the original VB implementation.

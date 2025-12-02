@@ -1,4 +1,4 @@
-namespace Orders
+namespace OpenGSGLibrary.Orders
 {
     public enum OrderType
     {

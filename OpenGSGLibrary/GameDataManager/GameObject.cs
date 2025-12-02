@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using GameLogic;
-
-namespace WorldData
+﻿namespace OpenGSGLibrary.GameDataManager
 {
     /// <summary>
     /// Base class for game object classes like provinces, countries, armies, etc...

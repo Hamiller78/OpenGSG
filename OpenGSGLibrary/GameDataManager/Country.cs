@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 
-namespace WorldData
+namespace OpenGSGLibrary.GameDataManager
 {
     /// <summary>
     /// Base class for countries. Handles the most basic country properties.

@@ -1,10 +1,6 @@
-﻿using System.IO;
-using GameLogic;
-using Map;
-using Military;
-using WorldData;
+﻿using OpenGSGLibrary.WorldMap;
 
-namespace WorldData
+namespace ColdWarGameLogic.GameWorld
 {
     /// <summary>
     /// Top class to handle all world game data (provinces, countries, units, etc...)

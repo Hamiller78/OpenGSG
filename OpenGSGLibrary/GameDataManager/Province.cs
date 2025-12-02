@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Military;
+using OpenGSGLibrary.Military;
 
-namespace WorldData
+namespace OpenGSGLibrary.GameDataManager
 {
     /// <summary>
     /// Base class for provinces. Handles the most basic province properties.

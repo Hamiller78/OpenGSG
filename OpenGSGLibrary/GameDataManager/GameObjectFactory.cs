@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using OpenGSGLibrary.GameFilesParser;
 
-namespace WorldData
+namespace OpenGSGLibrary.GameDataManager
 {
     /// <summary>
     /// Class to generate game objects from game files
@@ -138,8 +139,8 @@ namespace WorldData
                     using var rawFile = File.OpenText(textFile);
 
                     // Use the Parser.Scanner and Parser.Parser types which are included in the project
-                    var scanner = new Parser.Scanner();
-                    var parser = new Parser.Parser();
+                    var scanner = new Scanner();
+                    var parser = new Parser();
 
                     var tokenStream = scanner.Scan(rawFile);
                     var nextParseData = parser.Parse(tokenStream);

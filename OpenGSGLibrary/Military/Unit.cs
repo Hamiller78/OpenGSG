@@ -1,4 +1,4 @@
-namespace Military
+namespace OpenGSGLibrary.Military
 {
     /// <summary>
     /// Base interface for movable military units. Concrete implementations must provide a name and a terrain speed.

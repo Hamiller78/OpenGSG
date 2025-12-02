@@ -1,12 +1,7 @@
-using System;
-using System.Drawing;
-using System.IO;
-using System.Reflection.Metadata;
-using System.Windows.Forms;
-using ColdWarPrototype2.Views;
-using Gui;
-using Simulation;
-using Tools;
+using ColdWarGameLogic.GameLogic;
+using ColdWarPrototype.Controller;
+using ColdWarPrototype.Views;
+using OpenGSGLibrary.Tools;
 
 namespace ColdWarPrototype2
 {
@@ -54,9 +49,9 @@ namespace ColdWarPrototype2
                 }
 
                 // create views
-                provinceInfo_ = new Views.ProvinceInfo(this, gameController_);
-                countryInfo_ = new Views.CountryInfo(this, gameController_);
-                armyBox_ = new Views.ArmyList(this);
+                provinceInfo_ = new ProvinceInfo(this, gameController_);
+                countryInfo_ = new CountryInfo(this, gameController_);
+                armyBox_ = new ArmyList(this);
 
                 MapPictureBox.MouseMove += MapPictureBox_MouseMove;
                 DateButton.Text = gameController_.GetGameDateTime().ToString();
@@ -64,7 +59,7 @@ namespace ColdWarPrototype2
                 MapModePolitical.CheckedChanged += MapModePolitical_CheckedChanged;
                 MapModeRaw.CheckedChanged += MapModeRaw_CheckedChanged;
 
-                var worldMapView = new Views.WorldMap(this);
+                var worldMapView = new WorldMap(this);
                 worldMapView.SetSourceProvinceMap(provinceMap);
                 worldMapView.UpdateCountryMap(gameController_.tickHandler.GetState());
             }
@@ -88,7 +83,7 @@ namespace ColdWarPrototype2
 
         private void SetupControllers()
         {
-            mouseController_ = new Gui.MouseController(gameController_);
+            mouseController_ = new MouseController(gameController_);
             Size sourceMapSize = gameController_.worldData.provinceMap.sourceBitmap.Size;
             mouseController_.SetMapScalingFactor(MapPictureBox.Size, sourceMapSize);
         }

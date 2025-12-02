@@ -1,6 +1,6 @@
-using WorldData;
+using OpenGSGLibrary.GameDataManager;
 
-namespace Orders
+namespace OpenGSGLibrary.Orders
 {
     public abstract class Order
     {

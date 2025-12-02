@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
 
-namespace Map
+namespace OpenGSGLibrary.WorldMap
 {
     /// <summary>
     /// Bitmap for province view. RGB values mark provinces, which are translated names and IDs in extra CSV file.

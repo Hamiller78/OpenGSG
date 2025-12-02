@@ -1,10 +1,11 @@
-﻿using System;
-using System.Reflection;
-using Gui;
-using Simulation;
-using WorldData;
+﻿using System.Reflection;
+using ColdWarGameLogic.GameLogic;
+using ColdWarGameLogic.GameWorld;
+using ColdWarPrototype.Controller;
+using ColdWarPrototype2;
+using OpenGSGLibrary.GameDataManager;
 
-namespace ColdWarPrototype2.Views
+namespace ColdWarPrototype.Views
 {
     public class ProvinceInfo
     {

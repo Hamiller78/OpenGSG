@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 
-namespace Tools
+namespace OpenGSGLibrary.Tools
 {
     public enum LogLevel
     {

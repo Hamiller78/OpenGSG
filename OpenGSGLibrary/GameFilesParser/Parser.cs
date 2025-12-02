@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Parser
+namespace OpenGSGLibrary.GameFilesParser
 {
     public class Parser
     {

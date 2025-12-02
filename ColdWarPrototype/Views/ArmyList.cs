@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
-using Military;
-using WorldData;
+﻿using ColdWarPrototype2;
+using OpenGSGLibrary.GameDataManager;
+using OpenGSGLibrary.Military;
 
-namespace ColdWarPrototype2.Views
+namespace ColdWarPrototype.Views
 {
     /// <summary>
     /// Simple view helper for showing armies in a province.
@@ -55,7 +54,9 @@ namespace ColdWarPrototype2.Views
         /// </summary>
         public void UpdateArmyListBox(WorldState currentState, int mouseProvinceId)
         {
-            armiesInProvince_ = currentState?.GetArmyManager()?.GetArmiesInProvince(mouseProvinceId) ?? new List<Army>();
+            armiesInProvince_ =
+                currentState?.GetArmyManager()?.GetArmiesInProvince(mouseProvinceId)
+                ?? new List<Army>();
 
             if (motherWindow_?.ArmyListBox == null)
                 return;

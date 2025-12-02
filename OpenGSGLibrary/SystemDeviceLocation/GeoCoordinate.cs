@@ -1,6 +1,4 @@
-using System;
-
-namespace System.Device.Location
+namespace OpenGSGLibrary.SystemDeviceLocation
 {
     // Minimal replacement for System.Device.Location.GeoCoordinate used by the original VB code.
     // This local shim is used when the official package is unavailable.

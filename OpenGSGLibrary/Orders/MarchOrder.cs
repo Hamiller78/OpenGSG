@@ -1,16 +1,17 @@
-using WorldData;
+using OpenGSGLibrary.GameDataManager;
+using OpenGSGLibrary.Military;
 
-namespace Orders
+namespace OpenGSGLibrary.Orders
 {
     /// <summary>
     /// Order that moves an army to a target province when finalized.
     /// </summary>
     public class MarchOrder : Order
     {
-        private readonly Military.Army army_;
+        private readonly Army army_;
         private readonly int targetProvince_;
 
-        public MarchOrder(Military.Army army, int targetProvince)
+        public MarchOrder(Army army, int targetProvince)
         {
             army_ = army;
             targetProvince_ = targetProvince;
