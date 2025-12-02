@@ -1,5 +1,0 @@
-color = { 255  60  60 }
-tag = USSR
-long_name = "Union of Soviet Socialist Republics"
-government = communist
-leader = "Joseph Stalin"

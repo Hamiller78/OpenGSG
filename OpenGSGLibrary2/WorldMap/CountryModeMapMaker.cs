@@ -1,5 +1,5 @@
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
 using WorldData;
 
 namespace Map
@@ -11,7 +11,8 @@ namespace Map
     {
         private ProvinceMap provinceMap_;
 
-        public CountryModeMapMaker(ProvinceMap provinceMap) : base(provinceMap)
+        public CountryModeMapMaker(ProvinceMap provinceMap)
+            : base(provinceMap)
         {
             provinceMap_ = provinceMap;
         }
@@ -25,7 +26,11 @@ namespace Map
             var provinceMap = sourceState.GetProvinceTable();
             var countryMapDict = sourceState.GetCountryTable();
 
-            var countryMap = new Bitmap(mapSize.Width, mapSize.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var countryMap = new Bitmap(
+                mapSize.Width,
+                mapSize.Height,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb
+            );
             for (int y = 0; y < mapSize.Height; y++)
             {
                 for (int x = 0; x < mapSize.Width; x++)
@@ -44,10 +49,14 @@ namespace Map
             var drawColor = Color.AntiqueWhite;
             if (provinceId != -1)
             {
-                var countryTag = sourceState.GetProvinceTable()![provinceId].GetOwner();
+                var countryTag = sourceState.GetProvinceTable()![provinceId].Owner;
                 var country = sourceState.GetCountryTable()![countryTag];
                 var countryColor = country.GetColor();
-                drawColor = Color.FromArgb(countryColor.Item1, countryColor.Item2, countryColor.Item3);
+                drawColor = Color.FromArgb(
+                    countryColor.Item1,
+                    countryColor.Item2,
+                    countryColor.Item3
+                );
             }
             return drawColor;
         }

@@ -79,7 +79,7 @@ namespace Gui
             var provTable = state?.GetProvinceTable();
             if (provTable != null && provTable.TryGetValue(provinceId, out var prov))
             {
-                var tag = prov.GetOwner();
+                var tag = prov.Owner;
                 if (!string.Equals(tag, currentCountryTag_, StringComparison.Ordinal))
                 {
                     currentCountryTag_ = tag ?? string.Empty;

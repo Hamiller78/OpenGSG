@@ -52,19 +52,19 @@ namespace ColdWarPrototype2.Views
             currentProvinceId_ = provinceId;
 
             // Basic province info from base Province
-            motherWindow_.ProvinceName.Text = prov.GetName() ?? string.Empty;
-            motherWindow_.ProvinceOwner.Text = prov.GetOwner() ?? string.Empty;
-            motherWindow_.ProvinceController.Text = prov.GetController() ?? string.Empty;
-            motherWindow_.ProvincePopulation.Text = ((CwpProvince)prov).population.ToString();
+            motherWindow_.ProvinceName.Text = prov.Name ?? string.Empty;
+            motherWindow_.ProvinceOwner.Text = prov.Owner ?? string.Empty;
+            motherWindow_.ProvinceController.Text = prov.Controller ?? string.Empty;
+            motherWindow_.ProvincePopulation.Text = ((CwpProvince)prov).Population.ToString();
 
             // Game-specific extended province info may live in derived type CwpProvince
             if (prov is CwpProvince cwp)
             {
-                Population = cwp.population;
-                Industrialization = cwp.industrialization;
-                Education = cwp.education;
-                Production = cwp.production;
-                Terrain = cwp.terrain ?? string.Empty;
+                Population = cwp.Population;
+                Industrialization = cwp.Industrialization;
+                Education = cwp.Education;
+                Production = cwp.Production;
+                Terrain = cwp.Terrain ?? string.Empty;
             }
             else
             {

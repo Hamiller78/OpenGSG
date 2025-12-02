@@ -1,6 +1,0 @@
-owner = POL
-controller = POL
-population = 25000000
-industrialization = 30
-education = 90
-terrain = coastal
