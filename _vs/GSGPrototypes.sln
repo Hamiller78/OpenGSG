@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColdWarGameLogic", "..\Cold
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGSGLibrary", "..\OpenGSGLibrary\OpenGSGLibrary.csproj", "{6BB02825-28DB-4F90-B25E-7FCACEA42256}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGSG_UnitTests", "..\OpenGSG_UnitTests\OpenGSG2_UnitTests.csproj", "{15EC56D1-C59E-47F8-A8A1-E787B1584E03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGSG_UnitTests", "..\OpenGSG_UnitTests\OpenGSG_UnitTests.csproj", "{15EC56D1-C59E-47F8-A8A1-E787B1584E03}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColdWarPrototype", "..\ColdWarPrototype\ColdWarPrototype.csproj", "{DBF02FB8-1AE1-40FA-8A6C-1EB31AA981BB}"
 EndProject

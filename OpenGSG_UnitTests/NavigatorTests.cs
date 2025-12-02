@@ -1,9 +1,7 @@
-using System;
-using NUnit.Framework;
-using Map;
-using System.Device.Location;
+using OpenGSGLibrary.SystemDeviceLocation;
+using OpenGSGLibrary.WorldMap;
 
-namespace OpenGSG2_UnitTests
+namespace OpenGSG_UnitTests
 {
     [TestFixture]
     public class NavigatorTests
@@ -20,10 +18,18 @@ namespace OpenGSG2_UnitTests
             var coordinatesNewYork = new GeoCoordinate(latitudeNewYork, longitudeNewYork);
 
             // Distance London to New York is ~5567km, allow 10km deviation
-            double distanceMethod1 = Navigator.GetDistanceInKm(latitudeLondon, longitudeLondon, latitudeNewYork, longitudeNewYork);
+            double distanceMethod1 = Navigator.GetDistanceInKm(
+                latitudeLondon,
+                longitudeLondon,
+                latitudeNewYork,
+                longitudeNewYork
+            );
             Assert.That(Math.Abs(5567D - distanceMethod1), Is.LessThan(10D));
 
-            double distanceMethod2 = Navigator.GetDistanceInKm(coordinatesLondon, coordinatesNewYork);
+            double distanceMethod2 = Navigator.GetDistanceInKm(
+                coordinatesLondon,
+                coordinatesNewYork
+            );
             Assert.That(Math.Abs(5567D - distanceMethod2), Is.LessThan(10D));
         }
     }

@@ -1,9 +1,6 @@
-using System;
-using NUnit.Framework;
-using Parser;
-using System.IO;
+using OpenGSGLibrary.GameFilesParser;
 
-namespace OpenGSG2_UnitTests
+namespace OpenGSG_UnitTests
 {
     [TestFixture]
     public class ScannerTests
@@ -11,8 +8,10 @@ namespace OpenGSG2_UnitTests
         [Test]
         public void Test_Scan_StringReader()
         {
-            var testScanner = new Parser.Scanner();
-            var inputText = new StringReader("state={ \n       id=92     # comment to be ignored\n       name=\"Ülék?o\"\n      }");
+            var testScanner = new Scanner();
+            var inputText = new StringReader(
+                "state={ \n       id=92     # comment to be ignored\n       name=\"Ülék?o\"\n      }"
+            );
             var outputStream = testScanner.Scan(inputText);
 
             outputStream.MoveNext();

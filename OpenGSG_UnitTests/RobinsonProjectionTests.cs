@@ -1,9 +1,6 @@
-using System;
-using NUnit.Framework;
-using Map;
-using System.Device.Location;
+using OpenGSGLibrary.WorldMap;
 
-namespace OpenGSG2_UnitTests
+namespace OpenGSG_UnitTests
 {
     [TestFixture]
     public class RobinsonProjectionTests
