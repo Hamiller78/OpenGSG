@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpenGSGLibrary2\OpenGSGLibrary2.csproj" />
+    <ProjectReference Include="..\OpenGSGLibrary\OpenGSGLibrary.csproj" />
   </ItemGroup>
 
 

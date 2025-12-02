@@ -1,20 +1,17 @@
-﻿using System;
-using GameLogic;
+﻿using GameLogic;
 using WorldData;
 
 namespace Simulation
 {
     public class MasterController
     {
-        private const string GAMEDATA_PATH = @"..\..\..\..\ColdWarPrototype2\GameData";
+        private const string GAMEDATA_PATH = @"..\..\..\..\ColdWarPrototype\GameData";
 
         public readonly WorldDataManager worldData = new WorldDataManager();
         public readonly TickHandler tickHandler = new TickHandler();
 
-        private readonly WorldData.WorldLoader<
-            WorldData.CwpProvince,
-            WorldData.CwpCountry
-        > worldLoader_ = new WorldData.WorldLoader<WorldData.CwpProvince, WorldData.CwpCountry>();
+        private readonly WorldLoader<WorldData.CwpProvince, WorldData.CwpCountry> worldLoader_ =
+            new WorldLoader<WorldData.CwpProvince, WorldData.CwpCountry>();
 
         public void Init()
         {

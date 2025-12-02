@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpenGSGLibrary2\OpenGSGLibrary2.csproj" />
-    <ProjectReference Include="..\ColdWarGameLogic2\ColdWarGameLogic2.csproj" />
+    <ProjectReference Include="..\OpenGSGLibrary\OpenGSGLibrary.csproj" />
+    <ProjectReference Include="..\ColdWarGameLogic\ColdWarGameLogic.csproj" />
   </ItemGroup>
 
 </Project>
