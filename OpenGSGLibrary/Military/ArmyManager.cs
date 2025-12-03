@@ -1,7 +1,4 @@
 using OpenGSGLibrary.GameDataManager;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace OpenGSGLibrary.Military
 {
@@ -32,9 +29,15 @@ namespace OpenGSGLibrary.Military
         public void LoadFolder(string unitsPath)
         {
             if (!Directory.Exists(unitsPath))
-                throw new DirectoryNotFoundException("Given game data directory not found: " + unitsPath);
+                throw new DirectoryNotFoundException(
+                    "Given game data directory not found: " + unitsPath
+                );
 
-            nationMilitaryTable_ = GameObjectFactory.FromFolder<string, NationMilitary, NationMilitary>(unitsPath, "tag");
+            nationMilitaryTable_ = GameObjectFactory.FromFolder<
+                string,
+                NationMilitary,
+                NationMilitary
+            >(unitsPath, "tag");
             UpdateProvinceToArmyTable();
         }
 
@@ -61,7 +64,8 @@ namespace OpenGSGLibrary.Military
         public void MoveArmy(Army movingArmy, int targetProvinceId)
         {
             var oldLocation = movingArmy.GetLocation();
-            if (provinceIdToArmiesTable_ == null) return;
+            if (provinceIdToArmiesTable_ == null)
+                return;
 
             var oldProvinceList = provinceIdToArmiesTable_[oldLocation];
             oldProvinceList.Remove(movingArmy);
@@ -84,7 +88,8 @@ namespace OpenGSGLibrary.Military
         private void UpdateProvinceToArmyTable()
         {
             provinceIdToArmiesTable_ = new Dictionary<int, List<Army>>();
-            if (nationMilitaryTable_ == null) return;
+            if (nationMilitaryTable_ == null)
+                return;
 
             foreach (var countryNationMil in nationMilitaryTable_)
             {

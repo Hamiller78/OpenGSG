@@ -36,10 +36,10 @@ namespace ColdWarPrototype.Views
         {
             CurrentTag = countryTag ?? string.Empty;
             var currentCountry = (CwpCountry)state.GetCountryTable()[countryTag];
-            motherWindow_.CountryName.Text = currentCountry.longName;
-            motherWindow_.CountryLeader.Text = currentCountry.leader;
-            motherWindow_.CountryGovernment.Text = currentCountry.government;
-            motherWindow_.CountryAllegiance.Text = currentCountry.allegiance;
+            motherWindow_.CountryName.Text = currentCountry.FullName;
+            motherWindow_.CountryLeader.Text = currentCountry.Leader;
+            motherWindow_.CountryGovernment.Text = currentCountry.Government;
+            motherWindow_.CountryAllegiance.Text = currentCountry.Allegiance;
             // CountryProduction.Text = tickHandler_.GetState().GetCountryProduction(currentCountryTag_)
             motherWindow_.FlagPictureBox.Image = currentCountry.Flag;
 

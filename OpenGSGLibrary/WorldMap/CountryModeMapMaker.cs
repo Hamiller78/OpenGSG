@@ -1,6 +1,6 @@
-using OpenGSGLibrary.GameDataManager;
 using System.Collections.Generic;
 using System.Drawing;
+using OpenGSGLibrary.GameDataManager;
 
 namespace OpenGSGLibrary.WorldMap
 {
@@ -51,7 +51,7 @@ namespace OpenGSGLibrary.WorldMap
             {
                 var countryTag = sourceState.GetProvinceTable()![provinceId].Owner;
                 var country = sourceState.GetCountryTable()![countryTag];
-                var countryColor = country.GetColor();
+                var countryColor = country.Color;
                 drawColor = Color.FromArgb(
                     countryColor.Item1,
                     countryColor.Item2,

@@ -38,7 +38,7 @@ namespace ColdWarPrototype.Controller
         {
             gameController_ =
                 gameController ?? throw new ArgumentNullException(nameof(gameController));
-            provinceMap_ = gameController_.GetWorldManager()?.provinceMap;
+            provinceMap_ = gameController_.GetWorldManager()?.ProvinceMap;
         }
 
         public void SetMapScalingFactor(Size guiViewSize, Size mapSize)

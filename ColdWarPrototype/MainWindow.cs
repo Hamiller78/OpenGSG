@@ -41,7 +41,7 @@ namespace ColdWarPrototype2
                 UpdateDateText();
 
                 // Load province map and set on picture box
-                var provinceMap = gameController_.GetWorldManager().provinceMap;
+                var provinceMap = gameController_.GetWorldManager().ProvinceMap;
                 if (provinceMap?.sourceBitmap != null)
                 {
                     MapPictureBox.Image = new Bitmap(provinceMap.sourceBitmap);
@@ -77,14 +77,14 @@ namespace ColdWarPrototype2
             coordinateView_ = new GeoCoordinates(this);
 
             worldMapView_ = new WorldMap(this);
-            worldMapView_.SetSourceProvinceMap(gameController_.GetWorldManager().provinceMap); // ugly
+            worldMapView_.SetSourceProvinceMap(gameController_.GetWorldManager().ProvinceMap); // ugly
             worldMapView_.UpdateCountryMap(gameController_.tickHandler.GetState()); // not much better
         }
 
         private void SetupControllers()
         {
             mouseController_ = new MouseController(gameController_);
-            Size sourceMapSize = gameController_.worldData.provinceMap.sourceBitmap.Size;
+            Size sourceMapSize = gameController_.worldData.ProvinceMap.sourceBitmap.Size;
             mouseController_.SetMapScalingFactor(MapPictureBox.Size, sourceMapSize);
         }
 

@@ -7,10 +7,10 @@ namespace ColdWarGameLogic.GameWorld
     /// </summary>
     public class CwpCountry : Country
     {
-        public string longName { get; set; } = string.Empty;
-        public string government { get; set; } = string.Empty;
-        public string allegiance { get; set; } = string.Empty;
-        public string leader { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Government { get; set; } = string.Empty;
+        public string Allegiance { get; set; } = string.Empty;
+        public string Leader { get; set; } = string.Empty;
 
         public CwpCountry()
             : base() { }
@@ -27,17 +27,17 @@ namespace ColdWarGameLogic.GameWorld
         {
             base.SetData(fileName, parsedData);
 
-            longName = parsedData["long_name"].Single()?.ToString() ?? string.Empty;
-            government = parsedData["government"].Single()?.ToString() ?? string.Empty;
+            FullName = parsedData["long_name"].Single()?.ToString() ?? string.Empty;
+            Government = parsedData["government"].Single()?.ToString() ?? string.Empty;
             if (parsedData.Contains("allegiance"))
             {
-                allegiance = parsedData["allegiance"].Single()?.ToString() ?? string.Empty;
+                Allegiance = parsedData["allegiance"].Single()?.ToString() ?? string.Empty;
             }
             else
             {
-                allegiance = string.Empty;
+                Allegiance = string.Empty;
             }
-            leader = parsedData["leader"].Single()?.ToString() ?? string.Empty;
+            Leader = parsedData["leader"].Single()?.ToString() ?? string.Empty;
         }
     }
 }

@@ -1,8 +1,5 @@
-using OpenGSGLibrary.Military;
+﻿using OpenGSGLibrary.Military;
 using OpenGSGLibrary.Tools;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace OpenGSGLibrary.GameDataManager
 {
@@ -14,6 +11,10 @@ namespace OpenGSGLibrary.GameDataManager
         where TProv : Province, new()
         where TCountry : Country, new()
     {
+        private IDictionary<int, Province> _provinceTable = default!;
+        private IDictionary<string, Country> _countryTable = default!;
+        private readonly ArmyManager _armyManager = new();
+
         /// <summary>
         /// Creates a world state from the data in the game data or mod directories.
         /// This should be the start state for a game.
@@ -30,15 +31,20 @@ namespace OpenGSGLibrary.GameDataManager
                 LoadCountryFlags(gamedataPath);
                 LoadArmies(gamedataPath);
 
-                newState.SetProvinceTable(provinceTable_);
-                newState.SetCountryTable(countryTable_);
-                newState.SetArmyManager(armyManager_);
+                newState.SetProvinceTable(_provinceTable);
+                newState.SetCountryTable(_countryTable);
+                newState.SetArmyManager(_armyManager);
 
                 return newState;
             }
             catch (Exception ex)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Could not load initial world state from: " + gamedataPath);
+                GlobalLogger
+                    .GetInstance()
+                    .WriteLine(
+                        LogLevel.Fatal,
+                        "Could not load initial world state from: " + gamedataPath
+                    );
                 throw;
             }
         }
@@ -47,11 +53,15 @@ namespace OpenGSGLibrary.GameDataManager
         {
             try
             {
-                provinceTable_ = GameObjectFactory.FromFolderWithFilenameId<Province, TProv>(Path.Combine(gamedataPath, "history\\provinces"));
+                _provinceTable = GameObjectFactory.FromFolderWithFilenameId<Province, TProv>(
+                    Path.Combine(gamedataPath, "history\\provinces")
+                );
             }
             catch (Exception)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Error while loading province data.");
+                Tools
+                    .GlobalLogger.GetInstance()
+                    .WriteLine(LogLevel.Fatal, "Error while loading province data.");
                 throw;
             }
         }
@@ -60,11 +70,16 @@ namespace OpenGSGLibrary.GameDataManager
         {
             try
             {
-                countryTable_ = GameObjectFactory.FromFolder<string, Country, TCountry>(Path.Combine(gamedataPath, "common\\countries"), "tag");
+                _countryTable = GameObjectFactory.FromFolder<string, Country, TCountry>(
+                    Path.Combine(gamedataPath, "common\\countries"),
+                    "tag"
+                );
             }
             catch (Exception)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Error while loading country data.");
+                Tools
+                    .GlobalLogger.GetInstance()
+                    .WriteLine(LogLevel.Fatal, "Error while loading country data.");
                 throw;
             }
         }
@@ -74,9 +89,9 @@ namespace OpenGSGLibrary.GameDataManager
             try
             {
                 var flagPath = Path.Combine(gamedataPath, "gfx\\flags");
-                if (countryTable_ != null)
+                if (_countryTable != null)
                 {
-                    foreach (var country in countryTable_)
+                    foreach (var country in _countryTable)
                     {
                         country.Value.LoadFlags(flagPath);
                     }
@@ -84,7 +99,9 @@ namespace OpenGSGLibrary.GameDataManager
             }
             catch (Exception)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Error while loading nation flags.");
+                Tools
+                    .GlobalLogger.GetInstance()
+                    .WriteLine(LogLevel.Fatal, "Error while loading nation flags.");
                 throw;
             }
         }
@@ -93,17 +110,15 @@ namespace OpenGSGLibrary.GameDataManager
         {
             try
             {
-                armyManager_.LoadFolder(Path.Combine(gamedataPath, "history\\units"));
+                _armyManager.LoadFolder(Path.Combine(gamedataPath, "history\\units"));
             }
             catch (Exception)
             {
-                Tools.GlobalLogger.GetInstance().WriteLine(LogLevel.Fatal, "Error while loading army data.");
+                Tools
+                    .GlobalLogger.GetInstance()
+                    .WriteLine(LogLevel.Fatal, "Error while loading army data.");
                 throw;
             }
         }
-
-        private IDictionary<int, Province>? provinceTable_ = null;
-        private IDictionary<string, Country>? countryTable_ = null;
-        private ArmyManager armyManager_ = new Military.ArmyManager();
     }
 }

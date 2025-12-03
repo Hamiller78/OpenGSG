@@ -8,7 +8,7 @@ namespace ColdWarGameLogic.GameWorld
     public class WorldDataManager
     {
         // Preserve VB name to avoid breaking callers
-        public ProvinceMap provinceMap { get; } = new ProvinceMap();
+        public ProvinceMap ProvinceMap { get; } = new ProvinceMap();
 
         /// <summary>
         /// Loads game data from game files.
@@ -25,12 +25,12 @@ namespace ColdWarGameLogic.GameWorld
             }
 
             LoadWorldmap(Path.Combine(gamedataPath, "map"));
-            provinceMap.LoadProvinceRGBs(Path.Combine(gamedataPath, "map", "definitions.csv"));
+            ProvinceMap.LoadProvinceRGBs(Path.Combine(gamedataPath, "map", "definitions.csv"));
         }
 
         private void LoadWorldmap(string filePath)
         {
-            provinceMap.FromFile(Path.Combine(filePath, "provinces.bmp"));
+            ProvinceMap.FromFile(Path.Combine(filePath, "provinces.bmp"));
         }
     }
 }

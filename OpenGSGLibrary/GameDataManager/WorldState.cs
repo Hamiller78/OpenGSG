@@ -1,26 +1,30 @@
 using OpenGSGLibrary.Military;
-using System.Collections.Generic;
 
 namespace OpenGSGLibrary.GameDataManager
 {
     public class WorldState
     {
-        private IDictionary<int, Province>? provinceTable_ = null;
-        private IDictionary<string, Country>? countryTable_ = null;
-        private ArmyManager? armyManager_ = new Military.ArmyManager();
+        private IDictionary<int, Province> _provinceTable = default!;
+        private IDictionary<string, Country> _countryTable = default!;
+        private ArmyManager _armyManager = new();
 
         // Store orders as objects to avoid cross-assembly type resolving during incremental migration.
-        private List<object>? runningOrders_ = new List<object>();
+        private readonly List<object> _runningOrders = [];
 
-        public void SetProvinceTable(IDictionary<int, Province> provinceTable) => provinceTable_ = provinceTable;
-        public IDictionary<int, Province>? GetProvinceTable() => provinceTable_;
+        public void SetProvinceTable(IDictionary<int, Province> provinceTable) =>
+            _provinceTable = provinceTable;
 
-        public void SetCountryTable(IDictionary<string, Country> countryTable) => countryTable_ = countryTable;
-        public IDictionary<string, Country>? GetCountryTable() => countryTable_;
+        public IDictionary<int, Province>? GetProvinceTable() => _provinceTable;
 
-        public void SetArmyManager(ArmyManager armyManager) => armyManager_ = armyManager;
-        public ArmyManager? GetArmyManager() => armyManager_;
+        public void SetCountryTable(IDictionary<string, Country> countryTable) =>
+            _countryTable = countryTable;
 
-        public List<object>? GetOrders() => runningOrders_;
+        public IDictionary<string, Country>? GetCountryTable() => _countryTable;
+
+        public void SetArmyManager(ArmyManager armyManager) => _armyManager = armyManager;
+
+        public ArmyManager? GetArmyManager() => _armyManager;
+
+        public List<object>? GetOrders() => _runningOrders;
     }
 }

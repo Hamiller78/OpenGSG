@@ -12,11 +12,7 @@
         /// </summary>
         /// <param name="fileName">Name of the source file for the object's data without extension.</param>
         /// <param name="parsedData">Structure with the parsed data.</param>
-        public virtual void SetData(string fileName, ILookup<string, object> parsedData)
-        {
-            fileName_ = fileName;
-            parsedData_ = parsedData;
-        }
+        public virtual void SetData(string fileName, ILookup<string, object> parsedData) { }
 
         /// <summary>
         /// Handler for tick done events by TickHandler.
@@ -27,8 +23,5 @@
         /// <param name="e">EventArgs passed by the tick handler (may be TickEventArgs in some implementations)</param>
         // Handler for tick done events. Uses System.EventArgs to avoid cross-project type coupling.
         public virtual void OnTickDone(object sender, EventArgs e) { }
-
-        private string fileName_ = string.Empty;
-        private ILookup<string, object> parsedData_ = null!;
     }
 }
