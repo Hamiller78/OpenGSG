@@ -1,7 +1,0 @@
-owner = USA
-controller = USA
-base_tax = 2 
-base_production = 2
-resources = {
-	oil = 2
-}

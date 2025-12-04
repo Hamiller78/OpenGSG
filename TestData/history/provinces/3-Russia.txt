@@ -1,7 +1,0 @@
-owner = USSR
-controller = USSR
-base_tax = 8
-base_production = 8
-resources = {
-	oil = 2
-}

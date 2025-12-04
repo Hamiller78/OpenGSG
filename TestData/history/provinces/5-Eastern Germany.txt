@@ -1,6 +1,0 @@
-owner = GDR
-controller = GDR
-base_tax = 2
-base_production = 2
-resources = {
-}
