@@ -8,7 +8,7 @@ namespace ColdWarPrototype2
     public partial class MainWindow : Form
     {
         private Logger log;
-        private MasterController gameController_ = new MasterController();
+        private MasterController gameController_ = new();
 
         // view helpers
         private ProvinceInfo? provinceInfo_;
@@ -41,7 +41,7 @@ namespace ColdWarPrototype2
                 UpdateDateText();
 
                 // Load province map and set on picture box
-                var provinceMap = gameController_.GetWorldManager().ProvinceMap;
+                var provinceMap = gameController_.WorldData.ProvinceMap;
                 if (provinceMap?.sourceBitmap != null)
                 {
                     MapPictureBox.Image = new Bitmap(provinceMap.sourceBitmap);
@@ -61,7 +61,7 @@ namespace ColdWarPrototype2
 
                 var worldMapView = new WorldMap(this);
                 worldMapView.SetSourceProvinceMap(provinceMap);
-                worldMapView.UpdateCountryMap(gameController_.tickHandler.GetState());
+                worldMapView.UpdateCountryMap(gameController_.TickHandler.GetState());
             }
             catch (Exception ex)
             {
@@ -77,14 +77,14 @@ namespace ColdWarPrototype2
             coordinateView_ = new GeoCoordinates(this);
 
             worldMapView_ = new WorldMap(this);
-            worldMapView_.SetSourceProvinceMap(gameController_.GetWorldManager().ProvinceMap); // ugly
-            worldMapView_.UpdateCountryMap(gameController_.tickHandler.GetState()); // not much better
+            worldMapView_.SetSourceProvinceMap(gameController_.WorldData.ProvinceMap); // ugly
+            worldMapView_.UpdateCountryMap(gameController_.TickHandler.GetState()); // not much better
         }
 
         private void SetupControllers()
         {
             mouseController_ = new MouseController(gameController_);
-            Size sourceMapSize = gameController_.worldData.ProvinceMap.sourceBitmap.Size;
+            Size sourceMapSize = gameController_.WorldData.ProvinceMap.sourceBitmap.Size;
             mouseController_.SetMapScalingFactor(MapPictureBox.Size, sourceMapSize);
         }
 
@@ -114,11 +114,11 @@ namespace ColdWarPrototype2
 
         private void DateButton_Click(object? sender, EventArgs e)
         {
-            gameController_.tickHandler.FinishTick();
+            gameController_.TickHandler.FinishTick();
 
             UpdateDateText();
-            provinceInfo_?.UpdateCurrentProvince(gameController_.tickHandler.GetState());
-            countryInfo_?.UpdateCurrentCountry(gameController_.tickHandler.GetState());
+            provinceInfo_?.UpdateCurrentProvince(gameController_.TickHandler.GetState());
+            countryInfo_?.UpdateCurrentCountry(gameController_.TickHandler.GetState());
         }
 
         private void UpdateDateText()

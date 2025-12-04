@@ -31,7 +31,7 @@ namespace ColdWarPrototype.Views
 
         public void HandleProvinceChanged(object? sender, ProvinceEventArgs e)
         {
-            UpdateCurrentProvince(controller_.tickHandler.GetState(), e.ProvinceId);
+            UpdateCurrentProvince(controller_.TickHandler.GetState(), e.ProvinceId);
         }
 
         public void UpdateCurrentProvince(WorldState state)

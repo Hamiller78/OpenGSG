@@ -23,7 +23,7 @@ namespace ColdWarPrototype.Views
 
         public void HandleCountryChanged(object? sender, CountryEventArgs e)
         {
-            UpdateCountryInfo(gameController_.tickHandler.GetState(), e.CountryTag);
+            UpdateCountryInfo(gameController_.TickHandler.GetState(), e.CountryTag);
         }
 
         public void UpdateCurrentCountry(WorldState state)

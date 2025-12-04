@@ -3,24 +3,14 @@ using OpenGSGLibrary.WorldMap;
 
 namespace ColdWarPrototype.Controller
 {
-    public class ProvinceEventArgs : EventArgs
+    public class ProvinceEventArgs(int id) : EventArgs
     {
-        public int ProvinceId { get; }
-
-        public ProvinceEventArgs(int id)
-        {
-            ProvinceId = id;
-        }
+        public int ProvinceId { get; } = id;
     }
 
-    public class CountryEventArgs : EventArgs
+    public class CountryEventArgs(string tag) : EventArgs
     {
-        public string CountryTag { get; }
-
-        public CountryEventArgs(string tag)
-        {
-            CountryTag = tag;
-        }
+        public string CountryTag { get; } = tag;
     }
 
     internal class MouseController
@@ -28,17 +18,17 @@ namespace ColdWarPrototype.Controller
         public event EventHandler<ProvinceEventArgs>? HoveredProvinceChanged;
         public event EventHandler<CountryEventArgs>? HoveredCountryChanged;
 
-        private readonly MasterController gameController_;
-        private ProvinceMap? provinceMap_;
-        private int currentProvinceId_ = -1;
-        private string currentCountryTag_ = string.Empty;
-        private double mapScaling_ = 0.0;
+        private readonly MasterController _gameController;
+        private readonly ProvinceMap _provinceMap;
+        private int _currentProvinceId = -1;
+        private string _currentCountryTag = string.Empty;
+        private double _mapScaling = 0.0;
 
         public MouseController(MasterController gameController)
         {
-            gameController_ =
+            _gameController =
                 gameController ?? throw new ArgumentNullException(nameof(gameController));
-            provinceMap_ = gameController_.GetWorldManager()?.ProvinceMap;
+            _provinceMap = _gameController.WorldData.ProvinceMap;
         }
 
         public void SetMapScalingFactor(Size guiViewSize, Size mapSize)
@@ -47,38 +37,38 @@ namespace ColdWarPrototype.Controller
                 return;
             var xFactor = (double)mapSize.Width / guiViewSize.Width;
             var yFactor = (double)mapSize.Height / guiViewSize.Height;
-            mapScaling_ = Math.Max(xFactor, yFactor);
+            _mapScaling = Math.Max(xFactor, yFactor);
         }
 
         public void HandleMouseMovedOverMap(MouseEventArgs e)
         {
-            if (provinceMap_ == null || e == null)
+            if (_provinceMap == null || e == null)
                 return;
 
-            var mapX = (int)(e.X * mapScaling_);
-            var mapY = (int)(e.Y * mapScaling_);
+            var mapX = (int)(e.X * _mapScaling);
+            var mapY = (int)(e.Y * _mapScaling);
 
-            var rgb = provinceMap_.GetPixelRgb(mapX, mapY);
-            var provinceId = provinceMap_.GetProvinceNumber(rgb);
-            if (provinceId != -1 && provinceId != currentProvinceId_)
+            var rgb = _provinceMap.GetPixelRgb(mapX, mapY);
+            var provinceId = _provinceMap.GetProvinceNumber(rgb);
+            if (provinceId != -1 && provinceId != _currentProvinceId)
             {
                 HoveredProvinceChanged?.Invoke(this, new ProvinceEventArgs(provinceId));
                 CheckChangedCountry(provinceId);
-                currentProvinceId_ = provinceId;
+                _currentProvinceId = provinceId;
             }
         }
 
         private void CheckChangedCountry(int provinceId)
         {
-            var state = gameController_.tickHandler?.GetState();
+            var state = _gameController.TickHandler.GetState();
             var provTable = state?.GetProvinceTable();
             if (provTable != null && provTable.TryGetValue(provinceId, out var prov))
             {
                 var tag = prov.Owner;
-                if (!string.Equals(tag, currentCountryTag_, StringComparison.Ordinal))
+                if (!string.Equals(tag, _currentCountryTag, StringComparison.Ordinal))
                 {
-                    currentCountryTag_ = tag ?? string.Empty;
-                    HoveredCountryChanged?.Invoke(this, new CountryEventArgs(currentCountryTag_));
+                    _currentCountryTag = tag ?? string.Empty;
+                    HoveredCountryChanged?.Invoke(this, new CountryEventArgs(_currentCountryTag));
                 }
             }
         }
