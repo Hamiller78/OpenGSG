@@ -1,16 +1,25 @@
-﻿using OpenGSGLibrary.GameDataManager;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using OpenGSGLibrary.GameDataManager;
 
 namespace ColdWarGameLogic.GameWorld;
 
 /// <summary>
 /// Province class for cold war game. Adds specialised properties to base province class.
+/// Now raises change notifications via CommunityToolkit.Mvvm source generators.
 /// </summary>
-public class CwpProvince : Province
+public partial class CwpProvince : Province
 {
-    public long Population { get; set; } = 0;
-    public long Industrialization { get; set; } = 0;
-    public long Education { get; set; } = 0;
-    public string Terrain { get; set; } = string.Empty;
+    [ObservableProperty]
+    private long population = 0;
+
+    [ObservableProperty]
+    private long industrialization = 0;
+
+    [ObservableProperty]
+    private long education = 0;
+
+    [ObservableProperty]
+    private string terrain = string.Empty;
 
     public long Production => GetProduction();
 

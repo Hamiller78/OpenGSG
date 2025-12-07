@@ -7,15 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Tools\**" />
+    <EmbeddedResource Remove="Tools\**" />
+    <None Remove="Tools\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OpenGSGLibrary\OpenGSGLibrary.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Tools\" />
   </ItemGroup>
 
 </Project>
