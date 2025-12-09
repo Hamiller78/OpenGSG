@@ -1,0 +1,6 @@
+owner = IRE
+controller = IRE
+population = 2900000
+industrialization = 50
+education = 65
+terrain = coastal

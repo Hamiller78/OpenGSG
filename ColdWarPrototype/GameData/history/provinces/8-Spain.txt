@@ -1,0 +1,6 @@
+owner = ESP
+controller = ESP
+population = 28000000
+industrialization = 60
+education = 75
+terrain = coastal

@@ -1,0 +1,6 @@
+owner = UK
+controller = UK
+population = 1300000
+industrialization = 75
+education = 80
+terrain = coastal
