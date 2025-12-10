@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using ColdWarGameLogic.GameWorld;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -83,6 +82,39 @@ public sealed class CwpProvinceViewModel : ObservableObject, IDisposable
             if (Model.Terrain == value)
                 return;
             Model.Terrain = value;
+        }
+    }
+
+    // Expose base Province properties so bindings against the ViewModel work.
+    public int Id
+    {
+        get => Model.Id;
+    }
+
+    public string Name
+    {
+        get => Model.Name;
+    }
+
+    public string Owner
+    {
+        get => Model.Owner;
+        set
+        {
+            if (Model.Owner == value)
+                return;
+            Model.Owner = value;
+        }
+    }
+
+    public string Controller
+    {
+        get => Model.Controller;
+        set
+        {
+            if (Model.Controller == value)
+                return;
+            Model.Controller = value;
         }
     }
 
