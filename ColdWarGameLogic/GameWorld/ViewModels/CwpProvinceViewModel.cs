@@ -1,8 +1,7 @@
 using System.ComponentModel;
-using ColdWarGameLogic.GameWorld;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace ColdWarPrototype.ViewModels;
+namespace ColdWarGameLogic.GameWorld.ViewModels;
 
 /// <summary>
 /// ViewModel wrapper for <see cref="CwpProvince"/>.

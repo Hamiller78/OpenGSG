@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using ColdWarGameLogic.GameLogic;
 using ColdWarGameLogic.GameWorld;
+using ColdWarGameLogic.GameWorld.ViewModels;
 using ColdWarPrototype.Controller;
-using ColdWarPrototype.ViewModels;
 using ColdWarPrototype2;
 using OpenGSGLibrary.GameDataManager;
 
