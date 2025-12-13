@@ -83,7 +83,7 @@
             // 
             // MapPictureBox
             // 
-            MapPictureBox.Location = new Point(268, 0);
+            MapPictureBox.Location = new Point(268, 50);
             MapPictureBox.Name = "MapPictureBox";
             MapPictureBox.Size = new Size(1425, 625);
             MapPictureBox.TabIndex = 0;

@@ -45,7 +45,7 @@ namespace ColdWarPrototype2
                 if (provinceMap?.sourceBitmap != null)
                 {
                     MapPictureBox.Image = new Bitmap(provinceMap.sourceBitmap);
-                    MapPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+                    MapPictureBox.SizeMode = PictureBoxSizeMode.Normal;
                 }
 
                 // create views
