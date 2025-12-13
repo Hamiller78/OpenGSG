@@ -1,0 +1,6 @@
+owner = JPN
+controller = JPN
+population = 84000000
+industrialization = 75
+education = 70
+terrain = coastal

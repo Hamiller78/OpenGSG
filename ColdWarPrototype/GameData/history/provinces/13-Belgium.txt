@@ -1,0 +1,6 @@
+owner = BEL
+controller = BEL
+population = 8600000
+industrialization = 75
+education = 75
+terrain = coastal

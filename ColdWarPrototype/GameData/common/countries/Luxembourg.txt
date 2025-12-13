@@ -1,0 +1,6 @@
+color = { 0  255  255 }
+tag = LUX
+long_name = "Grand Duchy of Luxembourg"
+government = democratic
+allegiance = USA
+leader = "Pierre Dupong"

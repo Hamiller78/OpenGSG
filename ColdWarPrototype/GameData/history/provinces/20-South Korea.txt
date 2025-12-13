@@ -1,0 +1,6 @@
+owner = ROK
+controller = ROK
+population = 20000000
+industrialization = 60
+education = 50
+terrain = coastal

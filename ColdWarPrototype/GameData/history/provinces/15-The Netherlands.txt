@@ -1,0 +1,6 @@
+owner = NED
+controller = NED
+population = 10100000
+industrialization = 75
+education = 75
+terrain = coastal

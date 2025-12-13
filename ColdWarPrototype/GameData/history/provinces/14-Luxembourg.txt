@@ -1,0 +1,6 @@
+owner = LUX
+controller = LUX
+population = 300000
+industrialization = 75
+education = 75
+terrain = continental

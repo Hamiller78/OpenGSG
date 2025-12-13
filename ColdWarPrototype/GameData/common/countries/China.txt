@@ -1,0 +1,5 @@
+color = { 255  153  51 }
+tag = PRC
+long_name = "People's Republic of China"
+government = communist
+leader = "Mao Zedong"

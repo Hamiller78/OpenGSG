@@ -1,0 +1,6 @@
+owner = DRK
+controller = DRK
+population = 10500000
+industrialization = 55
+education = 50
+terrain = coastal
