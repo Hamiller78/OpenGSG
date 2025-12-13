@@ -1,36 +1,22 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using OpenGSGLibrary.GameDataManager;
+﻿using OpenGSGLibrary.GameDataManager;
 
 namespace ColdWarGameLogic.GameWorld;
 
 /// <summary>
-/// Province class for cold war game. Adds specialised properties to base province class.
-/// Now raises change notifications via CommunityToolkit.Mvvm source generators.
+/// Cold War specific province model. Kept as a POCO — ViewModel provides notifications and Refresh().
 /// </summary>
-public partial class CwpProvince : Province
+public class CwpProvince : Province
 {
-    [ObservableProperty]
-    private long population = 0;
-
-    [ObservableProperty]
-    private long industrialization = 0;
-
-    [ObservableProperty]
-    private long education = 0;
-
-    [ObservableProperty]
-    private string terrain = string.Empty;
+    public long Population { get; set; } = 0;
+    public long Industrialization { get; set; } = 0;
+    public long Education { get; set; } = 0;
+    public string Terrain { get; set; } = string.Empty;
 
     public long Production => GetProduction();
 
     public CwpProvince()
         : base() { }
 
-    /// <summary>
-    /// Sets the province properties from the parsed data.
-    /// </summary>
-    /// <param name="fileName">Name of the source file of province object.</param>
-    /// <param name="parsedData">Object with the parsed data from that file.</param>
     public override void SetData(string fileName, ILookup<string, object> parsedData)
     {
         base.SetData(fileName, parsedData);
@@ -41,12 +27,6 @@ public partial class CwpProvince : Province
         Terrain = ToStringSafe(SingleOrDefault(parsedData, "terrain"));
     }
 
-    /// <summary>
-    /// Handler for game ticks.
-    /// In this game, a tick represents a day.
-    /// </summary>
-    /// <param name="sender">sender TickHandler</param>
-    /// <param name="e">TickEventArgs containing current game time</param>
     public override void OnTickDone(object sender, EventArgs e)
     {
         UpdateDaily();
@@ -54,19 +34,15 @@ public partial class CwpProvince : Province
 
     private void UpdateDaily()
     {
-        // Change in population number, small daily growth (preserve integer storage)
         Population = Convert.ToInt64(Math.Round(Population * 1.00003));
-        // Change in industrialization
-        // Change of education
+        // industrialization / education updates omitted for now
     }
 
     public long GetProduction()
     {
-        // Use floating arithmetic and convert to long like the original VB behaviour
         return Convert.ToInt64(Population * Industrialization / 100.0 * Education / 100.0);
     }
 
-    // -- Helpers to safely extract single values from ILookup --
     private static object SingleOrDefault(ILookup<string, object> lookup, string key)
     {
         if (lookup == null)

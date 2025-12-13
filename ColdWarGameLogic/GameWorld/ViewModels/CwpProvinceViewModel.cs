@@ -1,128 +1,139 @@
-using System.ComponentModel;
+using System;
+using ColdWarGameLogic.GameWorld;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ColdWarGameLogic.GameWorld.ViewModels;
 
 /// <summary>
-/// ViewModel wrapper for <see cref="CwpProvince"/>.
-/// Forwards model property changes and exposes simple passthrough properties for binding.
-/// Subscribes to the model's <see cref="INotifyPropertyChanged"/> and re-raises changes on the ViewModel.
+/// ViewModel for <see cref="CwpProvince"/>. Implements INotifyPropertyChanged and exposes Refresh().
+/// Models are plain POCOs; call Refresh() whenever the model is updated externally.
 /// </summary>
 public sealed class CwpProvinceViewModel : ObservableObject, IDisposable
 {
     public CwpProvince Model { get; }
 
+    private long population;
+    private long industrialization;
+    private long education;
+    private string terrain = string.Empty;
+    private string owner = string.Empty;
+    private string controller = string.Empty;
+
     public CwpProvinceViewModel(CwpProvince model)
     {
         Model = model ?? throw new ArgumentNullException(nameof(model));
-        Model.PropertyChanged += Model_PropertyChanged;
+        Refresh();
     }
 
-    private void Model_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    /// <summary>
+    /// Pulls current state from the model and raises notifications for all view properties.
+    /// Call this after the model is updated by the game loop, loader, etc.
+    /// </summary>
+    public void Refresh()
     {
-        if (string.IsNullOrEmpty(e?.PropertyName))
-            return;
+        population = Model.Population;
+        industrialization = Model.Industrialization;
+        education = Model.Education;
+        terrain = Model.Terrain ?? string.Empty;
+        owner = Model.Owner ?? string.Empty;
+        controller = Model.Controller ?? string.Empty;
 
-        // Forward model property changes to the View (bindings target the ViewModel)
-        OnPropertyChanged(e.PropertyName);
-
-        // Production is computed from Population, Industrialization and Education.
-        // When any of them change, also notify that Production changed.
-        if (
-            e.PropertyName
-            is nameof(CwpProvince.Population)
-                or nameof(CwpProvince.Industrialization)
-                or nameof(CwpProvince.Education)
-        )
-        {
-            OnPropertyChanged(nameof(Production));
-        }
+        OnPropertyChanged(nameof(Population));
+        OnPropertyChanged(nameof(Industrialization));
+        OnPropertyChanged(nameof(Education));
+        OnPropertyChanged(nameof(Terrain));
+        OnPropertyChanged(nameof(Owner));
+        OnPropertyChanged(nameof(Controller));
+        OnPropertyChanged(nameof(Production));
+        OnPropertyChanged(nameof(Name));
+        OnPropertyChanged(nameof(Id));
     }
 
-    // Passthrough properties — set model; model will raise change which is forwarded above.
+    // Passthrough properties that update model and notify view.
     public long Population
     {
-        get => Model.Population;
+        get => population;
         set
         {
-            if (Model.Population == value)
-                return;
-            Model.Population = value;
+            if (SetProperty(ref population, value))
+            {
+                Model.Population = value;
+                OnPropertyChanged(nameof(Production));
+            }
         }
     }
 
     public long Industrialization
     {
-        get => Model.Industrialization;
+        get => industrialization;
         set
         {
-            if (Model.Industrialization == value)
-                return;
-            Model.Industrialization = value;
+            if (SetProperty(ref industrialization, value))
+            {
+                Model.Industrialization = value;
+                OnPropertyChanged(nameof(Production));
+            }
         }
     }
 
     public long Education
     {
-        get => Model.Education;
+        get => education;
         set
         {
-            if (Model.Education == value)
-                return;
-            Model.Education = value;
+            if (SetProperty(ref education, value))
+            {
+                Model.Education = value;
+                OnPropertyChanged(nameof(Production));
+            }
         }
     }
 
     public string Terrain
     {
-        get => Model.Terrain;
+        get => terrain;
         set
         {
-            if (Model.Terrain == value)
-                return;
-            Model.Terrain = value;
+            if (SetProperty(ref terrain, value ?? string.Empty))
+            {
+                Model.Terrain = terrain;
+            }
         }
-    }
-
-    // Expose base Province properties so bindings against the ViewModel work.
-    public int Id
-    {
-        get => Model.Id;
-    }
-
-    public string Name
-    {
-        get => Model.Name;
     }
 
     public string Owner
     {
-        get => Model.Owner;
+        get => owner;
         set
         {
-            if (Model.Owner == value)
-                return;
-            Model.Owner = value;
+            if (SetProperty(ref owner, value ?? string.Empty))
+            {
+                Model.Owner = owner;
+            }
         }
     }
 
     public string Controller
     {
-        get => Model.Controller;
+        get => controller;
         set
         {
-            if (Model.Controller == value)
-                return;
-            Model.Controller = value;
+            if (SetProperty(ref controller, value ?? string.Empty))
+            {
+                Model.Controller = controller;
+            }
         }
     }
 
-    // Computed read-only property
+    // Read-only passthroughs
+    public int Id => Model.Id;
+    public string Name => Model.Name;
+
+    // Computed
     public long Production => Model.Production;
 
     public void Dispose()
     {
-        Model.PropertyChanged -= Model_PropertyChanged;
         GC.SuppressFinalize(this);
     }
 }

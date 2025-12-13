@@ -1,6 +1,5 @@
-using OpenGSGLibrary.GameDataManager;
 using System;
-using System.Collections.Generic;
+using OpenGSGLibrary.GameDataManager;
 
 namespace OpenGSGLibrary.GameLogic
 {
@@ -11,7 +10,19 @@ namespace OpenGSGLibrary.GameLogic
     /// </summary>
     public class TickHandler
     {
+        /// <summary>
+        /// Notifies subscribers (provinces and other systems) that the tick finished.
+        /// Provinces are subscribed to this to run their per-tick updates.
+        /// </summary>
         public event EventHandler? TickDone;
+
+        /// <summary>
+        /// Raised after all TickDone subscribers have been invoked.
+        /// Intended for the UI layer (or adapters) to perform a single refresh
+        /// after the model update is complete.
+        /// Static so UI adapters can wire up easily without holding a reference to a TickHandler instance.
+        /// </summary>
+        public static event EventHandler<TickEventArgs>? UIRefreshRequested;
 
         private PlayerManager playerManager_ = new PlayerManager();
         private WorldState? currentWorldState_;
@@ -72,14 +83,21 @@ namespace OpenGSGLibrary.GameLogic
 
         /// <summary>
         /// Method to do stuff when a tick is completed and the next WorldState is calculated.
+        /// Notifies provinces (TickDone) and then requests a single UI refresh (UIRefreshRequested).
         /// </summary>
         public void FinishTick()
         {
             // lock GUI input
             // calculate world in next tick
             currentTick_ += 1;
-            // notify all interested classes
-            TickDone?.Invoke(this, new TickEventArgs((int)currentTick_));
+            var args = new TickEventArgs((int)currentTick_);
+
+            // notify all interested classes (synchronous invoke)
+            TickDone?.Invoke(this, args);
+
+            // After provinces and other TickDone subscribers have run, request UI refresh
+            // so the UI can pull latest model state (or ViewModels can Refresh()).
+            UIRefreshRequested?.Invoke(this, args);
         }
 
         /// <summary>

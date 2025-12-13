@@ -6,6 +6,7 @@ using ColdWarGameLogic.GameWorld.ViewModels;
 using ColdWarPrototype.Controller;
 using ColdWarPrototype2;
 using OpenGSGLibrary.GameDataManager;
+using OpenGSGLibrary.GameLogic; // for TickEventArgs
 
 namespace ColdWarPrototype.Views
 {
@@ -35,8 +36,12 @@ namespace ColdWarPrototype.Views
         {
             motherWindow_ = motherWindow ?? throw new ArgumentNullException(nameof(motherWindow));
             controller_ = controller ?? throw new ArgumentNullException(nameof(controller));
+
+            // Subscribe to the static TickHandler UI refresh request so the adapter can refresh the view
+            TickHandler.UIRefreshRequested += TickHandler_UIRefreshRequested;
         }
 
+        // Handler invoked when the mouse controller signals a province change
         public void HandleProvinceChanged(object? sender, ProvinceEventArgs e)
         {
             UpdateCurrentProvince(controller_.TickHandler.GetState(), e.ProvinceId);
@@ -104,6 +109,26 @@ namespace ColdWarPrototype.Views
             }
         }
 
+        private void TickHandler_UIRefreshRequested(object? sender, TickEventArgs e)
+        {
+            // Called after TickDone subscribers (provinces) have updated the models.
+            // Best-effort refresh strategy:
+            //  - If we have a ViewModel for the current province, call Refresh() and update UI from it.
+            //  - Otherwise, if we know the current province id, re-read province data via UpdateCurrentProvince.
+            if (viewModel_ != null)
+            {
+                // Pull model values into the VM and refresh UI
+                viewModel_.Refresh();
+                RefreshAllFromViewModel();
+            }
+            else if (currentProvinceId_ >= 0)
+            {
+                // Re-apply current province data from world state (handles non-CwpProvince and initial state)
+                var state = controller_.TickHandler.GetState();
+                UpdateCurrentProvince(state, currentProvinceId_);
+            }
+        }
+
         private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e?.PropertyName == null || viewModel_ == null)
@@ -147,22 +172,21 @@ namespace ColdWarPrototype.Views
 
                 // Forwarded base properties (ViewModel forwards model changes)
                 case nameof(CwpProvinceViewModel.Name):
-                    Name = viewModel_.Model.Name ?? string.Empty;
+                    Name = viewModel_.Name ?? string.Empty;
                     SetTextSafe(() => motherWindow_.ProvinceName.Text = Name);
                     break;
 
                 case nameof(CwpProvinceViewModel.Owner):
-                    Owner = viewModel_.Model.Owner ?? string.Empty;
+                    Owner = viewModel_.Owner ?? string.Empty;
                     SetTextSafe(() => motherWindow_.ProvinceOwner.Text = Owner);
                     break;
 
                 case nameof(CwpProvinceViewModel.Controller):
-                    Controller = viewModel_.Model.Controller ?? string.Empty;
+                    Controller = viewModel_.Controller ?? string.Empty;
                     SetTextSafe(() => motherWindow_.ProvinceController.Text = Controller);
                     break;
 
                 default:
-                    // For other property names, conservatively refresh Production if inputs changed.
                     if (
                         e.PropertyName == nameof(CwpProvinceViewModel.Population)
                         || e.PropertyName == nameof(CwpProvinceViewModel.Industrialization)
@@ -222,6 +246,9 @@ namespace ColdWarPrototype.Views
 
         public void Dispose()
         {
+            // Unsubscribe from static TickHandler refresh event
+            TickHandler.UIRefreshRequested -= TickHandler_UIRefreshRequested;
+
             DetachViewModel();
             GC.SuppressFinalize(this);
         }

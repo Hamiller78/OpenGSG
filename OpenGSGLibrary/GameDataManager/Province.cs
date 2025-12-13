@@ -1,40 +1,17 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using OpenGSGLibrary.Military;
 
 namespace OpenGSGLibrary.GameDataManager
 {
     /// <summary>
-    /// Base class for provinces. Handles the most basic province properties.
-    /// Converted to an MVVM model using CommunityToolkit.Mvvm source generators so
-    /// property changes raise notifications automatically.
+    /// Base class for provinces. Keeps model as a simple POCO — notifications live on ViewModels.
     /// </summary>
-    [INotifyPropertyChanged]
-    public partial class Province : GameObject
+    public class Province : GameObject
     {
-        // Explicit backing fields for read-only-from-outside properties
-        private int id;
-        public int Id
-        {
-            get => id;
-            private set => SetProperty(ref id, value);
-        }
-
-        private string name = string.Empty;
-        public string Name
-        {
-            get => name;
-            private set => SetProperty(ref name, value);
-        }
-
-        // Use source-generator for the mutable properties (public setters)
-        [ObservableProperty]
-        private string controller = string.Empty;
-
-        [ObservableProperty]
-        private string owner = string.Empty;
-
-        [ObservableProperty]
-        private List<Division>? units = new();
+        public int Id { get; private set; }
+        public string Name { get; private set; } = string.Empty;
+        public string Controller { get; set; } = string.Empty;
+        public string Owner { get; set; } = string.Empty;
+        public List<Division>? Units { get; } = new List<Division>();
 
         public override void SetData(string fileName, ILookup<string, object> parsedData)
         {
