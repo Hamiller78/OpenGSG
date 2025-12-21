@@ -7,21 +7,36 @@ namespace ColdWarGameLogic.GameWorld.ViewModels;
 /// <summary>
 /// ViewModel for <see cref="CwpCountry"/>. Implements INotifyPropertyChanged and exposes Refresh().
 /// Models are plain POCOs; call Refresh() whenever the model is updated externally.
+/// Uses CommunityToolkit.Mvvm source generators to reduce boilerplate.
 /// </summary>
-public sealed class CwpCountryViewModel : ObservableObject, IDisposable
+public sealed partial class CwpCountryViewModel : ObservableObject, IDisposable
 {
     public CwpCountry Model { get; }
 
-    // Base Country backing fields
+    // Base Country backing fields (read-only from view, updated via Refresh)
+    [ObservableProperty]
     private string tag = string.Empty;
+
+    [ObservableProperty]
     private string name = string.Empty;
+
+    [ObservableProperty]
     private Tuple<byte, byte, byte>? color;
+
+    [ObservableProperty]
     private Bitmap? flag;
 
-    // CwpCountry backing fields
+    // CwpCountry backing fields (read-write)
+    [ObservableProperty]
     private string fullName = string.Empty;
+
+    [ObservableProperty]
     private string government = string.Empty;
+
+    [ObservableProperty]
     private string allegiance = string.Empty;
+
+    [ObservableProperty]
     private string leader = string.Empty;
 
     public CwpCountryViewModel(CwpCountry model)
@@ -36,82 +51,25 @@ public sealed class CwpCountryViewModel : ObservableObject, IDisposable
     /// </summary>
     public void Refresh()
     {
-        // Base Country properties
-        tag = Model.Tag ?? string.Empty;
-        name = Model.Name ?? string.Empty;
-        color = Model.Color;
-        flag = Model.Flag;
+        Tag = Model.Tag ?? string.Empty;
+        Name = Model.Name ?? string.Empty;
+        Color = Model.Color;
+        Flag = Model.Flag;
 
-        // CwpCountry properties
-        fullName = Model.FullName ?? string.Empty;
-        government = Model.Government ?? string.Empty;
-        allegiance = Model.Allegiance ?? string.Empty;
-        leader = Model.Leader ?? string.Empty;
-
-        OnPropertyChanged(nameof(Tag));
-        OnPropertyChanged(nameof(Name));
-        OnPropertyChanged(nameof(Color));
-        OnPropertyChanged(nameof(Flag));
-        OnPropertyChanged(nameof(FullName));
-        OnPropertyChanged(nameof(Government));
-        OnPropertyChanged(nameof(Allegiance));
-        OnPropertyChanged(nameof(Leader));
+        FullName = Model.FullName ?? string.Empty;
+        Government = Model.Government ?? string.Empty;
+        Allegiance = Model.Allegiance ?? string.Empty;
+        Leader = Model.Leader ?? string.Empty;
     }
 
-    // Read-only passthroughs for base Country properties
-    public string Tag => tag;
-    public string Name => name;
-    public Tuple<byte, byte, byte>? Color => color;
-    public Bitmap? Flag => flag;
+    // Update model when CWP-specific properties change
+    partial void OnFullNameChanged(string value) => Model.FullName = value;
 
-    // Passthrough properties that update model and notify view (CwpCountry properties)
-    public string FullName
-    {
-        get => fullName;
-        set
-        {
-            if (SetProperty(ref fullName, value ?? string.Empty))
-            {
-                Model.FullName = fullName;
-            }
-        }
-    }
+    partial void OnGovernmentChanged(string value) => Model.Government = value;
 
-    public string Government
-    {
-        get => government;
-        set
-        {
-            if (SetProperty(ref government, value ?? string.Empty))
-            {
-                Model.Government = government;
-            }
-        }
-    }
+    partial void OnAllegianceChanged(string value) => Model.Allegiance = value;
 
-    public string Allegiance
-    {
-        get => allegiance;
-        set
-        {
-            if (SetProperty(ref allegiance, value ?? string.Empty))
-            {
-                Model.Allegiance = allegiance;
-            }
-        }
-    }
-
-    public string Leader
-    {
-        get => leader;
-        set
-        {
-            if (SetProperty(ref leader, value ?? string.Empty))
-            {
-                Model.Leader = leader;
-            }
-        }
-    }
+    partial void OnLeaderChanged(string value) => Model.Leader = value;
 
     public void Dispose()
     {

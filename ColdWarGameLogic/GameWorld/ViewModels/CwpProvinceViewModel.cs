@@ -1,5 +1,3 @@
-using System;
-using ColdWarGameLogic.GameWorld;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ColdWarGameLogic.GameWorld.ViewModels;
@@ -7,16 +5,31 @@ namespace ColdWarGameLogic.GameWorld.ViewModels;
 /// <summary>
 /// ViewModel for <see cref="CwpProvince"/>. Implements INotifyPropertyChanged and exposes Refresh().
 /// Models are plain POCOs; call Refresh() whenever the model is updated externally.
+/// Uses CommunityToolkit.Mvvm source generators to reduce boilerplate.
 /// </summary>
-public sealed class CwpProvinceViewModel : ObservableObject, IDisposable
+public sealed partial class CwpProvinceViewModel : ObservableObject, IDisposable
 {
     public CwpProvince Model { get; }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Production))]
     private long population;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Production))]
     private long industrialization;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Production))]
     private long education;
+
+    [ObservableProperty]
     private string terrain = string.Empty;
+
+    [ObservableProperty]
     private string owner = string.Empty;
+
+    [ObservableProperty]
     private string controller = string.Empty;
 
     public CwpProvinceViewModel(CwpProvince model)
@@ -31,98 +44,16 @@ public sealed class CwpProvinceViewModel : ObservableObject, IDisposable
     /// </summary>
     public void Refresh()
     {
-        population = Model.Population;
-        industrialization = Model.Industrialization;
-        education = Model.Education;
-        terrain = Model.Terrain ?? string.Empty;
-        owner = Model.Owner ?? string.Empty;
-        controller = Model.Controller ?? string.Empty;
+        Population = Model.Population;
+        Industrialization = Model.Industrialization;
+        Education = Model.Education;
+        Terrain = Model.Terrain ?? string.Empty;
+        Owner = Model.Owner ?? string.Empty;
+        Controller = Model.Controller ?? string.Empty;
 
-        OnPropertyChanged(nameof(Population));
-        OnPropertyChanged(nameof(Industrialization));
-        OnPropertyChanged(nameof(Education));
-        OnPropertyChanged(nameof(Terrain));
-        OnPropertyChanged(nameof(Owner));
-        OnPropertyChanged(nameof(Controller));
         OnPropertyChanged(nameof(Production));
         OnPropertyChanged(nameof(Name));
         OnPropertyChanged(nameof(Id));
-    }
-
-    // Passthrough properties that update model and notify view.
-    public long Population
-    {
-        get => population;
-        set
-        {
-            if (SetProperty(ref population, value))
-            {
-                Model.Population = value;
-                OnPropertyChanged(nameof(Production));
-            }
-        }
-    }
-
-    public long Industrialization
-    {
-        get => industrialization;
-        set
-        {
-            if (SetProperty(ref industrialization, value))
-            {
-                Model.Industrialization = value;
-                OnPropertyChanged(nameof(Production));
-            }
-        }
-    }
-
-    public long Education
-    {
-        get => education;
-        set
-        {
-            if (SetProperty(ref education, value))
-            {
-                Model.Education = value;
-                OnPropertyChanged(nameof(Production));
-            }
-        }
-    }
-
-    public string Terrain
-    {
-        get => terrain;
-        set
-        {
-            if (SetProperty(ref terrain, value ?? string.Empty))
-            {
-                Model.Terrain = terrain;
-            }
-        }
-    }
-
-    public string Owner
-    {
-        get => owner;
-        set
-        {
-            if (SetProperty(ref owner, value ?? string.Empty))
-            {
-                Model.Owner = owner;
-            }
-        }
-    }
-
-    public string Controller
-    {
-        get => controller;
-        set
-        {
-            if (SetProperty(ref controller, value ?? string.Empty))
-            {
-                Model.Controller = controller;
-            }
-        }
     }
 
     // Read-only passthroughs
@@ -131,6 +62,18 @@ public sealed class CwpProvinceViewModel : ObservableObject, IDisposable
 
     // Computed
     public long Production => Model.Production;
+
+    partial void OnPopulationChanged(long value) => Model.Population = value;
+
+    partial void OnIndustrializationChanged(long value) => Model.Industrialization = value;
+
+    partial void OnEducationChanged(long value) => Model.Education = value;
+
+    partial void OnTerrainChanged(string value) => Model.Terrain = value;
+
+    partial void OnOwnerChanged(string value) => Model.Owner = value;
+
+    partial void OnControllerChanged(string value) => Model.Controller = value;
 
     public void Dispose()
     {
