@@ -77,8 +77,8 @@ namespace OpenGSGLibrary.GameDataManager
             }
             catch (Exception)
             {
-                Tools
-                    .GlobalLogger.GetInstance()
+                GlobalLogger
+                    .GetInstance()
                     .WriteLine(LogLevel.Fatal, "Error while loading country data.");
                 throw;
             }
@@ -99,8 +99,8 @@ namespace OpenGSGLibrary.GameDataManager
             }
             catch (Exception)
             {
-                Tools
-                    .GlobalLogger.GetInstance()
+                GlobalLogger
+                    .GetInstance()
                     .WriteLine(LogLevel.Fatal, "Error while loading nation flags.");
                 throw;
             }
@@ -114,8 +114,8 @@ namespace OpenGSGLibrary.GameDataManager
             }
             catch (Exception)
             {
-                Tools
-                    .GlobalLogger.GetInstance()
+                GlobalLogger
+                    .GetInstance()
                     .WriteLine(LogLevel.Fatal, "Error while loading army data.");
                 throw;
             }

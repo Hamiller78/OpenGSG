@@ -20,10 +20,7 @@ namespace ColdWarGameLogic.GameWorld
         /// </summary>
         /// <param name="fileName">Name of the source file of country object.</param>
         /// <param name="parsedData">Object with the parsed data from that file.</param>
-        public override void SetData(
-            string fileName,
-            System.Linq.ILookup<string, object> parsedData
-        )
+        public override void SetData(string fileName, ILookup<string, object> parsedData)
         {
             base.SetData(fileName, parsedData);
 

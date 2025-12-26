@@ -9,12 +9,12 @@ namespace OpenGSGLibrary.WorldMap
     /// </summary>
     public class CountryModeMapMaker : ModeMapMaker
     {
-        private ProvinceMap provinceMap_;
+        private readonly ProvinceMap _provinceMap;
 
         public CountryModeMapMaker(ProvinceMap provinceMap)
             : base(provinceMap)
         {
-            provinceMap_ = provinceMap;
+            _provinceMap = provinceMap;
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace OpenGSGLibrary.WorldMap
         /// </summary>
         public override Image MakeMap(WorldState sourceState)
         {
-            var mapSize = sourceMap_.sourceBitmap!.Size;
+            var mapSize = _sourceMap.sourceBitmap!.Size;
             var provinceMap = sourceState.GetProvinceTable();
             var countryMapDict = sourceState.GetCountryTable();
 
@@ -35,8 +35,8 @@ namespace OpenGSGLibrary.WorldMap
             {
                 for (int x = 0; x < mapSize.Width; x++)
                 {
-                    var provinceRgb = sourceMap_.GetPixelRgb(x, y);
-                    var provinceId = provinceMap_.GetProvinceNumber(provinceRgb);
+                    var provinceRgb = _sourceMap.GetPixelRgb(x, y);
+                    var provinceId = _provinceMap.GetProvinceNumber(provinceRgb);
                     countryMap.SetPixel(x, y, GetCountryDrawColor(provinceId, sourceState));
                 }
             }

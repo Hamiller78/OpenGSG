@@ -1,5 +1,5 @@
-using OpenGSGLibrary.GameDataManager;
 using System.Drawing;
+using OpenGSGLibrary.GameDataManager;
 
 namespace OpenGSGLibrary.WorldMap
 {
@@ -10,11 +10,11 @@ namespace OpenGSGLibrary.WorldMap
     /// </summary>
     public abstract class ModeMapMaker
     {
-        protected LayerBitmap sourceMap_;
+        protected LayerBitmap _sourceMap;
 
         protected ModeMapMaker(LayerBitmap sourceMap)
         {
-            sourceMap_ = sourceMap;
+            _sourceMap = sourceMap;
         }
 
         /// <summary>

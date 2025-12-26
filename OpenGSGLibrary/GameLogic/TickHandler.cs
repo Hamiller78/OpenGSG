@@ -1,17 +1,14 @@
-using System;
 using OpenGSGLibrary.GameDataManager;
 
 namespace OpenGSGLibrary.GameLogic
 {
     /// <summary>
-    /// Migrated TickHandler from the original VB implementation.
     /// Responsible for keeping the current world state and notifying
     /// subscribed provinces when a tick finishes.
     /// </summary>
     public class TickHandler
     {
-        /// <summary>
-        /// Notifies subscribers (provinces and other systems) that the tick finished.
+        /// <summary>ö        /// Notifies subscribers (provinces and other systems) that the tick finished.
         /// Provinces are subscribed to this to run their per-tick updates.
         /// </summary>
         public event EventHandler? TickDone;
@@ -24,9 +21,9 @@ namespace OpenGSGLibrary.GameLogic
         /// </summary>
         public static event EventHandler<TickEventArgs>? UIRefreshRequested;
 
-        private PlayerManager playerManager_ = new PlayerManager();
-        private WorldState? currentWorldState_;
-        private long currentTick_ = 0;
+        private readonly PlayerManager _playerManager = new();
+        private WorldState? _currentWorldState;
+        private long _currentTick = 0;
 
         /// <summary>
         /// Connects world state to tick handler which includes setting the state in TickHandlers
@@ -35,9 +32,9 @@ namespace OpenGSGLibrary.GameLogic
         /// <param name="newState">WorldState to set in TickHandler.</param>
         public void ConnectProvinceEventHandlers(WorldState newState)
         {
-            currentWorldState_ = newState;
+            _currentWorldState = newState;
 
-            var provinceDict = currentWorldState_?.GetProvinceTable();
+            var provinceDict = _currentWorldState?.GetProvinceTable();
             if (provinceDict != null)
             {
                 foreach (var province in provinceDict.Values)
@@ -53,7 +50,7 @@ namespace OpenGSGLibrary.GameLogic
         /// Returns the world state used by the tick handler
         /// </summary>
         /// <returns>WorldState object for the current tick which will be modified each tick.</returns>
-        public WorldState GetState() => currentWorldState_!;
+        public WorldState GetState() => _currentWorldState!;
 
         /// <summary>
         /// Method to do stuff when an new tick starts.
@@ -63,7 +60,10 @@ namespace OpenGSGLibrary.GameLogic
         {
             // do timed game events
             // launch AI threads
-            playerManager_.CalculateStrategies(currentWorldState_);
+            if (_currentWorldState is not null)
+            {
+                _playerManager.CalculateStrategies(_currentWorldState);
+            }
             // collect GUI input
         }
 
@@ -73,7 +73,7 @@ namespace OpenGSGLibrary.GameLogic
         /// <returns>Boolean whether the current tick is complete</returns>
         public bool IsTickComplete()
         {
-            if (playerManager_.IsEverybodyDone() == false)
+            if (_playerManager.IsEverybodyDone() == false)
             {
                 return false;
             }
@@ -89,8 +89,8 @@ namespace OpenGSGLibrary.GameLogic
         {
             // lock GUI input
             // calculate world in next tick
-            currentTick_ += 1;
-            var args = new TickEventArgs((int)currentTick_);
+            _currentTick += 1;
+            var args = new TickEventArgs((int)_currentTick);
 
             // notify all interested classes (synchronous invoke)
             TickDone?.Invoke(this, args);
@@ -105,20 +105,15 @@ namespace OpenGSGLibrary.GameLogic
         /// Conversion to a date is the responsibility of the game-specific logic.
         /// </summary>
         /// <returns>Current tick as a long integer.</returns>
-        public long GetCurrentTick() => currentTick_;
+        public long GetCurrentTick() => _currentTick;
     }
 
     /// <summary>
     /// Helper class passed with the TickDone event.
     /// Extra argument is the current tick number.
     /// </summary>
-    public class TickEventArgs : EventArgs
+    public class TickEventArgs(int tickPar) : EventArgs
     {
-        public int tick { get; set; }
-
-        public TickEventArgs(int tickPar)
-        {
-            tick = tickPar;
-        }
+        public int Tick { get; set; } = tickPar;
     }
 }
