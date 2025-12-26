@@ -9,8 +9,8 @@ namespace OpenGSGLibrary.WorldMap
     /// </summary>
     public class ProvinceMap : LayerBitmap
     {
-        private Dictionary<Tuple<byte, byte, byte>, int> rgbProvinceMap_ = new Dictionary<Tuple<byte, byte, byte>, int>();
-        private Dictionary<int, string> provinceNames_ = new Dictionary<int, string>();
+        private Dictionary<Tuple<byte, byte, byte>, int> _rgbProvinceMap = [];
+        private Dictionary<int, string> _provinceNames = [];
 
         /// <summary>
         /// Gets the province number for a RGB value.
@@ -19,7 +19,8 @@ namespace OpenGSGLibrary.WorldMap
         /// <returns>Province number as integer, -1 if not found.</returns>
         public int GetProvinceNumber(Tuple<byte, byte, byte> rgbKey)
         {
-            if (rgbProvinceMap_.ContainsKey(rgbKey)) return rgbProvinceMap_[rgbKey];
+            if (_rgbProvinceMap.ContainsKey(rgbKey))
+                return _rgbProvinceMap[rgbKey];
             return -1;
         }
 
@@ -30,7 +31,8 @@ namespace OpenGSGLibrary.WorldMap
         /// <returns>Province name as string, empty string if not found.</returns>
         public string GetProvinceName(int provinceNumber)
         {
-            if (provinceNames_.TryGetValue(provinceNumber, out var name)) return name;
+            if (_provinceNames.TryGetValue(provinceNumber, out var name))
+                return name;
             return string.Empty;
         }
 
@@ -55,7 +57,11 @@ namespace OpenGSGLibrary.WorldMap
                 try
                 {
                     var currentRow = csvParser.ReadFields();
-                    var provinceColor = Tuple.Create((byte)Convert.ToInt32(currentRow[1]), (byte)Convert.ToInt32(currentRow[2]), (byte)Convert.ToInt32(currentRow[3]));
+                    var provinceColor = Tuple.Create(
+                        (byte)Convert.ToInt32(currentRow[1]),
+                        (byte)Convert.ToInt32(currentRow[2]),
+                        (byte)Convert.ToInt32(currentRow[3])
+                    );
                     var provinceNumber = Convert.ToInt32(currentRow[0]);
                     var provinceName = currentRow[4];
                     if (!newRgbProvinceMap.ContainsKey(provinceColor))
@@ -78,8 +84,8 @@ namespace OpenGSGLibrary.WorldMap
                 }
             }
 
-            rgbProvinceMap_ = newRgbProvinceMap;
-            provinceNames_ = newNameMap;
+            _rgbProvinceMap = newRgbProvinceMap;
+            _provinceNames = newNameMap;
         }
     }
 }
