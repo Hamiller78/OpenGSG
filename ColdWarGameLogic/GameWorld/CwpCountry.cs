@@ -35,6 +35,8 @@ namespace ColdWarGameLogic.GameWorld
                 Allegiance = string.Empty;
             }
             Leader = parsedData["leader"].Single()?.ToString() ?? string.Empty;
+
+            Economy = new CwpEconomy(this);
         }
     }
 }

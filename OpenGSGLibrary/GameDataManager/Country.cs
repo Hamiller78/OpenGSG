@@ -11,9 +11,9 @@ namespace OpenGSGLibrary.GameDataManager
         public Bitmap? Flag { get; set; } = default;
         public string Tag { get; private set; } = default!;
         public string Name { get; private set; } = default!;
+        public List<Province> Provinces { get; } = new();
+        public IEconomy Economy { get; set; } = default!;
         public Tuple<byte, byte, byte> Color { get; private set; } = default!;
-
-        public Tuple<byte, byte, byte> GetColor() => Color;
 
         public override void SetData(string fileName, ILookup<string, object> parsedData)
         {
@@ -41,6 +41,13 @@ namespace OpenGSGLibrary.GameDataManager
             // Load bitmap now that System.Drawing.Common is referenced by the project.
             var img = Image.FromFile(path);
             Flag = new Bitmap(img);
+        }
+
+        public void UpdateProvinces(WorldState state)
+        {
+            Provinces.Clear();
+            var provinceTable = state.GetProvinceTable();
+            Provinces.AddRange(provinceTable.Values.Where(p => p.Owner == Tag));
         }
     }
 }

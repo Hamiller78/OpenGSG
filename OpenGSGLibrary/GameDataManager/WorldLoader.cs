@@ -35,6 +35,8 @@ namespace OpenGSGLibrary.GameDataManager
                 newState.SetCountryTable(_countryTable);
                 newState.SetArmyManager(_armyManager);
 
+                _countryTable.Values.ToList().ForEach(c => c.UpdateProvinces(newState));
+
                 return newState;
             }
             catch (Exception ex)
