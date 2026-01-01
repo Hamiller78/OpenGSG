@@ -17,11 +17,11 @@ public sealed partial class CwpProvinceViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Production))]
-    private long industrialization;
+    private float industrialization;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Production))]
-    private long education;
+    private float education;
 
     [ObservableProperty]
     private string terrain = string.Empty;
@@ -65,9 +65,9 @@ public sealed partial class CwpProvinceViewModel : ObservableObject, IDisposable
 
     partial void OnPopulationChanged(long value) => Model.Population = value;
 
-    partial void OnIndustrializationChanged(long value) => Model.Industrialization = value;
+    partial void OnIndustrializationChanged(float value) => Model.Industrialization = value;
 
-    partial void OnEducationChanged(long value) => Model.Education = value;
+    partial void OnEducationChanged(float value) => Model.Education = value;
 
     partial void OnTerrainChanged(string value) => Model.Terrain = value;
 

@@ -14,5 +14,15 @@ namespace ColdWarGameLogic.GameWorld
             var countryProvinces = country.Provinces.Cast<CwpProvince>();
             TotalProduction = countryProvinces.Sum(p => p.Production);
         }
+
+        public void GrowProvinceIndustrialization()
+        {
+            var countryProvinces = country.Provinces.Cast<CwpProvince>().ToList();
+            foreach (var province in countryProvinces)
+            {
+                province.Industrialization +=
+                    Investment / 365f * (100 - province.Industrialization) / 100f;
+            }
+        }
     }
 }

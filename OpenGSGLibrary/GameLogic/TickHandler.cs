@@ -22,7 +22,7 @@ namespace OpenGSGLibrary.GameLogic
         public static event EventHandler<TickEventArgs>? UIRefreshRequested;
 
         private readonly PlayerManager _playerManager = new();
-        private WorldState? _currentWorldState;
+        private WorldState _currentWorldState = default!;
         private long _currentTick = 0;
 
         /// <summary>
@@ -90,6 +90,14 @@ namespace OpenGSGLibrary.GameLogic
             // lock GUI input
             // calculate world in next tick
             _currentTick += 1;
+
+            var countries = _currentWorldState.GetCountryTable().Values;
+            foreach (var country in countries)
+            {
+                var countryEconomy = country.Economy;
+                countryEconomy.GrowProvinceIndustrialization();
+            }
+
             var args = new TickEventArgs((int)_currentTick);
 
             // notify all interested classes (synchronous invoke)

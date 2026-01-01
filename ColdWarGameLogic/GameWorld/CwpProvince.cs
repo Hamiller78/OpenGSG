@@ -8,8 +8,8 @@ namespace ColdWarGameLogic.GameWorld;
 public class CwpProvince : Province
 {
     public long Population { get; set; } = 0;
-    public long Industrialization { get; set; } = 0;
-    public long Education { get; set; } = 0;
+    public float Industrialization { get; set; } = 0f;
+    public float Education { get; set; } = 0f;
     public string Terrain { get; set; } = string.Empty;
 
     public long Production => GetProduction();
@@ -22,8 +22,8 @@ public class CwpProvince : Province
         base.SetData(fileName, parsedData);
 
         Population = ToLong(SingleOrDefault(parsedData, "population"));
-        Industrialization = ToLong(SingleOrDefault(parsedData, "industrialization"));
-        Education = ToLong(SingleOrDefault(parsedData, "education"));
+        Industrialization = ToFloat(SingleOrDefault(parsedData, "industrialization"));
+        Education = ToFloat(SingleOrDefault(parsedData, "education"));
         Terrain = ToStringSafe(SingleOrDefault(parsedData, "terrain"));
     }
 
@@ -40,7 +40,9 @@ public class CwpProvince : Province
 
     public long GetProduction()
     {
-        return Convert.ToInt64(Population * Industrialization / 100.0 * Education / 100.0);
+        return Convert.ToInt64(
+            Population / 1_000_000.0 * Industrialization / 100.0 * Education / 100.0
+        );
     }
 
     private static object SingleOrDefault(ILookup<string, object> lookup, string key)
@@ -48,6 +50,34 @@ public class CwpProvince : Province
         if (lookup == null)
             return null;
         return lookup.Contains(key) ? lookup[key].SingleOrDefault() : null;
+    }
+
+    private static float ToFloat(object o)
+    {
+        if (o == null)
+            return 0;
+        try
+        {
+            return Convert.ToSingle(o);
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
+    private static int ToInteger(object o)
+    {
+        if (o == null)
+            return 0;
+        try
+        {
+            return Convert.ToInt32(o);
+        }
+        catch
+        {
+            return 0;
+        }
     }
 
     private static long ToLong(object o)
