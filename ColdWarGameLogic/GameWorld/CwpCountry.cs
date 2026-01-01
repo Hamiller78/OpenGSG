@@ -38,5 +38,11 @@ namespace ColdWarGameLogic.GameWorld
 
             Economy = new CwpEconomy(this);
         }
+
+        public override void OnTickDone(object sender, EventArgs e)
+        {
+            Economy.GrowProvinceIndustrialization();
+            base.OnTickDone(sender, e);
+        }
     }
 }

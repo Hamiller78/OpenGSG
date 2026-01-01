@@ -27,8 +27,10 @@ namespace OpenGSGLibrary.GameDataManager
             try
             {
                 LoadProvinces(gamedataPath);
+
                 LoadCountries(gamedataPath);
                 LoadCountryFlags(gamedataPath);
+
                 LoadArmies(gamedataPath);
 
                 newState.SetProvinceTable(_provinceTable);
@@ -39,7 +41,7 @@ namespace OpenGSGLibrary.GameDataManager
 
                 return newState;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 GlobalLogger
                     .GetInstance()

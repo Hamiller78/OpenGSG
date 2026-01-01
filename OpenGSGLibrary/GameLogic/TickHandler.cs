@@ -30,7 +30,7 @@ namespace OpenGSGLibrary.GameLogic
         /// and associating event handlers.
         /// </summary>
         /// <param name="newState">WorldState to set in TickHandler.</param>
-        public void ConnectProvinceEventHandlers(WorldState newState)
+        public void ConnectGameObjectEventHandlers(WorldState newState)
         {
             _currentWorldState = newState;
 
@@ -41,7 +41,18 @@ namespace OpenGSGLibrary.GameLogic
                 {
                     // Provinces implement OnTickDone(object, EventArgs)
                     // The TickDone event uses EventArgs; subscribe via a lambda to adapt the signature.
-                    TickDone += (s, ev) => province.OnTickDone(s, ev);
+                    TickDone += (s, eventArgs) => province.OnTickDone(this, eventArgs);
+                }
+            }
+
+            var countries = _currentWorldState?.GetCountryTable().Values;
+            if (countries != null)
+            {
+                foreach (var country in countries)
+                {
+                    // Countries implement OnTickDone(object, EventArgs)
+                    // The TickDone event uses EventArgs; subscribe via a lambda to adapt the signature.
+                    TickDone += (s, eventArgs) => country.OnTickDone(this, eventArgs);
                 }
             }
         }
@@ -90,13 +101,6 @@ namespace OpenGSGLibrary.GameLogic
             // lock GUI input
             // calculate world in next tick
             _currentTick += 1;
-
-            var countries = _currentWorldState.GetCountryTable().Values;
-            foreach (var country in countries)
-            {
-                var countryEconomy = country.Economy;
-                countryEconomy.GrowProvinceIndustrialization();
-            }
 
             var args = new TickEventArgs((int)_currentTick);
 
