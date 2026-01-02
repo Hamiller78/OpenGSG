@@ -16,7 +16,7 @@ namespace ColdWarGameLogic.GameLogic
         public void Init()
         {
             var startState = _worldLoader.CreateStartState(GAMEDATA_PATH);
-            TickHandler.ConnectProvinceEventHandlers(startState); // TODO: set state in separate method
+            TickHandler.ConnectGameObjectEventHandlers(startState); // TODO: set state in separate method
 
             WorldData.LoadAll(GAMEDATA_PATH); // Only map views are still in WorldDataManager
         }

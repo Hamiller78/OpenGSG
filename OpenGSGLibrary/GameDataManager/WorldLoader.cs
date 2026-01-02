@@ -27,17 +27,21 @@ namespace OpenGSGLibrary.GameDataManager
             try
             {
                 LoadProvinces(gamedataPath);
+
                 LoadCountries(gamedataPath);
                 LoadCountryFlags(gamedataPath);
+
                 LoadArmies(gamedataPath);
 
                 newState.SetProvinceTable(_provinceTable);
                 newState.SetCountryTable(_countryTable);
                 newState.SetArmyManager(_armyManager);
 
+                _countryTable.Values.ToList().ForEach(c => c.UpdateProvinces(newState));
+
                 return newState;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 GlobalLogger
                     .GetInstance()

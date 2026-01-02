@@ -92,8 +92,6 @@ namespace ColdWarPrototype2
         {
             mouseController_.HoveredProvinceChanged += provinceInfo_.HandleProvinceChanged;
             mouseController_.HoveredCountryChanged += countryInfo_.HandleCountryChanged;
-
-            DateButton.Click += DateButton_Click;
         }
 
         private void MapPictureBox_MouseMove(object? sender, MouseEventArgs e)

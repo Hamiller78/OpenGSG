@@ -14,12 +14,12 @@ namespace OpenGSGLibrary.GameDataManager
         public void SetProvinceTable(IDictionary<int, Province> provinceTable) =>
             _provinceTable = provinceTable;
 
-        public IDictionary<int, Province>? GetProvinceTable() => _provinceTable;
+        public IDictionary<int, Province> GetProvinceTable() => _provinceTable;
 
         public void SetCountryTable(IDictionary<string, Country> countryTable) =>
             _countryTable = countryTable;
 
-        public IDictionary<string, Country>? GetCountryTable() => _countryTable;
+        public IDictionary<string, Country> GetCountryTable() => _countryTable;
 
         public void SetArmyManager(ArmyManager armyManager) => _armyManager = armyManager;
 

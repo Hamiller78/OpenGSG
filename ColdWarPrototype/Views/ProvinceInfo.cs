@@ -25,8 +25,8 @@ namespace ColdWarPrototype.Views
         // Exposed data fields (kept for compatibility)
         public string Name { get; private set; } = string.Empty;
         public long Population { get; private set; }
-        public long Industrialization { get; private set; }
-        public long Education { get; private set; }
+        public float Industrialization { get; private set; }
+        public float Education { get; private set; }
         public long Production { get; private set; }
         public string Terrain { get; private set; } = string.Empty;
         public string Owner { get; private set; } = string.Empty;
