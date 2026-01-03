@@ -13,4 +13,9 @@
     <ProjectReference Include="..\ColdWarGameLogic\ColdWarGameLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="GameData\events\" />
+    <Folder Include="GameData\localisation\" />
+  </ItemGroup>
+
 </Project>
