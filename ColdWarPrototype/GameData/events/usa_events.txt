@@ -9,6 +9,7 @@ country_event = {
 
     trigger = {
         tag = USA
+        country_exists = ROK
         date >= 1950.01.09
         date < 1951.01.11
         ROK = { has_war = no }
