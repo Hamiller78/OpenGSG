@@ -13,7 +13,7 @@ namespace ColdWarGameLogic.Events
     {
         public string TargetCountryTag { get; set; } = string.Empty;
 
-        public void Execute(object context)
+        public void Execute(WorldState state)
         {
             if (context is not EventEvaluationContext evalContext)
                 return;
