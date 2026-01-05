@@ -1,4 +1,7 @@
-﻿using ColdWarGameLogic.GameWorld;
+﻿using System;
+using ColdWarGameLogic.Events;
+using ColdWarGameLogic.GameWorld;
+using OpenGSGLibrary.Events;
 using OpenGSGLibrary.GameDataManager;
 using OpenGSGLibrary.GameLogic;
 
@@ -10,13 +13,22 @@ namespace ColdWarGameLogic.GameLogic
 
         public WorldDataManager WorldData { get; } = new WorldDataManager();
         public TickHandler TickHandler { get; } = new TickHandler();
+        public EventManager EventManager { get; private set; } = new EventManager();
 
-        private readonly WorldLoader<CwpProvince, CwpCountry> _worldLoader = new();
+        private readonly WorldLoader<
+            CwpProvince,
+            CwpCountry,
+            CwpCountryEvent,
+            CwpNewsEvent
+        > _worldLoader = new();
 
         public void Init()
         {
             var startState = _worldLoader.CreateStartState(GAMEDATA_PATH);
-            TickHandler.ConnectGameObjectEventHandlers(startState); // TODO: set state in separate method
+            TickHandler.ConnectGameObjectEventHandlers(startState);
+
+            // Store event manager for access during gameplay
+            EventManager = _worldLoader.EventManager;
 
             WorldData.LoadAll(GAMEDATA_PATH); // Only map views are still in WorldDataManager
         }

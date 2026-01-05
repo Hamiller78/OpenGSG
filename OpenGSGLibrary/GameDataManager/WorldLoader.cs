@@ -1,26 +1,39 @@
-﻿using OpenGSGLibrary.Military;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using OpenGSGLibrary.Events;
+using OpenGSGLibrary.Military;
 using OpenGSGLibrary.Tools;
 
 namespace OpenGSGLibrary.GameDataManager
 {
     /// <summary>
     /// Class to create a world state from gamedata files.
-    /// The derived classes for provinces, countries, etc. have to be specified when creating an instance of the class.
+    /// The derived classes for provinces, countries, events, etc. have to be specified when creating an instance of the class.
     /// </summary>
-    public class WorldLoader<TProv, TCountry>
+    public class WorldLoader<TProv, TCountry, TCountryEvent, TNewsEvent>
         where TProv : Province, new()
         where TCountry : Country, new()
+        where TCountryEvent : CountryEvent, new()
+        where TNewsEvent : NewsEvent, new()
     {
         private IDictionary<int, Province> _provinceTable = default!;
         private IDictionary<string, Country> _countryTable = default!;
         private readonly ArmyManager _armyManager = new();
+        private EventManager _eventManager = new();
+
+        /// <summary>
+        /// Gets the event manager containing all loaded events.
+        /// </summary>
+        public EventManager EventManager => _eventManager;
 
         /// <summary>
         /// Creates a world state from the data in the game data or mod directories.
         /// This should be the start state for a game.
         /// </summary>
-        /// <param name="gamedataPath"></param>
-        /// <returns></returns>
+        /// <param name="gamedataPath">Path to game data directory.</param>
+        /// <returns>WorldState with loaded game data including events.</returns>
         public WorldState CreateStartState(string gamedataPath)
         {
             var newState = new WorldState();
@@ -32,6 +45,8 @@ namespace OpenGSGLibrary.GameDataManager
                 LoadCountryFlags(gamedataPath);
 
                 LoadArmies(gamedataPath);
+
+                LoadEvents(gamedataPath);
 
                 newState.SetProvinceTable(_provinceTable);
                 newState.SetCountryTable(_countryTable);
@@ -63,8 +78,8 @@ namespace OpenGSGLibrary.GameDataManager
             }
             catch (Exception)
             {
-                Tools
-                    .GlobalLogger.GetInstance()
+                GlobalLogger
+                    .GetInstance()
                     .WriteLine(LogLevel.Fatal, "Error while loading province data.");
                 throw;
             }
@@ -121,6 +136,22 @@ namespace OpenGSGLibrary.GameDataManager
                 GlobalLogger
                     .GetInstance()
                     .WriteLine(LogLevel.Fatal, "Error while loading army data.");
+                throw;
+            }
+        }
+
+        private void LoadEvents(string gamedataPath)
+        {
+            try
+            {
+                var eventsPath = Path.Combine(gamedataPath, "events");
+                _eventManager = EventFactory.LoadFromFolder<TCountryEvent, TNewsEvent>(eventsPath);
+            }
+            catch (Exception)
+            {
+                GlobalLogger
+                    .GetInstance()
+                    .WriteLine(LogLevel.Fatal, "Error while loading event data.");
                 throw;
             }
         }

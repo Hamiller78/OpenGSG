@@ -6,7 +6,7 @@ namespace OpenGSGLibrary.GameFilesParser
 {
     /// <summary>
     /// Prepares a text for parsing by converting it into a stream of tokens representing control characters,
-    /// keywords and values. Unnecessary characters are removed in the rpocess.
+    /// keywords and values. Unnecessary characters are removed in the process.
     /// </summary>
     public class Scanner
     {
@@ -60,11 +60,16 @@ namespace OpenGSGLibrary.GameFilesParser
         {
             var sb = new StringBuilder();
             var nextCharCode = reader.Peek();
-            while (char.IsLetterOrDigit((char)nextCharCode) || (char)nextCharCode == '_')
+            while (
+                char.IsLetterOrDigit((char)nextCharCode)
+                || nextCharCode == '_'
+                || nextCharCode == '.'
+            )
             {
                 sb.Append((char)reader.Read());
                 nextCharCode = reader.Peek();
-                if (nextCharCode == -1) return sb.ToString();
+                if (nextCharCode == -1)
+                    return sb.ToString();
             }
             return sb.ToString();
         }

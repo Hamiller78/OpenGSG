@@ -13,7 +13,7 @@ namespace ColdWarGameLogic.Events
     {
         public string TargetCountryTag { get; set; } = string.Empty;
 
-        public void Execute(WorldState state)
+        public void Execute(object context)
         {
             if (context is not EventEvaluationContext evalContext)
                 return;
@@ -30,24 +30,6 @@ namespace ColdWarGameLogic.Events
 
             // TODO: Implement guarantee system in CwpCountry class
             // cwpCountry.RemoveGuarantee(TargetCountryTag);
-        }
-    }
-
-    /// <summary>
-    /// Triggers another event (typically a news event).
-    /// </summary>
-    public class TriggerEventEffect : IEventEffect
-    {
-        public string EventId { get; set; } = string.Empty;
-        public bool Hidden { get; set; } = false;
-
-        public void Execute(object context)
-        {
-            if (context is not WorldState state)
-                return;
-
-            // TODO: Implement event manager to lookup and fire events by ID
-            // For now, this is a placeholder
         }
     }
 }
