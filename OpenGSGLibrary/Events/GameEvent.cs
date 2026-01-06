@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace OpenGSGLibrary.Events
@@ -144,17 +145,95 @@ namespace OpenGSGLibrary.Events
                 if (key == "OR" || key == "AND")
                     continue; // Already handled
 
-                foreach (var value in group)
+                // Check if this is a date comparison trigger (key starts with "date")
+                if (key.StartsWith("date"))
                 {
-                    var trigger = ParseSingleTrigger(key, value);
-                    if (trigger != null)
+                    foreach (var value in group)
                     {
-                        triggers.Add(trigger);
+                        var dateTrigger = ParseDateTrigger(key, value);
+                        if (dateTrigger != null)
+                        {
+                            triggers.Add(dateTrigger);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var value in group)
+                    {
+                        var trigger = ParseSingleTrigger(key, value);
+                        if (trigger != null)
+                        {
+                            triggers.Add(trigger);
+                        }
                     }
                 }
             }
 
             return triggers;
+        }
+
+        /// <summary>
+        /// Parses a date comparison trigger.
+        /// The key will be "date>=" / "date>" / "date<" / "date<=" / "date"
+        /// depending on the operator used in the event file.
+        /// </summary>
+        protected virtual IEventTrigger? ParseDateTrigger(string key, object value)
+        {
+            var dateStr = value?.ToString();
+            if (string.IsNullOrEmpty(dateStr))
+                return null;
+
+            // Parse the date (format: YYYY.MM.DD)
+            var date = ParseDate(dateStr);
+            if (date == DateTime.MinValue)
+                return null;
+
+            // Extract operator from key suffix
+            if (key == "date>=")
+                return new DateGreaterEqualTrigger { Date = date };
+            else if (key == "date>")
+                return new DateGreaterThanTrigger { Date = date };
+            else if (key == "date<")
+                return new DateLessThanTrigger { Date = date };
+            else if (key == "date<=")
+                return new DateLessEqualTrigger { Date = date };
+            else if (key == "date")
+                return new DateEqualTrigger { Date = date };
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parses a date string in format YYYY.MM.DD
+        /// </summary>
+        protected static DateTime ParseDate(string dateStr)
+        {
+            if (string.IsNullOrEmpty(dateStr))
+                return DateTime.MinValue;
+
+            // Format: 1950.01.09
+            var parts = dateStr.Split('.');
+            if (parts.Length != 3)
+                return DateTime.MinValue;
+
+            if (
+                int.TryParse(parts[0], out var year)
+                && int.TryParse(parts[1], out var month)
+                && int.TryParse(parts[2], out var day)
+            )
+            {
+                try
+                {
+                    return new DateTime(year, month, day);
+                }
+                catch
+                {
+                    return DateTime.MinValue;
+                }
+            }
+
+            return DateTime.MinValue;
         }
 
         /// <summary>

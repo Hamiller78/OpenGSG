@@ -7,11 +7,15 @@ namespace OpenGSGLibrary.GameFilesParser
     {
         EOF,
         EQUAL,
+        GREATER,
+        GREATER_EQUAL,
+        LESS,
+        LESS_EQUAL,
         LEFTBRACKET,
         RIGHTBRACKET,
         KEYWORD,
         NUMBER,
-        UNKNOWN
+        UNKNOWN,
     }
 
     /// <summary>
@@ -77,19 +81,19 @@ namespace OpenGSGLibrary.GameFilesParser
         /// <param name="k">Kind of the generated Token</param>
         /// <returns>Generated Token</returns>
         public static Token FromKind(Kind k) => new Token(k);
-		
+
         /// <summary>
         /// Static factory method to generate a NUMBER Token
         /// </summary>
         /// <param name="i">Value of the generated Token</param>
-        /// <returns>Generated Token</returns>			
+        /// <returns>Generated Token</returns>
         public static Token FromValue(int i) => new Token(i);
-		
+
         /// <summary>
         /// Static factory method to generate a KEYWORD Token
         /// </summary>
         /// <param name="s">Text of the generated Token</param>
-        /// <returns>Generated Token</returns>		
+        /// <returns>Generated Token</returns>
         public static Token FromString(string s) => new Token(s);
     }
 }
