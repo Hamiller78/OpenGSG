@@ -1,3 +1,5 @@
+using System;
+using OpenGSGLibrary.Events;
 using OpenGSGLibrary.GameDataManager;
 
 namespace OpenGSGLibrary.GameLogic
@@ -8,7 +10,8 @@ namespace OpenGSGLibrary.GameLogic
     /// </summary>
     public class TickHandler
     {
-        /// <summary>ö        /// Notifies subscribers (provinces and other systems) that the tick finished.
+        /// <summary>
+        /// Notifies subscribers (provinces and other systems) that the tick finished.
         /// Provinces are subscribed to this to run their per-tick updates.
         /// </summary>
         public event EventHandler? TickDone;
@@ -21,16 +24,49 @@ namespace OpenGSGLibrary.GameLogic
         /// </summary>
         public static event EventHandler<TickEventArgs>? UIRefreshRequested;
 
+        /// <summary>
+        /// Raised when an event is triggered and should be presented to the player.
+        /// Static for easy UI subscription.
+        /// </summary>
+        public static event EventHandler<EventTriggeredArgs>? EventTriggered;
+
         private readonly PlayerManager _playerManager = new();
-        private WorldState _currentWorldState = default!;
+        private WorldState? _currentWorldState;
         private long _currentTick = 0;
+        private EventManager? _eventManager;
+        private DateTime _startDate = new DateTime(1950, 1, 1); // Default start date
+
+        /// <summary>
+        /// Sets the event manager for event evaluation.
+        /// </summary>
+        public void SetEventManager(EventManager eventManager)
+        {
+            _eventManager = eventManager;
+        }
+
+        /// <summary>
+        /// Sets the game start date for date-based event triggers.
+        /// </summary>
+        public void SetStartDate(DateTime startDate)
+        {
+            _startDate = startDate;
+        }
+
+        /// <summary>
+        /// Gets the current game date based on start date and elapsed ticks.
+        /// </summary>
+        public DateTime GetCurrentDate()
+        {
+            var elapsedTimespan = new TimeSpan((int)_currentTick, 0, 0, 0);
+            return _startDate.Add(elapsedTimespan);
+        }
 
         /// <summary>
         /// Connects world state to tick handler which includes setting the state in TickHandlers
         /// and associating event handlers.
         /// </summary>
         /// <param name="newState">WorldState to set in TickHandler.</param>
-        public void ConnectGameObjectEventHandlers(WorldState newState)
+        public void ConnectProvinceEventHandlers(WorldState newState)
         {
             _currentWorldState = newState;
 
@@ -41,18 +77,7 @@ namespace OpenGSGLibrary.GameLogic
                 {
                     // Provinces implement OnTickDone(object, EventArgs)
                     // The TickDone event uses EventArgs; subscribe via a lambda to adapt the signature.
-                    TickDone += (s, eventArgs) => province.OnTickDone(this, eventArgs);
-                }
-            }
-
-            var countries = _currentWorldState?.GetCountryTable().Values;
-            if (countries != null)
-            {
-                foreach (var country in countries)
-                {
-                    // Countries implement OnTickDone(object, EventArgs)
-                    // The TickDone event uses EventArgs; subscribe via a lambda to adapt the signature.
-                    TickDone += (s, eventArgs) => country.OnTickDone(this, eventArgs);
+                    TickDone += (s, ev) => province.OnTickDone(s, ev);
                 }
             }
         }
@@ -101,15 +126,82 @@ namespace OpenGSGLibrary.GameLogic
             // lock GUI input
             // calculate world in next tick
             _currentTick += 1;
-
             var args = new TickEventArgs((int)_currentTick);
 
             // notify all interested classes (synchronous invoke)
             TickDone?.Invoke(this, args);
 
+            // Evaluate events after world updates
+            EvaluateEvents();
+
             // After provinces and other TickDone subscribers have run, request UI refresh
             // so the UI can pull latest model state (or ViewModels can Refresh()).
             UIRefreshRequested?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Evaluates all events and fires those whose triggers are met.
+        /// </summary>
+        private void EvaluateEvents()
+        {
+            if (_eventManager == null || _currentWorldState == null)
+                return;
+
+            var currentDate = GetCurrentDate();
+
+            // Evaluate country events for each country
+            var countries = _currentWorldState.GetCountryTable();
+            if (countries != null)
+            {
+                foreach (var country in countries.Values)
+                {
+                    var context = new EventEvaluationContext
+                    {
+                        WorldState = _currentWorldState,
+                        CurrentDate = currentDate,
+                        CurrentCountryTag = country.Tag,
+                        TickHandler = this,
+                        EventManager = _eventManager,
+                    };
+
+                    var triggeredEvents = _eventManager.GetTriggeredCountryEvents(context);
+                    foreach (var evt in triggeredEvents)
+                    {
+                        // Fire event (present to player or auto-execute if hidden)
+                        if (evt.Hidden)
+                        {
+                            evt.Fire(context);
+                        }
+                        else
+                        {
+                            // Raise event for UI to display
+                            EventTriggered?.Invoke(this, new EventTriggeredArgs(evt, context));
+                        }
+                    }
+                }
+            }
+
+            // Evaluate news events
+            var newsContext = new EventEvaluationContext
+            {
+                WorldState = _currentWorldState,
+                CurrentDate = currentDate,
+                TickHandler = this,
+                EventManager = _eventManager,
+            };
+
+            var triggeredNews = _eventManager.GetTriggeredNewsEvents(newsContext);
+            foreach (var evt in triggeredNews)
+            {
+                if (evt.Hidden)
+                {
+                    evt.Fire(newsContext);
+                }
+                else
+                {
+                    EventTriggered?.Invoke(this, new EventTriggeredArgs(evt, newsContext));
+                }
+            }
         }
 
         /// <summary>
@@ -127,5 +219,20 @@ namespace OpenGSGLibrary.GameLogic
     public class TickEventArgs(int tickPar) : EventArgs
     {
         public int Tick { get; set; } = tickPar;
+    }
+
+    /// <summary>
+    /// Event args for when a game event is triggered.
+    /// </summary>
+    public class EventTriggeredArgs : EventArgs
+    {
+        public GameEvent Event { get; }
+        public EventEvaluationContext Context { get; }
+
+        public EventTriggeredArgs(GameEvent evt, EventEvaluationContext context)
+        {
+            Event = evt;
+            Context = context;
+        }
     }
 }

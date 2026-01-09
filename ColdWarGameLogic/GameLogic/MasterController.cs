@@ -25,18 +25,21 @@ namespace ColdWarGameLogic.GameLogic
         public void Init()
         {
             var startState = _worldLoader.CreateStartState(GAMEDATA_PATH);
-            TickHandler.ConnectGameObjectEventHandlers(startState);
+            TickHandler.ConnectProvinceEventHandlers(startState);
 
             // Store event manager for access during gameplay
             EventManager = _worldLoader.EventManager;
+
+            // Configure tick handler with event manager and start date
+            TickHandler.SetEventManager(EventManager);
+            TickHandler.SetStartDate(new DateTime(1950, 1, 1));
 
             WorldData.LoadAll(GAMEDATA_PATH); // Only map views are still in WorldDataManager
         }
 
         public DateTime GetGameDateTime()
         {
-            var elapsedTimespan = new TimeSpan((int)TickHandler.GetCurrentTick(), 0, 0, 0);
-            return new DateTime(1950, 1, 1).Add(elapsedTimespan);
+            return TickHandler.GetCurrentDate();
         }
     }
 }
