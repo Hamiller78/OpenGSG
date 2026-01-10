@@ -1,0 +1,21 @@
+news_event = {
+    id = worldcup_1950.1
+    title = worldcup_1950.1.t
+    desc = worldcup_1950.1.d
+    picture = 1950_world_championship
+
+    trigger = {
+        date = 1950.06.24
+    }
+}
+
+news_event = {
+    id = worldcup_1950.2
+    title = worldcup_1950.2.t
+    desc = worldcup_1950.2.d
+    picture = 1950_world_championship_maracanazo
+
+    trigger = {
+        date = 1950.07.16
+    }
+}
