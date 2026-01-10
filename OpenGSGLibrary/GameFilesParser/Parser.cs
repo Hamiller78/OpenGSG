@@ -26,7 +26,7 @@ public class Parser
     /// <returns>Returns an object containing either a Lookup, a list of integers or another object.</returns>
     private object ParseCollection(IEnumerator<Token> tokenStream)
     {
-        object collectionObj = new object();
+        object collectionObj;
 
         tokenStream.MoveNext();
         var currentToken = tokenStream.Current;
@@ -40,7 +40,7 @@ public class Parser
         }
         else if (currentToken.kind == Kind.RIGHTBRACKET)
         {
-            collectionObj = null;
+            collectionObj = null!;
         }
         else
         {
@@ -82,9 +82,11 @@ public class Parser
 
     /// <summary>
     /// Parses an assignment. Token stream will be moved to the token after the rhs of the assignment.
+    /// For comparison operators (>, >=, <, <=), the operator is appended to the keyword.
+    /// Example: "date >= 1950.01.09" becomes key "date>=" with value "1950.01.09"
     /// </summary>
     /// <param name="tokenStream">Token stream must be set on a KEYWORD token.</param>
-    /// <returns>Returns a KeyValuePair with the keyword and a general object.</returns>
+    /// <returns>Returns a KeyValuePair with the keyword (possibly with operator suffix) and a general object.</returns>
     private KeyValuePair<string, object> ParseAssignment(IEnumerator<Token> tokenStream)
     {
         var currentToken = tokenStream.Current;
@@ -99,25 +101,48 @@ public class Parser
 
         tokenStream.MoveNext();
         currentToken = tokenStream.Current;
-        if (currentToken.kind != Kind.EQUAL)
+        var kind = currentToken.kind;
+        if (
+            kind != Kind.EQUAL
+            && kind != Kind.LESS
+            && kind != Kind.LESS_EQUAL
+            && kind != Kind.GREATER
+            && kind != Kind.GREATER_EQUAL
+        )
             throw new ApplicationException(
-                "Error while parsing: = expected, got " + currentToken.ToString() + " instead."
+                "Error while parsing: expected operator token, got "
+                    + currentToken.ToString()
+                    + " instead."
             );
+
+        // Append operator to keyword for comparison operators
+        // This preserves operator information in the returned structure
+        var operatorSuffix = kind switch
+        {
+            Kind.GREATER => ">",
+            Kind.GREATER_EQUAL => ">=",
+            Kind.LESS => "<",
+            Kind.LESS_EQUAL => "<=",
+            Kind.EQUAL => "", // No suffix for simple assignment
+            _ => "",
+        };
+
+        var keyWithOperator = keyword + operatorSuffix;
 
         var assignedObject = ParseRhs(tokenStream);
 
-        return new KeyValuePair<string, object>(keyword, assignedObject);
+        return new KeyValuePair<string, object>(keyWithOperator, assignedObject);
     }
 
     /// <summary>
     /// Parses right hand side of an assigment.
-    /// Token stream must be set to the EQUAL token and will be moved behind the assignment.
+    /// Token stream must be set to an operator token and will be moved behind the assignment.
     /// </summary>
-    /// <param name="tokenStream">Token stream set to an EQUAL token.</param>
+    /// <param name="tokenStream">Token stream set to an operator token.</param>
     /// <returns>Returns an object containing either a Lookup, a list of integers or a nested object.</returns>
     private object ParseRhs(IEnumerator<Token> tokenStream)
     {
-        object returnObj = new object();
+        object returnObj;
 
         tokenStream.MoveNext();
         var currentToken = tokenStream.Current;

@@ -1,0 +1,46 @@
+country_event = {
+    id = acheson_speech.1
+    title = acheson_speech.1.t
+    desc = acheson_speech.1.d
+    picture = acheson_speech
+
+    trigger_only_once = yes
+    hidden = no
+
+    trigger = {
+        tag = USA
+        country_exists = ROK
+        date >= 1950.01.09
+        date < 1951.01.11
+        ROK = { has_war = no }
+    }
+
+    mean_time_to_happen = { days = 3 }
+
+    option = {
+        name = acheson_speech.1.a
+
+        remove_guarantee = ROK
+
+        hidden_effect = {
+            news_event = { id = coldwar.2 }
+        }
+    }
+}
+
+news_event = {
+    id = acheson_speech.2
+    title = acheson_speech.2.t
+    desc = acheson_speech.2.d
+    picture = acheson_speech
+
+    trigger = {
+        OR = {
+            tag = ROK
+            tag = DRK
+            tag = USSR
+            tag = JAP
+            tag = PRC
+        }
+    }
+}

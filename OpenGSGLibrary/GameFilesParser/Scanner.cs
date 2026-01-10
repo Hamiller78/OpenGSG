@@ -6,7 +6,7 @@ namespace OpenGSGLibrary.GameFilesParser
 {
     /// <summary>
     /// Prepares a text for parsing by converting it into a stream of tokens representing control characters,
-    /// keywords and values. Unnecessary characters are removed in the rpocess.
+    /// keywords and values. Unnecessary characters are removed in the process.
     /// </summary>
     public class Scanner
     {
@@ -31,7 +31,7 @@ namespace OpenGSGLibrary.GameFilesParser
                 else if (char.IsLetterOrDigit(nextChar))
                 {
                     var sval = ScanName(reader);
-                    if (double.TryParse(sval, out _))
+                    if (IsSimpleNumber(sval))
                     {
                         yield return Token.FromValue((int)double.Parse(sval));
                     }
@@ -56,15 +56,64 @@ namespace OpenGSGLibrary.GameFilesParser
             yield return Token.FromKind(Kind.EOF);
         }
 
+        /// <summary>
+        /// Checks if a string represents a simple numeric value.
+        /// Supports integers and simple floating-point numbers (e.g., 123, -5, 0.5, -0.5).
+        /// Does NOT support dates (e.g., 1950.01.09) or scientific notation.
+        /// </summary>
+        /// <param name="value">String to check.</param>
+        /// <returns>True if the string is a valid simple number.</returns>
+        private bool IsSimpleNumber(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return false;
+
+            int startIndex = 0;
+
+            // Handle optional leading minus sign
+            if (value[0] == '-')
+            {
+                if (value.Length == 1)
+                    return false; // Just a minus is not a number
+                startIndex = 1;
+            }
+
+            bool hasDecimalPoint = false;
+
+            for (int i = startIndex; i < value.Length; i++)
+            {
+                char c = value[i];
+
+                if (c == '.')
+                {
+                    // Already have a decimal point, or decimal point is at start/end
+                    if (hasDecimalPoint || i == startIndex || i == value.Length - 1)
+                        return false;
+                    hasDecimalPoint = true;
+                }
+                else if (!char.IsDigit(c))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private string ScanName(TextReader reader)
         {
             var sb = new StringBuilder();
             var nextCharCode = reader.Peek();
-            while (char.IsLetterOrDigit((char)nextCharCode) || (char)nextCharCode == '_')
+            while (
+                char.IsLetterOrDigit((char)nextCharCode)
+                || nextCharCode == '_'
+                || nextCharCode == '.'
+            )
             {
                 sb.Append((char)reader.Read());
                 nextCharCode = reader.Peek();
-                if (nextCharCode == -1) return sb.ToString();
+                if (nextCharCode == -1)
+                    return sb.ToString();
             }
             return sb.ToString();
         }
@@ -89,6 +138,26 @@ namespace OpenGSGLibrary.GameFilesParser
             {
                 case '=':
                     return Token.FromKind(Kind.EQUAL);
+                case '>':
+                    if (reader.Peek() == '=')
+                    {
+                        _ = (char)reader.Read();
+                        return Token.FromKind(Kind.GREATER_EQUAL);
+                    }
+                    else
+                    {
+                        return Token.FromKind(Kind.GREATER);
+                    }
+                case '<':
+                    if (reader.Peek() == '=')
+                    {
+                        _ = (char)reader.Read();
+                        return Token.FromKind(Kind.LESS_EQUAL);
+                    }
+                    else
+                    {
+                        return Token.FromKind(Kind.LESS);
+                    }
                 default:
                     return Token.FromKind(Kind.UNKNOWN);
             }

@@ -1,6 +1,9 @@
 using ColdWarGameLogic.GameLogic;
 using ColdWarPrototype.Controller;
+using ColdWarPrototype.Dialogs;
 using ColdWarPrototype.Views;
+using OpenGSGLibrary.Events;
+using OpenGSGLibrary.GameLogic;
 using OpenGSGLibrary.Tools;
 
 namespace ColdWarPrototype2
@@ -62,6 +65,9 @@ namespace ColdWarPrototype2
                 var worldMapView = new WorldMap(this);
                 worldMapView.SetSourceProvinceMap(provinceMap);
                 worldMapView.UpdateCountryMap(gameController_.TickHandler.GetState());
+
+                // Subscribe to event triggers
+                TickHandler.EventTriggered += TickHandler_EventTriggered;
             }
             catch (Exception ex)
             {
@@ -77,8 +83,8 @@ namespace ColdWarPrototype2
             coordinateView_ = new GeoCoordinates(this);
 
             worldMapView_ = new WorldMap(this);
-            worldMapView_.SetSourceProvinceMap(gameController_.WorldData.ProvinceMap); // ugly
-            worldMapView_.UpdateCountryMap(gameController_.TickHandler.GetState()); // not much better
+            worldMapView_.SetSourceProvinceMap(gameController_.WorldData.ProvinceMap);
+            worldMapView_.UpdateCountryMap(gameController_.TickHandler.GetState());
         }
 
         private void SetupControllers()
@@ -122,6 +128,20 @@ namespace ColdWarPrototype2
         private void UpdateDateText()
         {
             DateButton.Text = gameController_.GetGameDateTime().ToString();
+        }
+
+        private void TickHandler_EventTriggered(object? sender, EventTriggeredArgs e)
+        {
+            // Create and show event dialog as a modal dialog
+            using var eventDialog = new EventDialog();
+            eventDialog.ShowEvent(
+                e.Event,
+                e.Context,
+                gameController_.LocalizationManager,
+                () => {
+                    // Event completed callback - can resume game or process queue
+                }
+            );
         }
     }
 }
