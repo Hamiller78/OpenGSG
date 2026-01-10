@@ -9,7 +9,7 @@ namespace ColdWarGameLogic.GameLogic
 {
     public class MasterController
     {
-        private const string GAMEDATA_PATH = @"..\..\..\..\ColdWarPrototype\GameData";
+        public const string GAMEDATA_PATH = @"..\..\..\..\ColdWarPrototype\GameData";
 
         public WorldDataManager WorldData { get; } = new WorldDataManager();
         public TickHandler TickHandler { get; } = new TickHandler();

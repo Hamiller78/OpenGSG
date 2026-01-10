@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using ColdWarGameLogic.GameLogic;
 using ColdWarGameLogic.GameWorld;
 using OpenGSGLibrary.Events;
 
@@ -77,10 +78,15 @@ namespace ColdWarPrototype.Dialogs
 
             try
             {
-                // TODO: Implement picture loading from game data directory
-                // For now, try to load from embedded resources
-                var resourceManager = Properties.Resources.ResourceManager;
-                var image = resourceManager.GetObject(pictureName) as Image;
+                var eventImagePath = Path.Combine(
+                    MasterController.GAMEDATA_PATH,
+                    "gfx",
+                    "event_pictures",
+                    pictureName + ".png"
+                );
+
+                //Load image from file
+                Image? image = Image.FromFile(eventImagePath);
 
                 if (image != null)
                 {
