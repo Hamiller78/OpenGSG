@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using OpenGSGLibrary.Events;
+using OpenGSGLibrary.Localization;
 using OpenGSGLibrary.Military;
 using OpenGSGLibrary.Tools;
 
@@ -22,11 +23,17 @@ namespace OpenGSGLibrary.GameDataManager
         private IDictionary<string, Country> _countryTable = default!;
         private readonly ArmyManager _armyManager = new();
         private EventManager _eventManager = new();
+        private LocalizationManager _localizationManager = new();
 
         /// <summary>
         /// Gets the event manager containing all loaded events.
         /// </summary>
         public EventManager EventManager => _eventManager;
+
+        /// <summary>
+        /// Gets the localization manager containing all loaded translations.
+        /// </summary>
+        public LocalizationManager LocalizationManager => _localizationManager;
 
         /// <summary>
         /// Creates a world state from the data in the game data or mod directories.
@@ -39,6 +46,8 @@ namespace OpenGSGLibrary.GameDataManager
             var newState = new WorldState();
             try
             {
+                LoadLocalizations(gamedataPath);
+
                 LoadProvinces(gamedataPath);
 
                 LoadCountries(gamedataPath);
@@ -64,6 +73,22 @@ namespace OpenGSGLibrary.GameDataManager
                         LogLevel.Fatal,
                         "Could not load initial world state from: " + gamedataPath
                     );
+                throw;
+            }
+        }
+
+        private void LoadLocalizations(string gamedataPath)
+        {
+            try
+            {
+                var localizationPath = Path.Combine(gamedataPath, "localization");
+                _localizationManager.LoadFromDirectory(localizationPath);
+            }
+            catch (Exception)
+            {
+                GlobalLogger
+                    .GetInstance()
+                    .WriteLine(LogLevel.Fatal, "Error while loading localization data.");
                 throw;
             }
         }

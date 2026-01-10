@@ -38,7 +38,8 @@
             // 
             // EventPictureBox
             // 
-            EventPictureBox.Location = new Point(3, 3);
+            EventPictureBox.Location = new Point(5, 5);
+            EventPictureBox.Margin = new Padding(5);
             EventPictureBox.Name = "EventPictureBox";
             EventPictureBox.Size = new Size(768, 512);
             EventPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -47,19 +48,20 @@
             // 
             // EventTextBox
             // 
-            EventTextBox.Location = new Point(776, 4);
+            EventTextBox.Location = new Point(783, 5);
+            EventTextBox.Margin = new Padding(5);
             EventTextBox.Name = "EventTextBox";
             EventTextBox.ScrollBars = RichTextBoxScrollBars.Vertical;
-            EventTextBox.Size = new Size(725, 511);
+            EventTextBox.Size = new Size(800, 512);
             EventTextBox.TabIndex = 1;
             EventTextBox.Text = "";
-            EventTextBox.WordWrap = false;
             // 
             // button1
             // 
-            button1.Location = new Point(527, 521);
+            button1.Location = new Point(369, 527);
+            button1.Margin = new Padding(5);
             button1.Name = "button1";
-            button1.Size = new Size(502, 32);
+            button1.Size = new Size(789, 53);
             button1.TabIndex = 2;
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
@@ -67,33 +69,37 @@
             // 
             // button2
             // 
-            button2.Location = new Point(527, 559);
+            button2.Location = new Point(369, 590);
+            button2.Margin = new Padding(5);
             button2.Name = "button2";
-            button2.Size = new Size(502, 32);
+            button2.Size = new Size(789, 53);
             button2.TabIndex = 3;
             button2.Text = "button2";
             button2.UseVisualStyleBackColor = true;
             // 
             // button3
             // 
-            button3.Location = new Point(527, 597);
+            button3.Location = new Point(369, 653);
+            button3.Margin = new Padding(5);
             button3.Name = "button3";
-            button3.Size = new Size(502, 32);
+            button3.Size = new Size(789, 53);
             button3.TabIndex = 4;
             button3.Text = "button3";
             button3.UseVisualStyleBackColor = true;
             // 
             // EventDialog
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(11F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1598, 718);
             Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(button1);
             Controls.Add(EventTextBox);
             Controls.Add(EventPictureBox);
+            Font = new Font("Segoe UI", 14F);
+            Margin = new Padding(5);
             Name = "EventDialog";
-            Size = new Size(1502, 642);
             ((System.ComponentModel.ISupportInitialize)EventPictureBox).EndInit();
             ResumeLayout(false);
         }

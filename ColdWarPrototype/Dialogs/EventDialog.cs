@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic; // Add this - needed for List<EventOption>
 using System.Drawing;
 using System.Windows.Forms;
 using ColdWarGameLogic.GameLogic;
-using ColdWarGameLogic.GameWorld;
 using OpenGSGLibrary.Events;
+using OpenGSGLibrary.Localization;
 
 namespace ColdWarPrototype.Dialogs
 {
@@ -16,6 +17,7 @@ namespace ColdWarPrototype.Dialogs
         private GameEvent? _currentEvent;
         private EventEvaluationContext? _currentContext;
         private Action? _onEventCompleted;
+        private LocalizationManager? _localizationManager;
 
         public EventDialog()
         {
@@ -32,28 +34,43 @@ namespace ColdWarPrototype.Dialogs
         /// </summary>
         /// <param name="gameEvent">The event to display.</param>
         /// <param name="context">Context for executing event effects.</param>
+        /// <param name="localizationManager">Localization manager for translating text keys.</param>
         /// <param name="onCompleted">Callback to invoke when player selects an option.</param>
         public void ShowEvent(
             GameEvent gameEvent,
             EventEvaluationContext context,
+            LocalizationManager localizationManager,
             Action onCompleted
         )
         {
             _currentEvent = gameEvent ?? throw new ArgumentNullException(nameof(gameEvent));
             _currentContext = context ?? throw new ArgumentNullException(nameof(context));
+            _localizationManager =
+                localizationManager ?? throw new ArgumentNullException(nameof(localizationManager));
             _onEventCompleted = onCompleted;
 
-            // Set dialog title and event text
-            this.Text = gameEvent.Title; // TODO: Implement localization lookup
+            // Localize and set dialog title
+            var localizedTitle = _localizationManager.GetString(gameEvent.Title);
+            this.Text = string.Empty; // No window title
+
+            // Localize and set event text
+            var localizedDescription = _localizationManager.GetString(gameEvent.Description);
+            // Replace \n escape sequences with actual newlines
+            localizedDescription = localizedDescription.Replace(
+                "\\n",
+                Environment.NewLine + Environment.NewLine
+            );
 
             EventTextBox.Clear();
-            EventTextBox.AppendText($"{gameEvent.Title}\n\n");
-            EventTextBox.AppendText(gameEvent.Description); // TODO: Localization
+            EventTextBox.SelectionFont = new Font(EventTextBox.Font.FontFamily, 16, FontStyle.Bold);
+            EventTextBox.AppendText($"{localizedTitle}\n\n");
+            EventTextBox.SelectionFont = EventTextBox.Font; // Reset to default
+            EventTextBox.AppendText(localizedDescription);
 
             // Load event picture
             LoadEventPicture(gameEvent.Picture);
 
-            // Setup option buttons
+            // Setup option buttons with localized text
             SetupOptionButtons(gameEvent.Options);
 
             // Show the dialog modally
@@ -109,7 +126,9 @@ namespace ColdWarPrototype.Dialogs
             {
                 if (i < options.Count)
                 {
-                    buttons[i].Text = options[i].Name; // TODO: Localization
+                    var localizedName =
+                        _localizationManager?.GetString(options[i].Name) ?? options[i].Name;
+                    buttons[i].Text = localizedName;
                     buttons[i].Tag = options[i];
                     buttons[i].Visible = true;
                 }
@@ -145,6 +164,7 @@ namespace ColdWarPrototype.Dialogs
             // Clear state
             _currentEvent = null;
             _currentContext = null;
+            _localizationManager = null;
             _onEventCompleted = null;
         }
     }

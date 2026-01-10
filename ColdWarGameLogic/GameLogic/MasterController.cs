@@ -4,6 +4,7 @@ using ColdWarGameLogic.GameWorld;
 using OpenGSGLibrary.Events;
 using OpenGSGLibrary.GameDataManager;
 using OpenGSGLibrary.GameLogic;
+using OpenGSGLibrary.Localization;
 
 namespace ColdWarGameLogic.GameLogic
 {
@@ -14,6 +15,8 @@ namespace ColdWarGameLogic.GameLogic
         public WorldDataManager WorldData { get; } = new WorldDataManager();
         public TickHandler TickHandler { get; } = new TickHandler();
         public EventManager EventManager { get; private set; } = new EventManager();
+        public LocalizationManager LocalizationManager { get; private set; } =
+            new LocalizationManager();
 
         private readonly WorldLoader<
             CwpProvince,
@@ -27,8 +30,9 @@ namespace ColdWarGameLogic.GameLogic
             var startState = _worldLoader.CreateStartState(GAMEDATA_PATH);
             TickHandler.ConnectProvinceEventHandlers(startState);
 
-            // Store event manager for access during gameplay
+            // Store event manager and localization manager for access during gameplay
             EventManager = _worldLoader.EventManager;
+            LocalizationManager = _worldLoader.LocalizationManager;
 
             // Configure tick handler with event manager and start date
             TickHandler.SetEventManager(EventManager);

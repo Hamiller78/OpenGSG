@@ -137,6 +137,7 @@ namespace ColdWarPrototype2
             eventDialog.ShowEvent(
                 e.Event,
                 e.Context,
+                gameController_.LocalizationManager,
                 () => {
                     // Event completed callback - can resume game or process queue
                 }
