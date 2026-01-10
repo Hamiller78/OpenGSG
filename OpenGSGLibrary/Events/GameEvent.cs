@@ -59,8 +59,21 @@ namespace OpenGSGLibrary.Events
 
         /// <summary>
         /// Mean time to happen in days (for random event triggering).
+        /// 0 means the event fires immediately when triggers are met.
+        /// Higher values mean lower probability per day.
         /// </summary>
         public int MeanTimeToHappenDays { get; set; } = 0;
+
+        /// <summary>
+        /// The game tick (day) when triggers were first met.
+        /// Used for MTTH calculation. -1 means triggers not yet met.
+        /// </summary>
+        private long _triggerMetTick = -1;
+
+        /// <summary>
+        /// Random number generator for MTTH rolls (static for consistent seeding).
+        /// </summary>
+        private static readonly Random _random = new Random();
 
         /// <summary>
         /// Sets the event properties from parsed data.
@@ -368,6 +381,55 @@ namespace OpenGSGLibrary.Events
         }
 
         /// <summary>
+        /// Evaluates whether this event should fire, considering both triggers and MTTH.
+        /// Call this each tick when triggers are met to determine if the event fires.
+        /// </summary>
+        /// <param name="context">Game state context for evaluating triggers.</param>
+        /// <param name="currentTick">Current game tick (day).</param>
+        /// <returns>True if the event should fire this tick.</returns>
+        public virtual bool ShouldFire(object context, long currentTick)
+        {
+            // Check if triggers are met
+            if (!EvaluateTriggers(context))
+            {
+                // Triggers not met - reset MTTH tracking
+                _triggerMetTick = -1;
+                return false;
+            }
+
+            // Triggers are met
+
+            // If no MTTH, fire immediately
+            if (MeanTimeToHappenDays <= 0)
+            {
+                return true;
+            }
+
+            // Track when triggers were first met
+            if (_triggerMetTick == -1)
+            {
+                _triggerMetTick = currentTick;
+            }
+
+            // Calculate probability to fire this tick
+            // Formula: probability = 1 / MTTH per day
+            // This gives approximately MTTH days average time to happen
+            double fireChance = 1.0 / MeanTimeToHappenDays;
+
+            // Roll the dice
+            return _random.NextDouble() < fireChance;
+        }
+
+        /// <summary>
+        /// Resets the MTTH tracking for this event.
+        /// Called when the event fires or when it should be reset.
+        /// </summary>
+        public void ResetMTTH()
+        {
+            _triggerMetTick = -1;
+        }
+
+        /// <summary>
         /// Executes the event, typically presenting it to the player or auto-executing if hidden.
         /// </summary>
         /// <param name="context">Game state context.</param>
@@ -377,6 +439,9 @@ namespace OpenGSGLibrary.Events
             {
                 HasTriggered = true;
             }
+
+            // Reset MTTH tracking after firing
+            ResetMTTH();
 
             if (Hidden && Options.Count > 0)
             {

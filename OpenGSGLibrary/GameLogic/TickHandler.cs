@@ -148,6 +148,7 @@ namespace OpenGSGLibrary.GameLogic
                 return;
 
             var currentDate = GetCurrentDate();
+            var currentTick = _currentTick;
 
             // Evaluate country events for each country
             var countries = _currentWorldState.GetCountryTable();
@@ -164,18 +165,33 @@ namespace OpenGSGLibrary.GameLogic
                         EventManager = _eventManager,
                     };
 
-                    var triggeredEvents = _eventManager.GetTriggeredCountryEvents(context);
-                    foreach (var evt in triggeredEvents)
+                    var countryEvents = _eventManager.GetCountryEvents();
+                    foreach (var evt in countryEvents)
                     {
-                        // Fire event (present to player or auto-execute if hidden)
-                        if (evt.Hidden)
+                        // Use ShouldFire which considers both triggers and MTTH
+                        if (evt.ShouldFire(context, currentTick))
                         {
-                            evt.Fire(context);
-                        }
-                        else
-                        {
-                            // Raise event for UI to display
-                            EventTriggered?.Invoke(this, new EventTriggeredArgs(evt, context));
+                            // Mark event as triggered (handles trigger_only_once)
+                            if (evt.TriggerOnlyOnce)
+                            {
+                                evt.HasTriggered = true;
+                            }
+
+                            // Fire event (present to player or auto-execute if hidden)
+                            if (evt.Hidden)
+                            {
+                                // Auto-execute for hidden events
+                                if (evt.Options.Count > 0)
+                                {
+                                    evt.Options[0].Execute(context);
+                                }
+                                evt.ResetMTTH();
+                            }
+                            else
+                            {
+                                // Raise event for UI to display
+                                EventTriggered?.Invoke(this, new EventTriggeredArgs(evt, context));
+                            }
                         }
                     }
                 }
@@ -190,16 +206,31 @@ namespace OpenGSGLibrary.GameLogic
                 EventManager = _eventManager,
             };
 
-            var triggeredNews = _eventManager.GetTriggeredNewsEvents(newsContext);
-            foreach (var evt in triggeredNews)
+            var newsEvents = _eventManager.GetNewsEvents();
+            foreach (var evt in newsEvents)
             {
-                if (evt.Hidden)
+                // Use ShouldFire which considers both triggers and MTTH
+                if (evt.ShouldFire(newsContext, currentTick))
                 {
-                    evt.Fire(newsContext);
-                }
-                else
-                {
-                    EventTriggered?.Invoke(this, new EventTriggeredArgs(evt, newsContext));
+                    // Mark event as triggered (handles trigger_only_once)
+                    if (evt.TriggerOnlyOnce)
+                    {
+                        evt.HasTriggered = true;
+                    }
+
+                    if (evt.Hidden)
+                    {
+                        // Auto-execute for hidden events
+                        if (evt.Options.Count > 0)
+                        {
+                            evt.Options[0].Execute(newsContext);
+                        }
+                        evt.ResetMTTH();
+                    }
+                    else
+                    {
+                        EventTriggered?.Invoke(this, new EventTriggeredArgs(evt, newsContext));
+                    }
                 }
             }
         }
