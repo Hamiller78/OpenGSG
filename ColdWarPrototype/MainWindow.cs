@@ -23,8 +23,6 @@ namespace ColdWarPrototype2
         // Controllers
         private MouseController mouseController_;
 
-        private EventDialog? eventDialog_;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -67,16 +65,6 @@ namespace ColdWarPrototype2
                 var worldMapView = new WorldMap(this);
                 worldMapView.SetSourceProvinceMap(provinceMap);
                 worldMapView.UpdateCountryMap(gameController_.TickHandler.GetState());
-
-                // Create event dialog
-                eventDialog_ = new EventDialog();
-                eventDialog_.Visible = false;
-                eventDialog_.Location = new Point(
-                    (this.ClientSize.Width - eventDialog_.Width) / 2,
-                    (this.ClientSize.Height - eventDialog_.Height) / 2
-                );
-                this.Controls.Add(eventDialog_);
-                eventDialog_.BringToFront();
 
                 // Subscribe to event triggers
                 TickHandler.EventTriggered += TickHandler_EventTriggered;
@@ -144,17 +132,15 @@ namespace ColdWarPrototype2
 
         private void TickHandler_EventTriggered(object? sender, EventTriggeredArgs e)
         {
-            // Display event to player
-            if (eventDialog_ != null)
-            {
-                eventDialog_.ShowEvent(
-                    e.Event,
-                    e.Context,
-                    () => {
-                        // Event completed callback - can resume game or process queue
-                    }
-                );
-            }
+            // Create and show event dialog as a modal dialog
+            using var eventDialog = new EventDialog();
+            eventDialog.ShowEvent(
+                e.Event,
+                e.Context,
+                () => {
+                    // Event completed callback - can resume game or process queue
+                }
+            );
         }
     }
 }

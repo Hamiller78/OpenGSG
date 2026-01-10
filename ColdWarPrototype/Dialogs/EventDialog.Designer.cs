@@ -93,7 +93,7 @@
             Controls.Add(EventTextBox);
             Controls.Add(EventPictureBox);
             Name = "EventDialog";
-            Size = new Size(1504, 644);
+            Size = new Size(1502, 642);
             ((System.ComponentModel.ISupportInitialize)EventPictureBox).EndInit();
             ResumeLayout(false);
         }

@@ -11,7 +11,7 @@ namespace ColdWarPrototype.Dialogs
     /// WinForms dialog for displaying game events to the player.
     /// Acts as an adapter between GameEvent model and the UI controls.
     /// </summary>
-    public partial class EventDialog : UserControl
+    public partial class EventDialog : Form
     {
         private GameEvent? _currentEvent;
         private EventEvaluationContext? _currentContext;
@@ -25,11 +25,6 @@ namespace ColdWarPrototype.Dialogs
             button1.Visible = false;
             button2.Visible = false;
             button3.Visible = false;
-
-            // Wire up event handlers
-            button1.Click += OptionButton_Click;
-            button2.Click += OptionButton_Click;
-            button3.Click += OptionButton_Click;
         }
 
         /// <summary>
@@ -48,11 +43,12 @@ namespace ColdWarPrototype.Dialogs
             _currentContext = context ?? throw new ArgumentNullException(nameof(context));
             _onEventCompleted = onCompleted;
 
-            // Set event title and description
-            // TODO: Implement localization lookup for Title/Description keys
+            // Set dialog title and event text
+            this.Text = gameEvent.Title; // TODO: Implement localization lookup
+
             EventTextBox.Clear();
             EventTextBox.AppendText($"{gameEvent.Title}\n\n");
-            EventTextBox.AppendText(gameEvent.Description);
+            EventTextBox.AppendText(gameEvent.Description); // TODO: Localization
 
             // Load event picture
             LoadEventPicture(gameEvent.Picture);
@@ -60,9 +56,8 @@ namespace ColdWarPrototype.Dialogs
             // Setup option buttons
             SetupOptionButtons(gameEvent.Options);
 
-            // Show the dialog
-            this.Visible = true;
-            this.BringToFront();
+            // Show the dialog modally
+            this.ShowDialog();
         }
 
         /// <summary>
@@ -140,8 +135,9 @@ namespace ColdWarPrototype.Dialogs
             // Execute the selected option's effects
             option.Execute(_currentContext);
 
-            // Hide the dialog
-            this.Visible = false;
+            // Close the dialog
+            this.DialogResult = DialogResult.OK;
+            this.Close();
 
             // Notify completion
             _onEventCompleted?.Invoke();
