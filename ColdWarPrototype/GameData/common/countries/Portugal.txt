@@ -1,6 +1,2 @@
 color = { 277  255  135 }
 tag = POR
-long_name = "Portuguese Republic"
-government = dictatorship
-allegiance = USA
-leader = "António de Oliveira Salazar"

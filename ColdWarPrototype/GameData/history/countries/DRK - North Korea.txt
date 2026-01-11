@@ -1,0 +1,4 @@
+long_name = "Democratic People's Republic of Korea"
+government = communist
+allegiance = PRC
+leader = "Kim Il Sung"

@@ -1,0 +1,3 @@
+long_name = "Republic of China"
+government = authoritarian
+leader = "Chiang Kai-shek"

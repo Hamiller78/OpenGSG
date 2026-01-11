@@ -132,20 +132,15 @@ namespace OpenGSGLibrary.GameDataManager
                 try
                 {
                     using var rawFile = File.OpenText(textFile);
-
-                    // Use the Parser.Scanner and Parser.Parser types which are included in the project
                     var scanner = new Scanner();
                     var parser = new Parser();
-
                     var tokenStream = scanner.Scan(rawFile);
-                    var nextParseData = parser.Parse(tokenStream);
-                    if (nextParseData != null)
-                    {
-                        dictionaryOfParsedData.Add(
-                            Path.GetFileNameWithoutExtension(textFile),
-                            nextParseData
-                        );
-                    }
+                    var parsedData = parser.Parse(tokenStream);
+
+                    dictionaryOfParsedData.Add(
+                        Path.GetFileNameWithoutExtension(textFile),
+                        parsedData
+                    );
                 }
                 catch (Exception)
                 {
@@ -172,6 +167,46 @@ namespace OpenGSGLibrary.GameDataManager
                 nameParts[i] = nameParts[i].Trim();
 
             return nameParts;
+        }
+
+        /// <summary>
+        /// Loads and parses files from a folder without creating objects.
+        /// Returns a dictionary of parsed data keyed by the specified key field.
+        /// </summary>
+        public static Dictionary<
+            string,
+            (string fileName, ILookup<string, object> data)
+        > LoadParsedDataFromFolder(string folderPath, string keyField)
+        {
+            var result = new Dictionary<string, (string, ILookup<string, object>)>();
+            var files = Directory.GetFiles(folderPath, "*.txt");
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    using var rawFile = File.OpenText(file);
+                    var scanner = new Scanner();
+                    var parser = new Parser();
+                    var tokenStream = scanner.Scan(rawFile);
+                    var parsedData = parser.Parse(tokenStream);
+
+                    if (parsedData.Contains(keyField))
+                    {
+                        var key = parsedData[keyField].Single()?.ToString();
+                        if (!string.IsNullOrEmpty(key))
+                        {
+                            result[key] = (file, parsedData);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    // Ignore parse errors, consistent with ParseFolder behavior
+                }
+            }
+
+            return result;
         }
     }
 }

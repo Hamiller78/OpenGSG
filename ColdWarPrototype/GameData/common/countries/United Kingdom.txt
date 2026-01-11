@@ -1,5 +1,2 @@
 color = { 119  122  255 }
 tag = UK
-long_name = "United Kingdom of Great Britain and Northern Ireland"
-government = democratic
-leader = "Clement Attlee"

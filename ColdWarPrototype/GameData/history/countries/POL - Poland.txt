@@ -1,0 +1,4 @@
+long_name = "Polish People's Republic"
+government = communist
+allegiance = USSR
+leader = "Bolesław Bierut"

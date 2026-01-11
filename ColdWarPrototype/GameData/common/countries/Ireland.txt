@@ -1,6 +1,2 @@
 color = { 0  255  0 }
 tag = IRE
-long_name = "Irish Republic"
-government = democratic
-allegiance = USA
-leader = "John A. Costello"

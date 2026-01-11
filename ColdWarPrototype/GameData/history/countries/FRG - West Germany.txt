@@ -1,0 +1,4 @@
+long_name = "Federal Republic of Germany"
+government = democratic
+allegiance = USA
+leader = "Konrad Adenauer"

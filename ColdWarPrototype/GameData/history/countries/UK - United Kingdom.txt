@@ -1,0 +1,3 @@
+long_name = "United Kingdom of Great Britain and Northern Ireland"
+government = democratic
+leader = "Clement Attlee"

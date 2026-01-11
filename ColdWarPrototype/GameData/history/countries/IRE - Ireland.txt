@@ -1,0 +1,4 @@
+long_name = "Irish Republic"
+government = democratic
+allegiance = USA
+leader = "John A. Costello"

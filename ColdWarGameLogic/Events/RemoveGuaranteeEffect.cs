@@ -1,4 +1,3 @@
-using System;
 using ColdWarGameLogic.GameWorld;
 using OpenGSGLibrary.Events;
 using OpenGSGLibrary.GameDataManager;
@@ -25,11 +24,10 @@ namespace ColdWarGameLogic.Events
             if (!countries.TryGetValue(evalContext.CurrentCountryTag, out var country))
                 return;
 
-            if (country is not CwpCountry cwpCountry)
-                return;
-
-            // TODO: Implement guarantee system in CwpCountry class
-            // cwpCountry.RemoveGuarantee(TargetCountryTag);
+            if (country is CwpCountry cwpCountry)
+            {
+                cwpCountry.RemoveGuarantee(TargetCountryTag);
+            }
         }
     }
 }

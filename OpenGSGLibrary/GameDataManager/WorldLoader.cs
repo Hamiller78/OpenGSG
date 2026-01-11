@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using OpenGSGLibrary.Events;
+using OpenGSGLibrary.GameFilesParser;
 using OpenGSGLibrary.Localization;
 using OpenGSGLibrary.Military;
 using OpenGSGLibrary.Tools;
@@ -114,16 +115,101 @@ namespace OpenGSGLibrary.GameDataManager
         {
             try
             {
+                // Load basic country definitions from common/countries
                 _countryTable = GameObjectFactory.FromFolder<string, Country, TCountry>(
                     Path.Combine(gamedataPath, "common\\countries"),
                     "tag"
                 );
+
+                // Load and merge historical data from history/countries
+                LoadCountryHistoricalData(gamedataPath);
             }
             catch (Exception)
             {
                 GlobalLogger
                     .GetInstance()
                     .WriteLine(LogLevel.Fatal, "Error while loading country data.");
+                throw;
+            }
+        }
+
+        private void LoadCountryHistoricalData(string gamedataPath)
+        {
+            try
+            {
+                var historyPath = Path.Combine(gamedataPath, "history\\countries");
+
+                if (!Directory.Exists(historyPath))
+                {
+                    GlobalLogger
+                        .GetInstance()
+                        .WriteLine(
+                            LogLevel.Warning,
+                            $"Country history directory not found: {historyPath}"
+                        );
+                    return;
+                }
+
+                var historyFiles = Directory.GetFiles(historyPath, "*.txt");
+                var loadedCount = 0;
+
+                foreach (var file in historyFiles)
+                {
+                    try
+                    {
+                        // Extract tag from filename: "USA - United States.txt" -> "USA"
+                        var filenameParts = GameObjectFactory.ExtractFromFilename(file);
+                        if (filenameParts.Length == 0)
+                            continue;
+
+                        var tag = filenameParts[0].Trim();
+
+                        if (_countryTable.TryGetValue(tag, out var country))
+                        {
+                            // Parse the historical data file
+                            using var rawFile = File.OpenText(file);
+                            var scanner = new Scanner();
+                            var parser = new Parser();
+                            var tokenStream = scanner.Scan(rawFile);
+                            var parsedData = parser.Parse(tokenStream);
+
+                            // Call SetData again to merge historical properties
+                            country.SetData(file, parsedData);
+                            loadedCount++;
+                        }
+                        else
+                        {
+                            GlobalLogger
+                                .GetInstance()
+                                .WriteLine(
+                                    LogLevel.Warning,
+                                    $"Historical data file {Path.GetFileName(file)} references unknown country tag: {tag}"
+                                );
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        GlobalLogger
+                            .GetInstance()
+                            .WriteLine(
+                                LogLevel.Err,
+                                $"Error loading historical data from {Path.GetFileName(file)}: {ex.Message}"
+                            );
+                    }
+                }
+
+                GlobalLogger
+                    .GetInstance()
+                    .WriteLine(
+                        LogLevel.Info,
+                        $"Loaded historical data for {loadedCount} country/countries"
+                    );
+            }
+            catch (Exception)
+            {
+                GlobalLogger
+                    .GetInstance()
+                    .WriteLine(LogLevel.Fatal, "Error while loading country history data.");
                 throw;
             }
         }

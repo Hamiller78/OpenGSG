@@ -1,6 +1,2 @@
 color = { 250  250  128 }
 tag = FRG
-long_name = "Federal Republic of Germany"
-government = democratic
-allegiance = USA
-leader = "Konrad Adenauer"

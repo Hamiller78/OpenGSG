@@ -1,0 +1,4 @@
+long_name = "French Republic"
+government = democratic
+allegiance = USA
+leader = "Vincent Auriol"

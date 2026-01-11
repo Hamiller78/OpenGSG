@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using OpenGSGLibrary.Diplomacy;
 
 namespace OpenGSGLibrary.GameDataManager
 {
@@ -15,19 +16,39 @@ namespace OpenGSGLibrary.GameDataManager
         public IEconomy Economy { get; set; } = default!;
         public Tuple<byte, byte, byte> Color { get; private set; } = default!;
 
+        /// <summary>
+        /// List of diplomatic relations this country has with other countries.
+        /// </summary>
+        public List<DiplomaticRelation> DiplomaticRelations { get; } = new();
+
         public override void SetData(string fileName, ILookup<string, object> parsedData)
         {
             base.SetData(fileName, parsedData);
 
-            Name = Path.GetFileNameWithoutExtension(fileName);
+            // Only set name from filename if not already set (for initial load from common/countries)
+            if (string.IsNullOrEmpty(Name))
+            {
+                Name = Path.GetFileNameWithoutExtension(fileName);
+            }
 
-            // parsedData is expected to contain entries like "tag" and "color" similar to the original VB Lookup
-            Tag = parsedData["tag"].Single()?.ToString();
-            var colorList = (List<int>)parsedData["color"].Single();
-            byte rValue = (byte)colorList[0];
-            byte gValue = (byte)colorList[1];
-            byte bValue = (byte)colorList[2];
-            Color = new Tuple<byte, byte, byte>(rValue, gValue, bValue);
+            // Only set Tag if present in the file (for initial load from common/countries)
+            if (parsedData.Contains("tag"))
+            {
+                Tag = parsedData["tag"].Single()?.ToString() ?? string.Empty;
+            }
+
+            // Only set Color if present in the file (for initial load from common/countries)
+            if (parsedData.Contains("color"))
+            {
+                var colorList = (List<int>)parsedData["color"].Single();
+                if (colorList != null && colorList.Count >= 3)
+                {
+                    byte rValue = (byte)colorList[0];
+                    byte gValue = (byte)colorList[1];
+                    byte bValue = (byte)colorList[2];
+                    Color = new Tuple<byte, byte, byte>(rValue, gValue, bValue);
+                }
+            }
         }
 
         public virtual void LoadFlags(string flagPath)
@@ -48,6 +69,33 @@ namespace OpenGSGLibrary.GameDataManager
             Provinces.Clear();
             var provinceTable = state.GetProvinceTable();
             Provinces.AddRange(provinceTable.Values.Where(p => p.Owner == Tag));
+        }
+
+        /// <summary>
+        /// Checks if this country is at war with the specified country.
+        /// </summary>
+        public bool IsAtWarWith(string countryTag, DateTime currentDate)
+        {
+            return DiplomaticRelations
+                .OfType<WarRelation>()
+                .Any(w => w.ToCountryTag == countryTag && w.IsActive(currentDate));
+        }
+
+        /// <summary>
+        /// Checks if this country has any active wars.
+        /// </summary>
+        public bool IsAtWar(DateTime currentDate)
+        {
+            return DiplomaticRelations.OfType<WarRelation>().Any(w => w.IsActive(currentDate));
+        }
+
+        /// <summary>
+        /// Gets all diplomatic relations of a specific type.
+        /// </summary>
+        public IEnumerable<T> GetRelationsOfType<T>(DateTime currentDate)
+            where T : DiplomaticRelation
+        {
+            return DiplomaticRelations.OfType<T>().Where(r => r.IsActive(currentDate));
         }
     }
 }
