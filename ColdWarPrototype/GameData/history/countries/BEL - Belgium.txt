@@ -1,0 +1,4 @@
+long_name = "Kingdom of Belgium"
+government = democratic
+allegiance = BEL
+leader = "Pierre Harmel"

@@ -1,0 +1,3 @@
+long_name = "Union of Soviet Socialist Republics"
+government = communist
+leader = "Joseph Stalin"

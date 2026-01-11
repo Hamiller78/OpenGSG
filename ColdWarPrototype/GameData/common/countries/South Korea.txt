@@ -1,6 +1,2 @@
 color = { 120  50  200 }
 tag = ROK
-long_name = "Republic of Korea"
-government = authoritarian
-allegiance = USA
-leader = "Syngman Rhee"

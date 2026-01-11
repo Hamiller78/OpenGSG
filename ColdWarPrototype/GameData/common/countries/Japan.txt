@@ -1,6 +1,2 @@
 color = { 255  153  153 }
 tag = JPN
-long_name = "Japan"
-government = democratic
-allegiance = USA
-leader = "Shigeru Yoshida"

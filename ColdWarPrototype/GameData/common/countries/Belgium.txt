@@ -1,6 +1,2 @@
 color = { 200  15  240 }
 tag = BEL
-long_name = "Kingdom of Belgium"
-government = democratic
-allegiance = USA
-leader = "Pierre Harmel"

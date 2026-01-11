@@ -1,6 +1,2 @@
 color = { 255  128  0 }
 tag = NED
-long_name = "Kingdom of the Netherlands"
-government = democratic
-allegiance = USA
-leader = "Willem Drees"

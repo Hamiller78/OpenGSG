@@ -1,6 +1,2 @@
 color = { 0  0  255 }
 tag = FRA
-long_name = "French Republic"
-government = democratic
-allegiance = USA
-leader = "Vincent Auriol"

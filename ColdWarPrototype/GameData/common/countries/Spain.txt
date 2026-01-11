@@ -1,6 +1,2 @@
 color = { 255  249  81 }
 tag = ESP
-long_name = "Spanish State"
-government = dictatorship
-allegiance = USA
-leader = "Francisco Franco"

@@ -1,0 +1,4 @@
+long_name = "German Democratic Republic"
+government = communist
+allegiance = USSR
+leader = "Wilhelm Pieck"

@@ -1,0 +1,4 @@
+long_name = "Republic of Korea"
+government = authoritarian
+allegiance = USA
+leader = "Syngman Rhee"
