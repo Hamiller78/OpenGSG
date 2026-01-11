@@ -19,15 +19,30 @@ namespace OpenGSGLibrary.GameDataManager
         {
             base.SetData(fileName, parsedData);
 
-            Name = Path.GetFileNameWithoutExtension(fileName);
+            // Only set name from filename if not already set (for initial load from common/countries)
+            if (string.IsNullOrEmpty(Name))
+            {
+                Name = Path.GetFileNameWithoutExtension(fileName);
+            }
 
-            // parsedData is expected to contain entries like "tag" and "color" similar to the original VB Lookup
-            Tag = parsedData["tag"].Single()?.ToString();
-            var colorList = (List<int>)parsedData["color"].Single();
-            byte rValue = (byte)colorList[0];
-            byte gValue = (byte)colorList[1];
-            byte bValue = (byte)colorList[2];
-            Color = new Tuple<byte, byte, byte>(rValue, gValue, bValue);
+            // Only set Tag if present in the file (for initial load from common/countries)
+            if (parsedData.Contains("tag"))
+            {
+                Tag = parsedData["tag"].Single()?.ToString() ?? string.Empty;
+            }
+
+            // Only set Color if present in the file (for initial load from common/countries)
+            if (parsedData.Contains("color"))
+            {
+                var colorList = (List<int>)parsedData["color"].Single();
+                if (colorList != null && colorList.Count >= 3)
+                {
+                    byte rValue = (byte)colorList[0];
+                    byte gValue = (byte)colorList[1];
+                    byte bValue = (byte)colorList[2];
+                    Color = new Tuple<byte, byte, byte>(rValue, gValue, bValue);
+                }
+            }
         }
 
         public virtual void LoadFlags(string flagPath)

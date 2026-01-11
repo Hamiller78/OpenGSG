@@ -24,19 +24,29 @@ namespace ColdWarGameLogic.GameWorld
         {
             base.SetData(fileName, parsedData);
 
-            FullName = parsedData["long_name"].Single()?.ToString() ?? string.Empty;
-            Government = parsedData["government"].Single()?.ToString() ?? string.Empty;
+            // Only load historical data if present (supports split loading from common + history)
+            if (parsedData.Contains("long_name"))
+            {
+                FullName = parsedData["long_name"].Single()?.ToString() ?? string.Empty;
+            }
+
+            if (parsedData.Contains("government"))
+            {
+                Government = parsedData["government"].Single()?.ToString() ?? string.Empty;
+            }
+
             if (parsedData.Contains("allegiance"))
             {
                 Allegiance = parsedData["allegiance"].Single()?.ToString() ?? string.Empty;
             }
-            else
-            {
-                Allegiance = string.Empty;
-            }
-            Leader = parsedData["leader"].Single()?.ToString() ?? string.Empty;
 
-            Economy = new CwpEconomy(this);
+            if (parsedData.Contains("leader"))
+            {
+                Leader = parsedData["leader"].Single()?.ToString() ?? string.Empty;
+            }
+
+            // Initialize economy if not already present
+            Economy ??= new CwpEconomy(this);
         }
 
         public override void OnTickDone(object sender, EventArgs e)
