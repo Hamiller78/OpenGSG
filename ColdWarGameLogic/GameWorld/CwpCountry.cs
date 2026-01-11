@@ -47,8 +47,79 @@ namespace ColdWarGameLogic.GameWorld
                 Leader = parsedData["leader"].Single()?.ToString() ?? string.Empty;
             }
 
+            // Load diplomatic relations
+            LoadDiplomaticRelations(parsedData);
+
             // Initialize economy if not already present
             Economy ??= new CwpEconomy(this);
+        }
+
+        /// <summary>
+        /// Loads diplomatic relations from parsed country data.
+        /// Supports Paradox-style keywords: give_guarantee, declare_war, create_alliance
+        /// </summary>
+        private void LoadDiplomaticRelations(ILookup<string, object> parsedData)
+        {
+            // Load guarantees: give_guarantee = ROK
+            if (parsedData.Contains("give_guarantee"))
+            {
+                foreach (var target in parsedData["give_guarantee"])
+                {
+                    var targetTag = target?.ToString();
+                    if (!string.IsNullOrEmpty(targetTag))
+                    {
+                        var guarantee = new GuaranteeRelation
+                        {
+                            FromCountryTag = this.Tag,
+                            ToCountryTag = targetTag,
+                        };
+                        DiplomaticRelations.Add(guarantee);
+                    }
+                }
+            }
+
+            // Load wars: declare_war = { target = DRK }
+            if (parsedData.Contains("declare_war"))
+            {
+                foreach (var warData in parsedData["declare_war"])
+                {
+                    if (
+                        warData is ILookup<string, object> warLookup
+                        && warLookup.Contains("target")
+                    )
+                    {
+                        var targetTag = warLookup["target"].Single()?.ToString();
+                        if (!string.IsNullOrEmpty(targetTag))
+                        {
+                            var war = new WarRelation
+                            {
+                                FromCountryTag = this.Tag,
+                                ToCountryTag = targetTag,
+                                Aggressor = this.Tag,
+                            };
+                            DiplomaticRelations.Add(war);
+                        }
+                    }
+                }
+            }
+
+            // Load alliances: create_alliance = FRA
+            if (parsedData.Contains("create_alliance"))
+            {
+                foreach (var target in parsedData["create_alliance"])
+                {
+                    var targetTag = target?.ToString();
+                    if (!string.IsNullOrEmpty(targetTag))
+                    {
+                        var alliance = new AllianceRelation
+                        {
+                            FromCountryTag = this.Tag,
+                            ToCountryTag = targetTag,
+                        };
+                        DiplomaticRelations.Add(alliance);
+                    }
+                }
+            }
         }
 
         public override void OnTickDone(object sender, EventArgs e)
@@ -60,7 +131,7 @@ namespace ColdWarGameLogic.GameWorld
         /// <summary>
         /// Adds a guarantee to another country.
         /// </summary>
-        public void AddGuarantee(string targetCountryTag, DateTime startDate)
+        public void AddGuarantee(string targetCountryTag, DateTime? startDate = null)
         {
             var guarantee = new GuaranteeRelation
             {
