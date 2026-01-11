@@ -37,9 +37,9 @@ news_event = {
         days = 180
     }
 
-    immediate = {
-        USSR = {
-            add_prestige = -5
-        }
-    }
+#    immediate = {
+#        USSR = {
+#            add_prestige = -5
+#        }
+#    }
 }
