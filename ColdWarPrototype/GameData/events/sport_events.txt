@@ -19,3 +19,27 @@ news_event = {
         date = 1950.07.16
     }
 }
+
+news_event = {
+    id = nureyev_defection.1
+    title = nureyev_defection.1.t
+    desc = nureyev_defection.1.d
+    picture = nureyev_dancing
+
+    trigger_only_once = yes
+
+    trigger = {
+        date >= 1961.01.01
+        date < 1962.01.01
+    }
+
+    mean_time_to_happen = {
+        days = 180
+    }
+
+    immediate = {
+        USSR = {
+            add_prestige = -5
+        }
+    }
+}
