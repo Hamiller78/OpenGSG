@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using OpenGSGLibrary.Diplomacy;
 
 namespace OpenGSGLibrary.GameDataManager
 {
@@ -14,6 +15,11 @@ namespace OpenGSGLibrary.GameDataManager
         public List<Province> Provinces { get; } = new();
         public IEconomy Economy { get; set; } = default!;
         public Tuple<byte, byte, byte> Color { get; private set; } = default!;
+
+        /// <summary>
+        /// List of diplomatic relations this country has with other countries.
+        /// </summary>
+        public List<DiplomaticRelation> DiplomaticRelations { get; } = new();
 
         public override void SetData(string fileName, ILookup<string, object> parsedData)
         {
@@ -63,6 +69,33 @@ namespace OpenGSGLibrary.GameDataManager
             Provinces.Clear();
             var provinceTable = state.GetProvinceTable();
             Provinces.AddRange(provinceTable.Values.Where(p => p.Owner == Tag));
+        }
+
+        /// <summary>
+        /// Checks if this country is at war with the specified country.
+        /// </summary>
+        public bool IsAtWarWith(string countryTag, DateTime currentDate)
+        {
+            return DiplomaticRelations
+                .OfType<WarRelation>()
+                .Any(w => w.ToCountryTag == countryTag && w.IsActive(currentDate));
+        }
+
+        /// <summary>
+        /// Checks if this country has any active wars.
+        /// </summary>
+        public bool IsAtWar(DateTime currentDate)
+        {
+            return DiplomaticRelations.OfType<WarRelation>().Any(w => w.IsActive(currentDate));
+        }
+
+        /// <summary>
+        /// Gets all diplomatic relations of a specific type.
+        /// </summary>
+        public IEnumerable<T> GetRelationsOfType<T>(DateTime currentDate)
+            where T : DiplomaticRelation
+        {
+            return DiplomaticRelations.OfType<T>().Where(r => r.IsActive(currentDate));
         }
     }
 }

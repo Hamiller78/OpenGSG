@@ -1,4 +1,6 @@
-﻿using OpenGSGLibrary.GameDataManager;
+﻿using ColdWarGameLogic.Diplomacy;
+using OpenGSGLibrary.Diplomacy;
+using OpenGSGLibrary.GameDataManager;
 
 namespace ColdWarGameLogic.GameWorld
 {
@@ -53,6 +55,51 @@ namespace ColdWarGameLogic.GameWorld
         {
             Economy.GrowProvinceIndustrialization();
             base.OnTickDone(sender, e);
+        }
+
+        /// <summary>
+        /// Adds a guarantee to another country.
+        /// </summary>
+        public void AddGuarantee(string targetCountryTag, DateTime startDate)
+        {
+            var guarantee = new GuaranteeRelation
+            {
+                FromCountryTag = this.Tag,
+                ToCountryTag = targetCountryTag,
+                StartDate = startDate,
+            };
+            DiplomaticRelations.Add(guarantee);
+        }
+
+        /// <summary>
+        /// Removes a guarantee to a specific country.
+        /// </summary>
+        public void RemoveGuarantee(string targetCountryTag)
+        {
+            DiplomaticRelations.RemoveAll(r =>
+                r is GuaranteeRelation && r.ToCountryTag == targetCountryTag
+            );
+        }
+
+        /// <summary>
+        /// Checks if this country is guaranteeing another country.
+        /// </summary>
+        public bool IsGuaranteeing(string countryTag, DateTime currentDate)
+        {
+            return DiplomaticRelations
+                .OfType<GuaranteeRelation>()
+                .Any(g => g.ToCountryTag == countryTag && g.IsActive(currentDate));
+        }
+
+        /// <summary>
+        /// Gets all countries guaranteed by this country.
+        /// </summary>
+        public IEnumerable<string> GetGuaranteedCountries(DateTime currentDate)
+        {
+            return DiplomaticRelations
+                .OfType<GuaranteeRelation>()
+                .Where(g => g.IsActive(currentDate))
+                .Select(g => g.ToCountryTag);
         }
     }
 }
