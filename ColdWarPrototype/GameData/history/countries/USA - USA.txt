@@ -2,5 +2,5 @@ long_name = "United States of America"
 government = democratic
 leader = "Harry Truman"
 
-give_guarantee = JAP
+give_guarantee = JPN
 give_guarantee = ROK
