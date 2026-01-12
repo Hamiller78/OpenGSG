@@ -1,4 +1,4 @@
-using ColdWarGameLogic.GameLogic;
+﻿using ColdWarGameLogic.GameLogic;
 using ColdWarPrototype.Controller;
 using ColdWarPrototype.Dialogs;
 using ColdWarPrototype.Views;
@@ -19,6 +19,7 @@ namespace ColdWarPrototype2
         private ArmyList? armyBox_;
         private GeoCoordinates coordinateView_;
         private WorldMap worldMapView_;
+        private DiplomacyInfo? diplomacyInfo_;
 
         // Controllers
         private MouseController mouseController_;
@@ -51,11 +52,6 @@ namespace ColdWarPrototype2
                     MapPictureBox.SizeMode = PictureBoxSizeMode.Normal;
                 }
 
-                // create views
-                provinceInfo_ = new ProvinceInfo(this, gameController_);
-                countryInfo_ = new CountryInfo(this, gameController_);
-                armyBox_ = new ArmyList(this);
-
                 MapPictureBox.MouseMove += MapPictureBox_MouseMove;
                 DateButton.Text = gameController_.GetGameDateTime().ToString();
                 DateButton.Click += DateButton_Click;
@@ -81,6 +77,7 @@ namespace ColdWarPrototype2
             countryInfo_ = new CountryInfo(this, gameController_);
             armyBox_ = new ArmyList(this);
             coordinateView_ = new GeoCoordinates(this);
+            diplomacyInfo_ = new DiplomacyInfo(this, gameController_); // ← Add this
 
             worldMapView_ = new WorldMap(this);
             worldMapView_.SetSourceProvinceMap(gameController_.WorldData.ProvinceMap);
@@ -97,7 +94,8 @@ namespace ColdWarPrototype2
         private void SetupEventHandlers()
         {
             mouseController_.HoveredProvinceChanged += provinceInfo_.HandleProvinceChanged;
-            mouseController_.HoveredCountryChanged += countryInfo_.HandleCountryChanged;
+            mouseController_.HoveredCountryChanged += countryInfo_.HandleCountryChanged; // ← Add this back
+            mouseController_.HoveredCountryChanged += diplomacyInfo_.HandleCountryChanged; // ← Keep this
         }
 
         private void MapPictureBox_MouseMove(object? sender, MouseEventArgs e)
@@ -123,6 +121,8 @@ namespace ColdWarPrototype2
             UpdateDateText();
             provinceInfo_?.UpdateCurrentProvince(gameController_.TickHandler.GetState());
             countryInfo_?.UpdateCurrentCountry(gameController_.TickHandler.GetState());
+
+            diplomacyInfo_?.UpdateCurrentCountry(gameController_.TickHandler.GetState());
         }
 
         private void UpdateDateText()

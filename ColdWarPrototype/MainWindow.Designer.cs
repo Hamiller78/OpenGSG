@@ -30,6 +30,9 @@
         public System.Windows.Forms.Label CountryGovernment;
         public System.Windows.Forms.Label CountryAllegiance;
 
+        private Label CoordsLabel;
+        public ListView DiplomacyListView;
+
         /// <summary>
         ///  Clean up any resources being used.
         /// </summary>
@@ -74,6 +77,7 @@
             CountryName = new Label();
             ArmyListBox = new ListBox();
             CoordsLabel = new Label();
+            DiplomacyListView = new ListView();
             ((System.ComponentModel.ISupportInitialize)MapPictureBox).BeginInit();
             MapModeGroup.SuspendLayout();
             ProvinceBox.SuspendLayout();
@@ -148,7 +152,7 @@
             ProvinceBox.Margin = new Padding(4, 3, 4, 3);
             ProvinceBox.Name = "ProvinceBox";
             ProvinceBox.Padding = new Padding(4, 3, 4, 3);
-            ProvinceBox.Size = new Size(261, 180);
+            ProvinceBox.Size = new Size(261, 265);
             ProvinceBox.TabIndex = 4;
             ProvinceBox.TabStop = false;
             ProvinceBox.Text = "Province";
@@ -237,17 +241,18 @@
             // 
             // CountryBox
             // 
+            CountryBox.Controls.Add(DiplomacyListView);
             CountryBox.Controls.Add(FlagPictureBox);
             CountryBox.Controls.Add(CountryProduction);
             CountryBox.Controls.Add(CountryAllegiance);
             CountryBox.Controls.Add(CountryGovernment);
             CountryBox.Controls.Add(CountryLeader);
             CountryBox.Controls.Add(CountryName);
-            CountryBox.Location = new Point(5, 276);
+            CountryBox.Location = new Point(5, 360);
             CountryBox.Margin = new Padding(4, 3, 4, 3);
             CountryBox.Name = "CountryBox";
             CountryBox.Padding = new Padding(4, 3, 4, 3);
-            CountryBox.Size = new Size(261, 107);
+            CountryBox.Size = new Size(261, 315);
             CountryBox.TabIndex = 5;
             CountryBox.TabStop = false;
             CountryBox.Text = "Country";
@@ -295,7 +300,7 @@
             // 
             // ArmyListBox
             // 
-            ArmyListBox.Location = new Point(5, 393);
+            ArmyListBox.Location = new Point(3, 702);
             ArmyListBox.Margin = new Padding(4, 3, 4, 3);
             ArmyListBox.Name = "ArmyListBox";
             ArmyListBox.Size = new Size(259, 229);
@@ -304,11 +309,19 @@
             // CoordsLabel
             // 
             CoordsLabel.AutoSize = true;
-            CoordsLabel.Location = new Point(5, 634);
+            CoordsLabel.Location = new Point(5, 934);
             CoordsLabel.Name = "CoordsLabel";
             CoordsLabel.Size = new Size(33, 15);
             CoordsLabel.TabIndex = 18;
             CoordsLabel.Text = "(0, 0)";
+            // 
+            // diplomacyListView
+            // 
+            DiplomacyListView.Location = new Point(9, 96);
+            DiplomacyListView.Name = "diplomacyListView";
+            DiplomacyListView.Size = new Size(245, 213);
+            DiplomacyListView.TabIndex = 17;
+            DiplomacyListView.UseCompatibleStateImageBehavior = false;
             // 
             // MainWindow
             // 
@@ -337,7 +350,5 @@
         }
 
         #endregion
-
-        private Label CoordsLabel;
     }
 }
