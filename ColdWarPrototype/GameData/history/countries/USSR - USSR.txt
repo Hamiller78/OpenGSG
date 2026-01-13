@@ -1,3 +1,9 @@
 long_name = "Union of Soviet Socialist Republics"
 government = communist
 leader = "Joseph Stalin"
+
+# Opinions (can be asymmetric)
+add_opinion = {
+    target = USA
+    value = -50
+}

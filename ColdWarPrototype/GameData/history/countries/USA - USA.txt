@@ -4,3 +4,14 @@ leader = "Harry Truman"
 
 give_guarantee = JPN
 give_guarantee = ROK
+
+# Opinions
+add_opinion = {
+    target = USSR
+    value = -40
+}
+
+add_opinion = {
+    target = UK
+    value = 80
+}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using ColdWarGameLogic.Diplomacy;
@@ -38,8 +39,9 @@ namespace ColdWarPrototype.Views
             motherWindow_.DiplomacyListView.GridLines = true;
 
             // Add columns
-            motherWindow_.DiplomacyListView.Columns.Add("Type", 80);
-            motherWindow_.DiplomacyListView.Columns.Add("Country", 140);
+            motherWindow_.DiplomacyListView.Columns.Add("Type", 100);
+            motherWindow_.DiplomacyListView.Columns.Add("Country", 120);
+            motherWindow_.DiplomacyListView.Columns.Add("Value", 40); // For opinion values
         }
 
         /// <summary>
@@ -91,11 +93,16 @@ namespace ColdWarPrototype.Views
         }
 
         /// <summary>
-        /// Refreshes the ListView with diplomatic relations.
+        /// Refreshes the ListView with diplomatic relations and opinions.
         /// </summary>
         private void RefreshDiplomacyListView(Country country)
         {
             motherWindow_.DiplomacyListView.Items.Clear();
+
+            // DEBUG
+            System.Diagnostics.Debug.WriteLine($"=== Refreshing diplomacy for {country.Tag} ===");
+            System.Diagnostics.Debug.WriteLine($"Relations: {country.DiplomaticRelations.Count}");
+            System.Diagnostics.Debug.WriteLine($"Opinions: {country.Opinions.Count}");
 
             var currentDate = gameController_.GetGameDateTime();
             var allCountries = gameController_.TickHandler.GetState()?.GetCountryTable();
@@ -103,9 +110,10 @@ namespace ColdWarPrototype.Views
             if (allCountries == null)
                 return;
 
+            // === Section 1: Diplomatic Relations ===
             var relations = new List<(string direction, DiplomaticRelation relation)>();
 
-            // 1. Outgoing relations (this country -> others)
+            // Outgoing relations
             foreach (
                 var relation in country.DiplomaticRelations.Where(r => r.IsActive(currentDate))
             )
@@ -113,7 +121,7 @@ namespace ColdWarPrototype.Views
                 relations.Add(("→", relation));
             }
 
-            // 2. Incoming relations (others -> this country)
+            // Incoming relations
             foreach (var otherCountry in allCountries.Values)
             {
                 if (otherCountry.Tag == country.Tag)
@@ -135,71 +143,154 @@ namespace ColdWarPrototype.Views
                 }
             }
 
-            if (relations.Count == 0)
+            // Sort and display relations
+            if (relations.Count > 0)
+            {
+                var sortedRelations = relations
+                    .OrderBy(r => r.direction == "←" ? 1 : 0)
+                    .ThenBy(r => r.relation.RelationType)
+                    .ThenBy(r => GetOtherCountryTag(r.relation, country.Tag));
+
+                foreach (var (direction, relation) in sortedRelations)
+                {
+                    var relationType = GetRelationTypeDisplay(relation, direction);
+                    var otherCountryTag = GetOtherCountryTag(relation, country.Tag);
+                    var targetCountry = GetCountryDisplayName(otherCountryTag);
+
+                    var item = new ListViewItem(relationType);
+                    item.SubItems.Add(targetCountry);
+                    item.SubItems.Add(""); // No value for relations
+                    item.Tag = relation;
+
+                    // Color-code by relation type
+                    switch (relation)
+                    {
+                        case WarRelation:
+                            item.ForeColor = System.Drawing.Color.Red;
+                            break;
+                        case AllianceRelation:
+                            item.ForeColor = System.Drawing.Color.Green;
+                            break;
+                        case GuaranteeRelation:
+                            item.ForeColor =
+                                direction == "→"
+                                    ? System.Drawing.Color.Blue
+                                    : System.Drawing.Color.Cyan;
+                            break;
+                    }
+
+                    motherWindow_.DiplomacyListView.Items.Add(item);
+                }
+            }
+
+            // === Section 2: Opinions ===
+            var opinions = new List<(string direction, string targetTag, int value)>();
+
+            // Outgoing opinions (this country's opinion of others)
+            foreach (var opinion in country.Opinions)
+            {
+                var value = opinion.Value.GetTotalOpinion(currentDate);
+                if (value != 0) // Only show non-neutral opinions
+                {
+                    opinions.Add(("→", opinion.Key, value));
+                }
+            }
+
+            // Incoming opinions (others' opinion of this country)
+            foreach (var otherCountry in allCountries.Values)
+            {
+                if (otherCountry.Tag == country.Tag)
+                    continue;
+
+                var opinionOfUs = otherCountry.GetOpinionOf(country.Tag, currentDate);
+                if (opinionOfUs != 0)
+                {
+                    opinions.Add(("←", otherCountry.Tag, opinionOfUs));
+                }
+            }
+
+            if (opinions.Count > 0)
+            {
+                // Add separator if we had relations
+                if (relations.Count > 0)
+                {
+                    var separator = new ListViewItem("───────────");
+                    separator.SubItems.Add("");
+                    separator.SubItems.Add("");
+                    motherWindow_.DiplomacyListView.Items.Add(separator);
+                }
+
+                // Sort opinions: outgoing first, then by value (most negative first)
+                var sortedOpinions = opinions
+                    .OrderBy(o => o.direction == "←" ? 1 : 0)
+                    .ThenBy(o => o.value);
+
+                foreach (var (direction, targetTag, value) in sortedOpinions)
+                {
+                    var opinionType = direction == "→" ? "Opinion of" : "Opinion from";
+                    var targetCountry = GetCountryDisplayName(targetTag);
+                    var valueStr = value > 0 ? $"+{value}" : value.ToString();
+
+                    var item = new ListViewItem(opinionType);
+                    item.SubItems.Add(targetCountry);
+                    item.SubItems.Add(valueStr);
+
+                    // Color-code by opinion value
+                    item.ForeColor = GetOpinionColor(value);
+
+                    motherWindow_.DiplomacyListView.Items.Add(item);
+                }
+            }
+
+            // Show "None" if no relations or opinions
+            if (relations.Count == 0 && opinions.Count == 0)
             {
                 var item = new ListViewItem("None");
                 item.SubItems.Add("-");
-                motherWindow_.DiplomacyListView.Items.Add(item);
-                return;
-            }
-
-            // Sort: outgoing first, then by type, then by country
-            var sortedRelations = relations
-                .OrderBy(r => r.direction == "←" ? 1 : 0)
-                .ThenBy(r => r.relation.RelationType)
-                .ThenBy(r => GetOtherCountryTag(r.relation, country.Tag));
-
-            foreach (var (direction, relation) in sortedRelations)
-            {
-                var relationType = GetRelationTypeDisplay(relation, direction);
-                var otherCountryTag = GetOtherCountryTag(relation, country.Tag);
-                var targetCountry = GetCountryDisplayName(otherCountryTag);
-
-                var item = new ListViewItem(relationType);
-                item.SubItems.Add(targetCountry);
-                item.Tag = relation;
-
-                switch (relation)
-                {
-                    case WarRelation:
-                        item.ForeColor = System.Drawing.Color.Red;
-                        break;
-                    case AllianceRelation:
-                        item.ForeColor = System.Drawing.Color.Green;
-                        break;
-                    case GuaranteeRelation:
-                        item.ForeColor =
-                            direction == "→"
-                                ? System.Drawing.Color.Blue
-                                : System.Drawing.Color.Cyan;
-                        break;
-                }
-
+                item.SubItems.Add("");
                 motherWindow_.DiplomacyListView.Items.Add(item);
             }
         }
 
         /// <summary>
-        /// Determines if an incoming relation should be shown (avoids duplicates for bidirectional relations).
+        /// Gets color based on opinion value.
+        /// </summary>
+        private System.Drawing.Color GetOpinionColor(int value)
+        {
+            return value switch
+            {
+                >= 75 => System.Drawing.Color.DarkGreen, // Very friendly
+                >= 50 => System.Drawing.Color.Green, // Friendly
+                >= 25 => System.Drawing.Color.LightGreen, // Positive
+                > 0 => System.Drawing.Color.Gray, // Slightly positive
+                0 => System.Drawing.Color.Black, // Neutral
+                > -25 => System.Drawing.Color.Gray, // Slightly negative
+                > -50 => System.Drawing.Color.Orange, // Negative
+                > -75 => System.Drawing.Color.OrangeRed, // Hostile
+                _ => System
+                    .Drawing
+                    .Color
+                    .Red // Very hostile
+                ,
+            };
+        }
+
+        /// <summary>
+        /// Determines if an incoming relation should be shown.
         /// </summary>
         private bool ShouldShowIncoming(DiplomaticRelation relation, string currentCountryTag)
         {
             return relation switch
             {
-                // Wars and alliances are typically bidirectional, but show incoming anyway
-                // (they should exist in both directions, but we show them from perspective)
                 WarRelation => true,
                 AllianceRelation => true,
-
-                // Guarantees are unidirectional - show incoming
                 GuaranteeRelation => true,
-
                 _ => true,
             };
         }
 
         /// <summary>
-        /// Gets the "other" country in a relation (not the current country).
+        /// Gets the "other" country in a relation.
         /// </summary>
         private string GetOtherCountryTag(DiplomaticRelation relation, string currentCountryTag)
         {
@@ -209,7 +300,7 @@ namespace ColdWarPrototype.Views
         }
 
         /// <summary>
-        /// Gets a display-friendly name for the relation type, with direction indicator.
+        /// Gets a display-friendly name for the relation type.
         /// </summary>
         private string GetRelationTypeDisplay(DiplomaticRelation relation, string direction)
         {
@@ -225,7 +316,7 @@ namespace ColdWarPrototype.Views
         }
 
         /// <summary>
-        /// Gets the display name for a country (full name if available, otherwise tag).
+        /// Gets the display name for a country.
         /// </summary>
         private string GetCountryDisplayName(string countryTag)
         {

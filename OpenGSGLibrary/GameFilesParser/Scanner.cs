@@ -40,6 +40,29 @@ namespace OpenGSGLibrary.GameFilesParser
                         yield return Token.FromString(sval);
                     }
                 }
+                else if (nextChar == '-') // <- Add this check for negative numbers
+                {
+                    // Check if it's a negative number
+                    reader.Read(); // Consume the minus
+                    if (reader.Peek() != -1 && char.IsDigit((char)reader.Peek()))
+                    {
+                        // It's a negative number
+                        var sval = "-" + ScanName(reader);
+                        if (IsSimpleNumber(sval))
+                        {
+                            yield return Token.FromValue((int)double.Parse(sval));
+                        }
+                        else
+                        {
+                            yield return Token.FromString(sval);
+                        }
+                    }
+                    else
+                    {
+                        // It's just a minus sign (shouldn't happen in valid files)
+                        yield return Token.FromKind(Kind.UNKNOWN);
+                    }
+                }
                 else if (nextChar == '"')
                 {
                     yield return Token.FromString(ScanEmbeddedName(reader));

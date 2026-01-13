@@ -21,6 +21,12 @@ namespace OpenGSGLibrary.GameDataManager
         /// </summary>
         public List<DiplomaticRelation> DiplomaticRelations { get; } = new();
 
+        /// <summary>
+        /// Dictionary of opinions this country has toward other countries.
+        /// Key: target country tag, Value: Opinion object
+        /// </summary>
+        public Dictionary<string, Opinion> Opinions { get; } = new();
+
         public override void SetData(string fileName, ILookup<string, object> parsedData)
         {
             base.SetData(fileName, parsedData);
@@ -47,6 +53,36 @@ namespace OpenGSGLibrary.GameDataManager
                     byte gValue = (byte)colorList[1];
                     byte bValue = (byte)colorList[2];
                     Color = new Tuple<byte, byte, byte>(rValue, gValue, bValue);
+                }
+            }
+
+            // Load opinions (generic feature for all GSG games)
+            LoadOpinions(parsedData);
+        }
+
+        /// <summary>
+        /// Loads opinion values from parsed country data.
+        /// Format: add_opinion = { target = TAG value = -50 }
+        /// </summary>
+        protected virtual void LoadOpinions(ILookup<string, object> parsedData)
+        {
+            if (!parsedData.Contains("add_opinion"))
+                return;
+
+            foreach (var opinionData in parsedData["add_opinion"])
+            {
+                if (opinionData is ILookup<string, object> opinionLookup)
+                {
+                    if (!opinionLookup.Contains("target") || !opinionLookup.Contains("value"))
+                        continue;
+
+                    var targetTag = opinionLookup["target"].Single()?.ToString();
+                    var valueStr = opinionLookup["value"].Single()?.ToString();
+
+                    if (!string.IsNullOrEmpty(targetTag) && int.TryParse(valueStr, out var value))
+                    {
+                        SetOpinion(targetTag, value);
+                    }
                 }
             }
         }
@@ -96,6 +132,36 @@ namespace OpenGSGLibrary.GameDataManager
             where T : DiplomaticRelation
         {
             return DiplomaticRelations.OfType<T>().Where(r => r.IsActive(currentDate));
+        }
+
+        /// <summary>
+        /// Gets this country's opinion of another country.
+        /// Returns 0 if no opinion is se   t.
+        /// </summary>
+        public int GetOpinionOf(string countryTag, DateTime currentDate)
+        {
+            if (Opinions.TryGetValue(countryTag, out var opinion))
+            {
+                return opinion.GetTotalOpinion(currentDate);
+            }
+            return 0; // Default neutral opinion
+        }
+
+        /// <summary>
+        /// Sets or updates the base opinion toward another country.
+        /// </summary>
+        public void SetOpinion(string towardCountryTag, int baseValue)
+        {
+            if (!Opinions.ContainsKey(towardCountryTag))
+            {
+                Opinions[towardCountryTag] = new Opinion
+                {
+                    FromCountryTag = this.Tag,
+                    TowardCountryTag = towardCountryTag,
+                };
+            }
+
+            Opinions[towardCountryTag].BaseValue = Math.Clamp(baseValue, -100, 100);
         }
     }
 }
