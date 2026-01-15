@@ -41,6 +41,7 @@ namespace ColdWarPrototype2
                 SetupViews();
                 SetupControllers();
                 SetupEventHandlers();
+                SetupSimulationControls();
 
                 UpdateDateText();
 
@@ -64,6 +65,9 @@ namespace ColdWarPrototype2
 
                 // Subscribe to event triggers
                 TickHandler.EventTriggered += TickHandler_EventTriggered;
+
+                // Subscribe to UI refresh events (updates date display automatically)
+                TickHandler.UIRefreshRequested += TickHandler_UIRefreshRequested;
             }
             catch (Exception ex)
             {
@@ -98,6 +102,33 @@ namespace ColdWarPrototype2
             mouseController_.HoveredCountryChanged += diplomacyInfo_.HandleCountryChanged; // ← Keep this
         }
 
+        private void SetupSimulationControls()
+        {
+            // Setup Play/Pause button
+            PlayPauseButton.Text = "▶ Play";
+            PlayPauseButton.Click += PlayPauseButton_Click;
+
+            // Setup speed dropdown with custom labels
+            SpeedComboBox.Items.AddRange(
+                new object[]
+                {
+                    "1x - Very Slow",
+                    "2x - Slow",
+                    "3x - Normal",
+                    "4x - Fast",
+                    "5x - Very Fast",
+                    "Max Speed",
+                }
+            );
+            SpeedComboBox.SelectedIndex = 2; // Normal
+            SpeedComboBox.SelectedIndexChanged += SpeedComboBox_SelectedIndexChanged;
+
+            // Subscribe to simulation events
+            gameController_.SimulationThread.SimulationStarted += (s, e) => UpdatePlayPauseButton();
+            gameController_.SimulationThread.SimulationPaused += (s, e) => UpdatePlayPauseButton();
+            gameController_.SimulationThread.SimulationResumed += (s, e) => UpdatePlayPauseButton();
+        }
+
         private void MapPictureBox_MouseMove(object? sender, MouseEventArgs e)
         {
             CoordsLabel.Text = $"X: {e.X}, Y: {e.Y}";
@@ -114,15 +145,74 @@ namespace ColdWarPrototype2
             worldMapView_?.SetMapPicture();
         }
 
-        private void DateButton_Click(object? sender, EventArgs e)
+        private void PlayPauseButton_Click(object? sender, EventArgs e)
         {
-            gameController_.TickHandler.FinishTick();
+            var sim = gameController_.SimulationThread;
+
+            if (!sim.IsRunning)
+            {
+                sim.Start();
+            }
+            else if (sim.IsPaused)
+            {
+                sim.Resume();
+            }
+            else
+            {
+                sim.Pause();
+            }
+
+            UpdatePlayPauseButton();
+        }
+
+        private void UpdatePlayPauseButton()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(UpdatePlayPauseButton);
+                return;
+            }
+
+            var sim = gameController_.SimulationThread;
+            PlayPauseButton.Text = sim.IsRunning && !sim.IsPaused ? "⏸ Pause" : "▶ Play";
+        }
+
+        private void SpeedComboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            // Explicit mapping from ComboBox index to enum
+            var speed = SpeedComboBox.SelectedIndex switch
+            {
+                0 => SimulationSpeed.VerySlow,
+                1 => SimulationSpeed.Slow,
+                2 => SimulationSpeed.Normal,
+                3 => SimulationSpeed.Fast,
+                4 => SimulationSpeed.VeryFast,
+                5 => SimulationSpeed.Maximum,
+                _ => SimulationSpeed.Normal,
+            };
+
+            gameController_.SimulationThread.SetSpeed(speed);
+        }
+
+        // NEW: Update UI automatically when tick completes
+        private void TickHandler_UIRefreshRequested(object? sender, TickEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(() => TickHandler_UIRefreshRequested(sender, e));
+                return;
+            }
 
             UpdateDateText();
             provinceInfo_?.UpdateCurrentProvince(gameController_.TickHandler.GetState());
             countryInfo_?.UpdateCurrentCountry(gameController_.TickHandler.GetState());
-
             diplomacyInfo_?.UpdateCurrentCountry(gameController_.TickHandler.GetState());
+        }
+
+        // MODIFIED: DateButton now toggles pause instead of advancing manually
+        private void DateButton_Click(object? sender, EventArgs e)
+        {
+            PlayPauseButton_Click(sender, e); // Reuse play/pause logic
         }
 
         private void UpdateDateText()
@@ -142,6 +232,13 @@ namespace ColdWarPrototype2
                     // Event completed callback - can resume game or process queue
                 }
             );
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // Stop simulation thread cleanly
+            gameController_.SimulationThread?.Stop();
+            base.OnFormClosing(e);
         }
     }
 }

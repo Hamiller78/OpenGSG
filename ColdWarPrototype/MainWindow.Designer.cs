@@ -33,6 +33,9 @@
         private Label CoordsLabel;
         public ListView DiplomacyListView;
 
+        private Button PlayPauseButton;
+        private ComboBox SpeedComboBox;
+
         /// <summary>
         ///  Clean up any resources being used.
         /// </summary>
@@ -78,6 +81,8 @@
             ArmyListBox = new ListBox();
             CoordsLabel = new Label();
             DiplomacyListView = new ListView();
+            PlayPauseButton = new Button();
+            SpeedComboBox = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)MapPictureBox).BeginInit();
             MapModeGroup.SuspendLayout();
             ProvinceBox.SuspendLayout();
@@ -323,11 +328,31 @@
             DiplomacyListView.TabIndex = 17;
             DiplomacyListView.UseCompatibleStateImageBehavior = false;
             // 
+            // PlayPauseButton
+            // 
+            PlayPauseButton.Location = new Point(4, 994);
+            PlayPauseButton.Name = "PlayPauseButton";
+            PlayPauseButton.Size = new Size(100, 37);
+            PlayPauseButton.TabIndex = 19;
+            PlayPauseButton.Text = "Play/Pause";
+            PlayPauseButton.UseVisualStyleBackColor = true;
+            // 
+            // SpeedComboBox
+            // 
+            SpeedComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            SpeedComboBox.FormattingEnabled = true;
+            SpeedComboBox.Location = new Point(110, 994);
+            SpeedComboBox.Name = "SpeedComboBox";
+            SpeedComboBox.Size = new Size(100, 23);
+            SpeedComboBox.TabIndex = 20;
+            // 
             // MainWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1924, 1061);
+            Controls.Add(SpeedComboBox);
+            Controls.Add(PlayPauseButton);
             Controls.Add(CoordsLabel);
             Controls.Add(MapPictureBox);
             Controls.Add(MapModeGroup);
