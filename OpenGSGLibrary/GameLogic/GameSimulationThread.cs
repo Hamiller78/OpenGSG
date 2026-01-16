@@ -12,9 +12,9 @@ namespace OpenGSGLibrary.GameLogic
     {
         private readonly TickHandler _tickHandler;
         private Thread? _simulationThread;
-        private volatile bool _isRunning;
-        private volatile bool _isPaused;
-        private volatile float _ticksPerSecond = 1.0f; // Default: 1 tick per second
+        private bool _isRunning;
+        private bool _isPaused;
+        private float _ticksPerSecond = 1.0f; // Default: 1 tick per second
         private readonly object _lock = new object();
 
         /// <summary>
@@ -40,12 +40,30 @@ namespace OpenGSGLibrary.GameLogic
         /// <summary>
         /// Gets whether the simulation is currently running.
         /// </summary>
-        public bool IsRunning => _isRunning;
+        public bool IsRunning
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _isRunning;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets whether the simulation is paused.
         /// </summary>
-        public bool IsPaused => _isPaused;
+        public bool IsPaused
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _isPaused;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the simulation speed (ticks per second).
@@ -53,7 +71,13 @@ namespace OpenGSGLibrary.GameLogic
         /// </summary>
         public double TicksPerSecond
         {
-            get => _ticksPerSecond;
+            get
+            {
+                lock (_lock)
+                {
+                    return _ticksPerSecond;
+                }
+            }
             set
             {
                 if (value < 0.1 || value > 100.0)
@@ -61,7 +85,10 @@ namespace OpenGSGLibrary.GameLogic
                         nameof(value),
                         "Ticks per second must be between 0.1 and 100.0"
                     );
-                _ticksPerSecond = (float)value;
+                lock (_lock)
+                {
+                    _ticksPerSecond = (float)value;
+                }
             }
         }
 
@@ -92,8 +119,10 @@ namespace OpenGSGLibrary.GameLogic
                 };
 
                 _simulationThread.Start();
-                SimulationStarted?.Invoke(this, EventArgs.Empty);
             }
+
+            // Raise event outside lock to avoid potential deadlocks
+            SimulationStarted?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -107,8 +136,10 @@ namespace OpenGSGLibrary.GameLogic
                     return;
 
                 _isPaused = true;
-                SimulationPaused?.Invoke(this, EventArgs.Empty);
             }
+
+            // Raise event outside lock
+            SimulationPaused?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -123,8 +154,10 @@ namespace OpenGSGLibrary.GameLogic
 
                 _isPaused = false;
                 Monitor.PulseAll(_lock); // Wake up simulation thread
-                SimulationResumed?.Invoke(this, EventArgs.Empty);
             }
+
+            // Raise event outside lock
+            SimulationResumed?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -144,6 +177,8 @@ namespace OpenGSGLibrary.GameLogic
 
             // Wait for thread to finish (with timeout)
             _simulationThread?.Join(TimeSpan.FromSeconds(2));
+
+            // Raise event outside lock
             SimulationStopped?.Invoke(this, EventArgs.Empty);
         }
 
@@ -155,8 +190,11 @@ namespace OpenGSGLibrary.GameLogic
             var stopwatch = Stopwatch.StartNew();
             long lastTickTime = 0;
 
-            while (_isRunning)
+            while (true)
             {
+                bool shouldRun;
+                bool isPaused;
+
                 // Check if paused
                 lock (_lock)
                 {
@@ -165,12 +203,22 @@ namespace OpenGSGLibrary.GameLogic
                         Monitor.Wait(_lock); // Wait until resumed or stopped
                     }
 
+                    shouldRun = _isRunning;
+                    isPaused = _isPaused;
+
                     if (!_isRunning)
                         break;
                 }
 
+                // Read tick rate outside the main lock to minimize lock time
+                float tickRate;
+                lock (_lock)
+                {
+                    tickRate = _ticksPerSecond;
+                }
+
                 // Calculate minimum time between ticks based on speed
-                long minTickIntervalMs = (long)(1000.0 / _ticksPerSecond);
+                long minTickIntervalMs = (long)(1000.0 / tickRate);
                 long currentTime = stopwatch.ElapsedMilliseconds;
                 long timeSinceLastTick = currentTime - lastTickTime;
 
@@ -181,13 +229,26 @@ namespace OpenGSGLibrary.GameLogic
                     _tickHandler.BeginNewTick();
 
                     // Wait for tick to complete (all AI, calculations done)
-                    while (!_tickHandler.IsTickComplete() && _isRunning && !_isPaused)
+                    while (!_tickHandler.IsTickComplete())
                     {
+                        // Check if we should stop
+                        lock (_lock)
+                        {
+                            if (!_isRunning || _isPaused)
+                                break;
+                        }
+
                         Thread.Sleep(1); // Yield to other threads
                     }
 
                     // Only finish tick if still running
-                    if (_isRunning && !_isPaused)
+                    bool shouldFinishTick;
+                    lock (_lock)
+                    {
+                        shouldFinishTick = _isRunning && !_isPaused;
+                    }
+
+                    if (shouldFinishTick)
                     {
                         _tickHandler.FinishTick();
                         lastTickTime = stopwatch.ElapsedMilliseconds;
