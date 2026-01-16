@@ -17,6 +17,7 @@ namespace ColdWarGameLogic.GameLogic
         public EventManager EventManager { get; private set; } = new EventManager();
         public LocalizationManager LocalizationManager { get; private set; } =
             new LocalizationManager();
+        public GameSimulationThread SimulationThread { get; private set; } = default!;
 
         private readonly WorldLoader<
             CwpProvince,
@@ -39,6 +40,10 @@ namespace ColdWarGameLogic.GameLogic
             TickHandler.SetStartDate(new DateTime(1950, 1, 1));
 
             WorldData.LoadAll(GAMEDATA_PATH); // Only map views are still in WorldDataManager
+
+            // Create simulation thread
+            SimulationThread = new GameSimulationThread(TickHandler);
+            SimulationThread.SetSpeed(SimulationSpeed.Normal);
         }
 
         public DateTime GetGameDateTime()

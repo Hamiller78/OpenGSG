@@ -33,6 +33,9 @@
         private Label CoordsLabel;
         public ListView DiplomacyListView;
 
+        private Button PlayPauseButton;
+        private ComboBox SpeedComboBox;
+
         /// <summary>
         ///  Clean up any resources being used.
         /// </summary>
@@ -70,6 +73,7 @@
             ProvinceName = new Label();
             FlagPictureBox = new PictureBox();
             CountryBox = new GroupBox();
+            DiplomacyListView = new ListView();
             CountryProduction = new Label();
             CountryAllegiance = new Label();
             CountryGovernment = new Label();
@@ -77,7 +81,8 @@
             CountryName = new Label();
             ArmyListBox = new ListBox();
             CoordsLabel = new Label();
-            DiplomacyListView = new ListView();
+            PlayPauseButton = new Button();
+            SpeedComboBox = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)MapPictureBox).BeginInit();
             MapModeGroup.SuspendLayout();
             ProvinceBox.SuspendLayout();
@@ -131,7 +136,7 @@
             // 
             // DateButton
             // 
-            DateButton.Location = new Point(4, 952);
+            DateButton.Location = new Point(3, 892);
             DateButton.Name = "DateButton";
             DateButton.Size = new Size(216, 37);
             DateButton.TabIndex = 3;
@@ -257,6 +262,14 @@
             CountryBox.TabStop = false;
             CountryBox.Text = "Country";
             // 
+            // DiplomacyListView
+            // 
+            DiplomacyListView.Location = new Point(9, 96);
+            DiplomacyListView.Name = "DiplomacyListView";
+            DiplomacyListView.Size = new Size(245, 213);
+            DiplomacyListView.TabIndex = 17;
+            DiplomacyListView.UseCompatibleStateImageBehavior = false;
+            // 
             // CountryProduction
             // 
             CountryProduction.Location = new Point(9, 78);
@@ -303,31 +316,43 @@
             ArmyListBox.Location = new Point(3, 702);
             ArmyListBox.Margin = new Padding(4, 3, 4, 3);
             ArmyListBox.Name = "ArmyListBox";
-            ArmyListBox.Size = new Size(259, 229);
+            ArmyListBox.Size = new Size(259, 184);
             ArmyListBox.TabIndex = 17;
             // 
             // CoordsLabel
             // 
             CoordsLabel.AutoSize = true;
-            CoordsLabel.Location = new Point(5, 934);
+            CoordsLabel.Location = new Point(278, 688);
             CoordsLabel.Name = "CoordsLabel";
             CoordsLabel.Size = new Size(33, 15);
             CoordsLabel.TabIndex = 18;
             CoordsLabel.Text = "(0, 0)";
             // 
-            // diplomacyListView
+            // PlayPauseButton
             // 
-            DiplomacyListView.Location = new Point(9, 96);
-            DiplomacyListView.Name = "diplomacyListView";
-            DiplomacyListView.Size = new Size(245, 213);
-            DiplomacyListView.TabIndex = 17;
-            DiplomacyListView.UseCompatibleStateImageBehavior = false;
+            PlayPauseButton.Location = new Point(225, 892);
+            PlayPauseButton.Name = "PlayPauseButton";
+            PlayPauseButton.Size = new Size(100, 37);
+            PlayPauseButton.TabIndex = 19;
+            PlayPauseButton.Text = "Play/Pause";
+            PlayPauseButton.UseVisualStyleBackColor = true;
+            // 
+            // SpeedComboBox
+            // 
+            SpeedComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            SpeedComboBox.FormattingEnabled = true;
+            SpeedComboBox.Location = new Point(331, 906);
+            SpeedComboBox.Name = "SpeedComboBox";
+            SpeedComboBox.Size = new Size(100, 23);
+            SpeedComboBox.TabIndex = 20;
             // 
             // MainWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1924, 1061);
+            ClientSize = new Size(1924, 932);
+            Controls.Add(SpeedComboBox);
+            Controls.Add(PlayPauseButton);
             Controls.Add(CoordsLabel);
             Controls.Add(MapPictureBox);
             Controls.Add(MapModeGroup);

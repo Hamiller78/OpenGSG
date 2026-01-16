@@ -1,6 +1,6 @@
-using OpenGSGLibrary.GameDataManager;
 using System;
 using System.Collections.Generic;
+using OpenGSGLibrary.GameDataManager;
 
 namespace OpenGSGLibrary.GameLogic
 {
@@ -10,7 +10,7 @@ namespace OpenGSGLibrary.GameLogic
 
         public void CalculateStrategies(WorldState currentWorldState)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public bool IsEverybodyDone()
