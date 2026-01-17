@@ -175,10 +175,9 @@ namespace OpenGSGLibrary.GameLogic
                 Monitor.PulseAll(_lock); // Wake up thread if waiting
             }
 
-            // Wait for thread to finish (with timeout)
-            _simulationThread?.Join(TimeSpan.FromSeconds(2));
+            // Don't wait - thread is background, will terminate automatically
+            // _simulationThread?.Join(TimeSpan.FromSeconds(2));  // Remove this line
 
-            // Raise event outside lock
             SimulationStopped?.Invoke(this, EventArgs.Empty);
         }
 
@@ -192,19 +191,16 @@ namespace OpenGSGLibrary.GameLogic
 
             while (true)
             {
-                bool shouldRun;
-                bool isPaused;
-
-                // Check if paused
+                // Check if we should stop (do this at the top of every iteration)
                 lock (_lock)
                 {
+                    if (!_isRunning)
+                        break;
+
                     while (_isPaused && _isRunning)
                     {
                         Monitor.Wait(_lock); // Wait until resumed or stopped
                     }
-
-                    shouldRun = _isRunning;
-                    isPaused = _isPaused;
 
                     if (!_isRunning)
                         break;
@@ -229,6 +225,7 @@ namespace OpenGSGLibrary.GameLogic
                     _tickHandler.BeginNewTick();
 
                     // Wait for tick to complete (all AI, calculations done)
+                    // Check more frequently for shutdown
                     while (!_tickHandler.IsTickComplete())
                     {
                         // Check if we should stop
@@ -260,7 +257,21 @@ namespace OpenGSGLibrary.GameLogic
                     int sleepTime = (int)(minTickIntervalMs - timeSinceLastTick);
                     if (sleepTime > 0)
                     {
-                        Thread.Sleep(Math.Min(sleepTime, 50)); // Max sleep 50ms for responsiveness
+                        // Sleep in smaller chunks so we can respond to shutdown faster
+                        // Max 10ms chunks instead of 50ms
+                        int chunkSize = Math.Min(sleepTime, 10);
+
+                        for (int i = 0; i < sleepTime; i += chunkSize)
+                        {
+                            // Check if we should stop before sleeping
+                            lock (_lock)
+                            {
+                                if (!_isRunning)
+                                    return; // Exit immediately
+                            }
+
+                            Thread.Sleep(Math.Min(chunkSize, sleepTime - i));
+                        }
                     }
                 }
             }

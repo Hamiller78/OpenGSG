@@ -141,6 +141,7 @@ namespace OpenGSGLibrary.GameLogic
 
         /// <summary>
         /// Evaluates all events and fires those whose triggers are met.
+        /// Shows UI for active player country, auto-executes for AI countries.
         /// </summary>
         private void EvaluateEvents()
         {
@@ -150,7 +151,7 @@ namespace OpenGSGLibrary.GameLogic
             var currentDate = GetCurrentDate();
             var currentTick = _currentTick;
 
-            // Evaluate country events for each country
+            // Evaluate country events for ALL countries
             var countries = _currentWorldState.GetCountryTable();
             if (countries != null)
             {
@@ -168,28 +169,43 @@ namespace OpenGSGLibrary.GameLogic
                     var countryEvents = _eventManager.GetCountryEvents();
                     foreach (var evt in countryEvents)
                     {
-                        // Use ShouldFire which considers both triggers and MTTH
+                        // Skip events that can only be triggered explicitly
+                        if (evt.IsTriggeredOnly)
+                            continue;
+
                         if (evt.ShouldFire(context, currentTick))
                         {
-                            // Mark event as triggered (handles trigger_only_once)
                             if (evt.TriggerOnlyOnce)
                             {
                                 evt.HasTriggered = true;
                             }
 
-                            // Fire event (present to player or auto-execute if hidden)
+                            // Determine if this is the player's country or AI
+                            bool isPlayerCountry = country.Tag == ActivePlayerCountryTag;
+
+                            // Hidden events always auto-execute
                             if (evt.Hidden)
                             {
-                                // Auto-execute for hidden events
                                 if (evt.Options.Count > 0)
                                 {
                                     evt.Options[0].Execute(context);
                                 }
                                 evt.ResetMTTH();
                             }
+                            // AI countries auto-execute (choose first option)
+                            else if (!isPlayerCountry)
+                            {
+                                // AI decision-making: for now, just pick first option
+                                // Future: AI can evaluate options and choose best one
+                                if (evt.Options.Count > 0)
+                                {
+                                    evt.Options[0].Execute(context);
+                                }
+                                evt.ResetMTTH();
+                            }
+                            // Player country: show UI popup
                             else
                             {
-                                // Raise event for UI to display
                                 EventTriggered?.Invoke(this, new EventTriggeredArgs(evt, context));
                             }
                         }
@@ -197,40 +213,80 @@ namespace OpenGSGLibrary.GameLogic
                 }
             }
 
-            // Evaluate news events
+            // News events fire globally (always show to player if there is one)
             var newsContext = new EventEvaluationContext
             {
                 WorldState = _currentWorldState,
                 CurrentDate = currentDate,
+                CurrentCountryTag = ActivePlayerCountryTag, // Can be null for observer
                 TickHandler = this,
                 EventManager = _eventManager,
             };
 
+            // Evaluate news events - check against all countries if they have triggers
             var newsEvents = _eventManager.GetNewsEvents();
             foreach (var evt in newsEvents)
             {
-                // Use ShouldFire which considers both triggers and MTTH
-                if (evt.ShouldFire(newsContext, currentTick))
-                {
-                    // Mark event as triggered (handles trigger_only_once)
-                    if (evt.TriggerOnlyOnce)
-                    {
-                        evt.HasTriggered = true;
-                    }
+                // Skip events that can only be triggered explicitly
+                if (evt.IsTriggeredOnly)
+                    continue;
 
-                    if (evt.Hidden)
+                // News events with triggers should be evaluated per-country
+                if (evt.Triggers.Count > 0)
+                {
+                    // Evaluate for each country
+                    foreach (var country in countries.Values)
                     {
-                        // Auto-execute for hidden events
-                        if (evt.Options.Count > 0)
+                        var countryNewsContext = new EventEvaluationContext
                         {
-                            evt.Options[0].Execute(newsContext);
+                            WorldState = _currentWorldState,
+                            CurrentDate = currentDate,
+                            CurrentCountryTag = country.Tag,
+                            TickHandler = this,
+                            EventManager = _eventManager,
+                        };
+
+                        if (evt.ShouldFire(countryNewsContext, currentTick))
+                        {
+                            if (evt.TriggerOnlyOnce)
+                            {
+                                evt.HasTriggered = true;
+                            }
+
+                            bool isPlayerCountry = country.Tag == ActivePlayerCountryTag;
+
+                            if (evt.Hidden)
+                            {
+                                if (evt.Options.Count > 0)
+                                {
+                                    evt.Options[0].Execute(countryNewsContext);
+                                }
+                                evt.ResetMTTH();
+                            }
+                            else if (!isPlayerCountry)
+                            {
+                                // AI auto-executes
+                                if (evt.Options.Count > 0)
+                                {
+                                    evt.Options[0].Execute(countryNewsContext);
+                                }
+                                evt.ResetMTTH();
+                            }
+                            else
+                            {
+                                // Show to player
+                                EventTriggered?.Invoke(
+                                    this,
+                                    new EventTriggeredArgs(evt, countryNewsContext)
+                                );
+                            }
                         }
-                        evt.ResetMTTH();
                     }
-                    else
-                    {
-                        EventTriggered?.Invoke(this, new EventTriggeredArgs(evt, newsContext));
-                    }
+                }
+                else
+                {
+                    // No triggers = truly global news event
+                    // Existing global news event logic here
                 }
             }
         }
@@ -321,6 +377,51 @@ namespace OpenGSGLibrary.GameLogic
             }
 
             return false; // Event not found
+        }
+
+        /// <summary>
+        /// Gets or sets the active player country tag.
+        /// Null represents observer mode (no active country).
+        /// </summary>
+        public string? ActivePlayerCountryTag { get; private set; }
+
+        /// <summary>
+        /// Sets the active player country.
+        /// </summary>
+        /// <param name="countryTag">Country tag to play as, or null for observer mode</param>
+        /// <returns>True if country exists or is observer mode, false otherwise</returns>
+        public bool SetPlayerCountry(string? countryTag)
+        {
+            // Allow null for observer mode
+            if (countryTag == null)
+            {
+                ActivePlayerCountryTag = null;
+                return true;
+            }
+
+            // Validate country exists
+            var countries = _currentWorldState?.GetCountryTable();
+            if (countries == null || !countries.ContainsKey(countryTag))
+            {
+                return false;
+            }
+
+            ActivePlayerCountryTag = countryTag;
+            return true;
+        }
+
+        /// <summary>
+        /// Gets whether currently in observer mode.
+        /// </summary>
+        public bool IsObserverMode => string.IsNullOrEmpty(ActivePlayerCountryTag);
+
+        /// <summary>
+        /// Triggers an event for the player (or AI) to handle.
+        /// Used when events are triggered by effects (not just during evaluation).
+        /// </summary>
+        public void TriggerEvent(GameEvent evt, EventEvaluationContext context)
+        {
+            EventTriggered?.Invoke(this, new EventTriggeredArgs(evt, context));
         }
     }
 

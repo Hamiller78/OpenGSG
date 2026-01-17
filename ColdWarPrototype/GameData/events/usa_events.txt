@@ -23,7 +23,7 @@ country_event = {
         remove_guarantee = ROK
 
         hidden_effect = {
-            news_event = { id = coldwar.2 }
+            news_event = { id = acheson_speech.2 }
         }
     }
 }
@@ -33,6 +33,8 @@ news_event = {
     title = acheson_speech.2.t
     desc = acheson_speech.2.d
     picture = acheson_speech
+
+    is_triggered_only = yes
 
     trigger = {
         OR = {

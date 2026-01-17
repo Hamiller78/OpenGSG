@@ -42,6 +42,12 @@ namespace OpenGSGLibrary.Events
         public bool Hidden { get; set; } = false;
 
         /// <summary>
+        /// If true, this event will NEVER fire during normal evaluation.
+        /// It can only be triggered explicitly by effects (e.g., hidden_effect in another event).
+        /// </summary>
+        public bool IsTriggeredOnly { get; set; } = false;
+
+        /// <summary>
         /// Has this event already been triggered (for trigger_only_once events)?
         /// </summary>
         public bool HasTriggered { get; set; } = false;
@@ -97,6 +103,12 @@ namespace OpenGSGLibrary.Events
                 {
                     MeanTimeToHappenDays = GetInt(mtthData, "days", 0);
                 }
+            }
+
+            if (eventData.Contains("is_triggered_only"))
+            {
+                var value = eventData["is_triggered_only"].Single()?.ToString();
+                IsTriggeredOnly = value?.ToLower() == "yes";
             }
 
             // Parse triggers
@@ -352,7 +364,7 @@ namespace OpenGSGLibrary.Events
                         return new TriggerEventEffect
                         {
                             EventId = GetString(countryEventData, "id"),
-                            IsCountryEvent = true,
+                            IsNewsEvent = false,
                         };
                     }
                     break;

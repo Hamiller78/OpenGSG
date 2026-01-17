@@ -39,6 +39,9 @@ namespace ColdWarGameLogic.GameLogic
             TickHandler.SetEventManager(EventManager);
             TickHandler.SetStartDate(new DateTime(1950, 1, 1));
 
+            // Set default player country (e.g., USA for testing)
+            TickHandler.SetPlayerCountry("USA");
+
             WorldData.LoadAll(GAMEDATA_PATH); // Only map views are still in WorldDataManager
 
             // Create simulation thread

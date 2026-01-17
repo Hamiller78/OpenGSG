@@ -65,10 +65,13 @@ namespace ColdWarPrototype
             // Welcome message with prompt indicator
             WriteOutput("=== OpenGSG Debug Console ===");
             WriteOutput("Commands:");
+            WriteOutput("  player <countryTag> - Switch active country");
+            WriteOutput("  observer - Switch to observer mode");
             WriteOutput("  event <eventId> <countryTag> - Fire an event");
             WriteOutput("  help - Show available commands");
             WriteOutput("  clear - Clear console output");
             WriteOutput("");
+            WriteOutput($"> Currently playing as: USA (default)");
             WriteOutput("> Ready for input (F12 to toggle, ESC to hide)"); // Updated text
         }
 
@@ -122,12 +125,34 @@ namespace ColdWarPrototype
                 case "help":
                     WriteOutput("Available commands:");
                     WriteOutput("  event <eventId> <countryTag> - Fire an event for a country");
+                    WriteOutput("  player <countryTag> - Switch to playing as a country");
+                    WriteOutput("  observer - Switch to observer mode");
                     WriteOutput("  clear - Clear console output");
                     WriteOutput("  help - Show this help");
                     break;
 
                 case "clear":
                     _outputBox.Clear();
+                    break;
+
+                case "player":
+                case "tag":
+                case "switch":
+                    if (parts.Length < 2)
+                    {
+                        WriteOutput("ERROR: Usage: player <countryTag>");
+                        WriteOutput("Example: player USA");
+                    }
+                    else
+                    {
+                        string countryTag = parts[1].ToUpper();
+                        SwitchPlayerCountry(countryTag);
+                    }
+                    break;
+
+                case "observer":
+                case "obs":
+                    SwitchToObserver();
                     break;
 
                 case "event":
@@ -173,6 +198,45 @@ namespace ColdWarPrototype
             catch (Exception ex)
             {
                 WriteOutput($"ERROR: Exception while firing event: {ex.Message}");
+            }
+        }
+
+        private void SwitchPlayerCountry(string countryTag)
+        {
+            try
+            {
+                bool success = _gameController.TickHandler.SetPlayerCountry(countryTag);
+
+                if (success)
+                {
+                    WriteOutput($"SUCCESS: Now playing as {countryTag}");
+                    WriteOutput($"  Events for {countryTag} will show UI popups");
+                    WriteOutput($"  Events for other countries will auto-execute (AI)");
+                }
+                else
+                {
+                    WriteOutput($"ERROR: Country '{countryTag}' does not exist");
+                    WriteOutput("  Use a valid country tag (e.g., USA, USSR, UK)");
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteOutput($"ERROR: Exception while switching country: {ex.Message}");
+            }
+        }
+
+        private void SwitchToObserver()
+        {
+            try
+            {
+                _gameController.TickHandler.SetPlayerCountry(null);
+                WriteOutput("SUCCESS: Switched to observer mode");
+                WriteOutput("  All country events will auto-execute");
+                WriteOutput("  No event popups will be shown");
+            }
+            catch (Exception ex)
+            {
+                WriteOutput($"ERROR: Exception while switching to observer: {ex.Message}");
             }
         }
 
