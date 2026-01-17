@@ -31,9 +31,24 @@ namespace ColdWarPrototype
             this.Size = new Size(800, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            this.TopMost = true; // Stay on top
 
-            // Output box (read-only)
+            // Prevent disposal when closing - just hide instead
+            this.FormClosing += DebugConsole_FormClosing;
+
+            // Input box at bottom - ADD FIRST!
+            _inputBox = new TextBox
+            {
+                Dock = DockStyle.Bottom,
+                BackColor = Color.Black,
+                ForeColor = Color.White,
+                Font = new Font("Consolas", 10),
+                BorderStyle = BorderStyle.FixedSingle,
+                Height = 30,
+            };
+            _inputBox.KeyDown += InputBox_KeyDown;
+            this.Controls.Add(_inputBox);
+
+            // Output box (read-only) - ADD SECOND
             _outputBox = new TextBox
             {
                 Multiline = true,
@@ -47,25 +62,30 @@ namespace ColdWarPrototype
             };
             this.Controls.Add(_outputBox);
 
-            // Input box at bottom
-            _inputBox = new TextBox
-            {
-                Dock = DockStyle.Bottom,
-                BackColor = Color.Black,
-                ForeColor = Color.White,
-                Font = new Font("Consolas", 10),
-                BorderStyle = BorderStyle.FixedSingle,
-            };
-            _inputBox.KeyDown += InputBox_KeyDown;
-            this.Controls.Add(_inputBox);
-
-            // Welcome message
+            // Welcome message with prompt indicator
             WriteOutput("=== OpenGSG Debug Console ===");
             WriteOutput("Commands:");
             WriteOutput("  event <eventId> <countryTag> - Fire an event");
             WriteOutput("  help - Show available commands");
             WriteOutput("  clear - Clear console output");
             WriteOutput("");
+            WriteOutput("> Ready for input (F12 to toggle, ESC to hide)"); // Updated text
+        }
+
+        /// <summary>
+        /// Intercept the close button and hide instead of disposing.
+        /// But allow actual disposal when the application exits.
+        /// </summary>
+        private void DebugConsole_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            // Only prevent closing if user clicked the X button
+            // Allow closing when application exits or owner form closes
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.Hide();
+            }
+            // Otherwise let it actually close and dispose
         }
 
         private void InputBox_KeyDown(object? sender, KeyEventArgs e)

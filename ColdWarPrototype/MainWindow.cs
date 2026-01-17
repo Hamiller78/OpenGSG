@@ -246,8 +246,8 @@ namespace ColdWarPrototype2
         // NEW: Key handling for console toggle
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            // Tilde (~) or F12 to toggle console
-            if (keyData == Keys.Oemtilde || keyData == Keys.F12)
+            // F12 to toggle console (universal across keyboard layouts)
+            if (keyData == Keys.F12)
             {
                 _debugConsole?.Toggle();
                 return true;
