@@ -35,6 +35,7 @@
 
         private Button PlayPauseButton;
         private ComboBox SpeedComboBox;
+        private Button DebugConsoleButton;
 
         /// <summary>
         ///  Clean up any resources being used.
@@ -83,6 +84,7 @@
             CoordsLabel = new Label();
             PlayPauseButton = new Button();
             SpeedComboBox = new ComboBox();
+            DebugConsoleButton = new Button();
             ((System.ComponentModel.ISupportInitialize)MapPictureBox).BeginInit();
             MapModeGroup.SuspendLayout();
             ProvinceBox.SuspendLayout();
@@ -346,11 +348,21 @@
             SpeedComboBox.Size = new Size(100, 23);
             SpeedComboBox.TabIndex = 20;
             // 
+            // DebugConsoleButton
+            // 
+            DebugConsoleButton.Location = new Point(437, 906);
+            DebugConsoleButton.Name = "DebugConsoleButton";
+            DebugConsoleButton.Size = new Size(100, 23);
+            DebugConsoleButton.TabIndex = 21;
+            DebugConsoleButton.Text = "Console";
+            DebugConsoleButton.UseVisualStyleBackColor = true;
+            // 
             // MainWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1924, 932);
+            Controls.Add(DebugConsoleButton);
             Controls.Add(SpeedComboBox);
             Controls.Add(PlayPauseButton);
             Controls.Add(CoordsLabel);

@@ -9,7 +9,7 @@ Built with .NET 10, C# 14.0, Windows Forms.
 ## Code Style & Conventions
 
 ### Naming
-- Private fields: `camelCase_` with trailing underscore
+- Private fields: `_camelCase` with leading underscore
 - Parameters: `camelCase` (e.g., `gamedataPath`)
 - Classes: `PascalCase`
 - Interfaces: `IPascalCase`
