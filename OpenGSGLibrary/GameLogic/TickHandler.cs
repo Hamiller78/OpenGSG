@@ -241,6 +241,87 @@ namespace OpenGSGLibrary.GameLogic
         /// </summary>
         /// <returns>Current tick as a long integer.</returns>
         public long GetCurrentTick() => _currentTick;
+
+        /// <summary>
+        /// Fires an event immediately for a specific country, bypassing trigger evaluation.
+        /// Used for debugging and testing.
+        /// </summary>
+        /// <param name="eventId">ID of the event to fire (e.g., "event.1")</param>
+        /// <param name="countryTag">Tag of the country to fire the event for</param>
+        /// <returns>True if event was found and fired, false otherwise</returns>
+        public bool FireEventDebug(string eventId, string countryTag)
+        {
+            if (_eventManager == null || _currentWorldState == null)
+                return false;
+
+            var countries = _currentWorldState.GetCountryTable();
+            if (!countries.TryGetValue(countryTag, out var country))
+                return false;
+
+            // Find the event
+            var countryEvents = _eventManager.GetCountryEvents();
+            var newsEvents = _eventManager.GetNewsEvents();
+
+            var countryEvent = countryEvents.FirstOrDefault(e => e.Id == eventId);
+            if (countryEvent != null)
+            {
+                var context = new EventEvaluationContext
+                {
+                    WorldState = _currentWorldState,
+                    CurrentDate = GetCurrentDate(),
+                    CurrentCountryTag = countryTag,
+                    TickHandler = this,
+                    EventManager = _eventManager,
+                };
+
+                // Fire event using the same pattern as EvaluateEvents()
+                if (countryEvent.Hidden)
+                {
+                    // Auto-execute for hidden events
+                    if (countryEvent.Options.Count > 0)
+                    {
+                        countryEvent.Options[0].Execute(context);
+                    }
+                }
+                else
+                {
+                    // Raise event for UI to display
+                    EventTriggered?.Invoke(this, new EventTriggeredArgs(countryEvent, context));
+                }
+                return true;
+            }
+
+            var newsEvent = newsEvents.FirstOrDefault(e => e.Id == eventId);
+            if (newsEvent != null)
+            {
+                var context = new EventEvaluationContext
+                {
+                    WorldState = _currentWorldState,
+                    CurrentDate = GetCurrentDate(),
+                    CurrentCountryTag = countryTag,
+                    TickHandler = this,
+                    EventManager = _eventManager,
+                };
+
+                // Fire event using the same pattern as EvaluateEvents()
+                if (newsEvent.Hidden)
+                {
+                    // Auto-execute for hidden events
+                    if (newsEvent.Options.Count > 0)
+                    {
+                        newsEvent.Options[0].Execute(context);
+                    }
+                }
+                else
+                {
+                    // Raise event for UI to display
+                    EventTriggered?.Invoke(this, new EventTriggeredArgs(newsEvent, context));
+                }
+                return true;
+            }
+
+            return false; // Event not found
+        }
     }
 
     /// <summary>

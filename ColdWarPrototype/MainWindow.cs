@@ -1,4 +1,5 @@
 ﻿using ColdWarGameLogic.GameLogic;
+using ColdWarPrototype;
 using ColdWarPrototype.Controller;
 using ColdWarPrototype.Dialogs;
 using ColdWarPrototype.Views;
@@ -11,18 +12,20 @@ namespace ColdWarPrototype2
     public partial class MainWindow : Form
     {
         private Logger log;
-        private MasterController gameController_ = new();
+        private MasterController _gameController = new();
 
         // view helpers
-        private ProvinceInfo? provinceInfo_;
-        private CountryInfo? countryInfo_;
-        private ArmyList? armyBox_;
-        private GeoCoordinates coordinateView_;
-        private WorldMap worldMapView_;
-        private DiplomacyInfo? diplomacyInfo_;
+        private ProvinceInfo? _provinceInfo;
+        private CountryInfo? _countryInfo;
+        private ArmyList? _armyBox;
+        private GeoCoordinates _coordinateView;
+        private WorldMap _worldMapView;
+        private DiplomacyInfo? _diplomacyInfo;
 
         // Controllers
-        private MouseController mouseController_;
+        private MouseController _mouseController;
+
+        private DebugConsole? _debugConsole;
 
         public MainWindow()
         {
@@ -36,7 +39,13 @@ namespace ColdWarPrototype2
             log.WriteLine(LogLevel.Info, "Session started.");
             try
             {
-                gameController_.Init();
+                _gameController.Init();
+
+                // Create debug console (hidden by default)
+                _debugConsole = new DebugConsole(_gameController);
+
+                // Wire up the console button
+                DebugConsoleButton.Click += (s, e) => _debugConsole?.Toggle();
 
                 SetupViews();
                 SetupControllers();
@@ -46,7 +55,7 @@ namespace ColdWarPrototype2
                 UpdateDateText();
 
                 // Load province map and set on picture box
-                var provinceMap = gameController_.WorldData.ProvinceMap;
+                var provinceMap = _gameController.WorldData.ProvinceMap;
                 if (provinceMap?.sourceBitmap != null)
                 {
                     MapPictureBox.Image = new Bitmap(provinceMap.sourceBitmap);
@@ -54,14 +63,14 @@ namespace ColdWarPrototype2
                 }
 
                 MapPictureBox.MouseMove += MapPictureBox_MouseMove;
-                DateButton.Text = gameController_.GetGameDateTime().ToString();
+                DateButton.Text = _gameController.GetGameDateTime().ToString();
                 DateButton.Click += DateButton_Click;
                 MapModePolitical.CheckedChanged += MapModePolitical_CheckedChanged;
                 MapModeRaw.CheckedChanged += MapModeRaw_CheckedChanged;
 
                 var worldMapView = new WorldMap(this);
                 worldMapView.SetSourceProvinceMap(provinceMap);
-                worldMapView.UpdateCountryMap(gameController_.TickHandler.GetState());
+                worldMapView.UpdateCountryMap(_gameController.TickHandler.GetState());
 
                 // Subscribe to event triggers
                 TickHandler.EventTriggered += TickHandler_EventTriggered;
@@ -77,29 +86,29 @@ namespace ColdWarPrototype2
 
         private void SetupViews()
         {
-            provinceInfo_ = new ProvinceInfo(this, gameController_);
-            countryInfo_ = new CountryInfo(this, gameController_);
-            armyBox_ = new ArmyList(this);
-            coordinateView_ = new GeoCoordinates(this);
-            diplomacyInfo_ = new DiplomacyInfo(this, gameController_); // ← Add this
+            _provinceInfo = new ProvinceInfo(this, _gameController);
+            _countryInfo = new CountryInfo(this, _gameController);
+            _armyBox = new ArmyList(this);
+            _coordinateView = new GeoCoordinates(this);
+            _diplomacyInfo = new DiplomacyInfo(this, _gameController); // ← Add this
 
-            worldMapView_ = new WorldMap(this);
-            worldMapView_.SetSourceProvinceMap(gameController_.WorldData.ProvinceMap);
-            worldMapView_.UpdateCountryMap(gameController_.TickHandler.GetState());
+            _worldMapView = new WorldMap(this);
+            _worldMapView.SetSourceProvinceMap(_gameController.WorldData.ProvinceMap);
+            _worldMapView.UpdateCountryMap(_gameController.TickHandler.GetState());
         }
 
         private void SetupControllers()
         {
-            mouseController_ = new MouseController(gameController_);
-            Size sourceMapSize = gameController_.WorldData.ProvinceMap.sourceBitmap.Size;
-            mouseController_.SetMapScalingFactor(MapPictureBox.Size, sourceMapSize);
+            _mouseController = new MouseController(_gameController);
+            Size sourceMapSize = _gameController.WorldData.ProvinceMap.sourceBitmap.Size;
+            _mouseController.SetMapScalingFactor(MapPictureBox.Size, sourceMapSize);
         }
 
         private void SetupEventHandlers()
         {
-            mouseController_.HoveredProvinceChanged += provinceInfo_.HandleProvinceChanged;
-            mouseController_.HoveredCountryChanged += countryInfo_.HandleCountryChanged; // ← Add this back
-            mouseController_.HoveredCountryChanged += diplomacyInfo_.HandleCountryChanged; // ← Keep this
+            _mouseController.HoveredProvinceChanged += _provinceInfo.HandleProvinceChanged;
+            _mouseController.HoveredCountryChanged += _countryInfo.HandleCountryChanged; // ← Add this back
+            _mouseController.HoveredCountryChanged += _diplomacyInfo.HandleCountryChanged; // ← Keep this
         }
 
         private void SetupSimulationControls()
@@ -124,30 +133,30 @@ namespace ColdWarPrototype2
             SpeedComboBox.SelectedIndexChanged += SpeedComboBox_SelectedIndexChanged;
 
             // Subscribe to simulation events
-            gameController_.SimulationThread.SimulationStarted += (s, e) => UpdatePlayPauseButton();
-            gameController_.SimulationThread.SimulationPaused += (s, e) => UpdatePlayPauseButton();
-            gameController_.SimulationThread.SimulationResumed += (s, e) => UpdatePlayPauseButton();
+            _gameController.SimulationThread.SimulationStarted += (s, e) => UpdatePlayPauseButton();
+            _gameController.SimulationThread.SimulationPaused += (s, e) => UpdatePlayPauseButton();
+            _gameController.SimulationThread.SimulationResumed += (s, e) => UpdatePlayPauseButton();
         }
 
         private void MapPictureBox_MouseMove(object? sender, MouseEventArgs e)
         {
             CoordsLabel.Text = $"X: {e.X}, Y: {e.Y}";
-            mouseController_.HandleMouseMovedOverMap(e);
+            _mouseController.HandleMouseMovedOverMap(e);
         }
 
         private void MapModePolitical_CheckedChanged(object? sender, EventArgs e)
         {
-            worldMapView_?.SetMapPicture();
+            _worldMapView?.SetMapPicture();
         }
 
         private void MapModeRaw_CheckedChanged(object? sender, EventArgs e)
         {
-            worldMapView_?.SetMapPicture();
+            _worldMapView?.SetMapPicture();
         }
 
         private void PlayPauseButton_Click(object? sender, EventArgs e)
         {
-            var sim = gameController_.SimulationThread;
+            var sim = _gameController.SimulationThread;
 
             if (!sim.IsRunning)
             {
@@ -173,7 +182,7 @@ namespace ColdWarPrototype2
                 return;
             }
 
-            var sim = gameController_.SimulationThread;
+            var sim = _gameController.SimulationThread;
             PlayPauseButton.Text = sim.IsRunning && !sim.IsPaused ? "⏸ Pause" : "▶ Play";
         }
 
@@ -191,7 +200,7 @@ namespace ColdWarPrototype2
                 _ => SimulationSpeed.Normal,
             };
 
-            gameController_.SimulationThread.SetSpeed(speed);
+            _gameController.SimulationThread.SetSpeed(speed);
         }
 
         // NEW: Update UI automatically when tick completes
@@ -204,9 +213,9 @@ namespace ColdWarPrototype2
             }
 
             UpdateDateText();
-            provinceInfo_?.UpdateCurrentProvince(gameController_.TickHandler.GetState());
-            countryInfo_?.UpdateCurrentCountry(gameController_.TickHandler.GetState());
-            diplomacyInfo_?.UpdateCurrentCountry(gameController_.TickHandler.GetState());
+            _provinceInfo?.UpdateCurrentProvince(_gameController.TickHandler.GetState());
+            _countryInfo?.UpdateCurrentCountry(_gameController.TickHandler.GetState());
+            _diplomacyInfo?.UpdateCurrentCountry(_gameController.TickHandler.GetState());
         }
 
         // MODIFIED: DateButton now toggles pause instead of advancing manually
@@ -217,7 +226,7 @@ namespace ColdWarPrototype2
 
         private void UpdateDateText()
         {
-            DateButton.Text = gameController_.GetGameDateTime().ToString();
+            DateButton.Text = _gameController.GetGameDateTime().ToString();
         }
 
         private void TickHandler_EventTriggered(object? sender, EventTriggeredArgs e)
@@ -227,17 +236,29 @@ namespace ColdWarPrototype2
             eventDialog.ShowEvent(
                 e.Event,
                 e.Context,
-                gameController_.LocalizationManager,
+                _gameController.LocalizationManager,
                 () => {
                     // Event completed callback - can resume game or process queue
                 }
             );
         }
 
+        // NEW: Key handling for console toggle
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // F12 to toggle console (universal across keyboard layouts)
+            if (keyData == Keys.F12)
+            {
+                _debugConsole?.Toggle();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             // Stop simulation thread cleanly
-            gameController_.SimulationThread?.Stop();
+            _gameController.SimulationThread?.Stop();
             base.OnFormClosing(e);
         }
     }
