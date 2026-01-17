@@ -1,4 +1,3 @@
-markdown .github/copilot-instructions.md
 # OpenGSG AI Instructions
 
 ## Project Overview
@@ -68,3 +67,35 @@ Match Paradox syntax where possible:
 ## Current Focus
 Building event system, diplomacy (guarantees, opinions), and data loading infrastructure.
 See ARCHITECTURE.md for detailed design decisions.
+
+### Threading & Simulation
+- Use `GameSimulationThread` for background tick processing
+- All UI updates from tick events must use `InvokeRequired` and `BeginInvoke`
+- Static events (`TickHandler.EventTriggered`, `TickHandler.UIRefreshRequested`) marshal to UI thread
+- Lock pattern preferred over `volatile` for thread safety
+
+### Event System
+- Events use `mean_time_to_happen = { days = X }` for randomized firing
+- `trigger_only_once = yes` prevents re-firing
+- `hidden = yes` auto-executes first option (no UI)
+- Event pictures load from `gfx/event_pictures/{name}.png`
+- MTTH: probability = 1/days per tick (e.g., days=3 → ~33% chance per day)
+
+### Opinions
+- Use `add_opinion = { target = TAG value = -50 }` (NOT `opinion`)
+- Range: -100 (hostile) to +100 (friendly)
+- Bidirectional but asymmetric (USA→USSR ≠ USSR→USA)
+- Supports future `OpinionModifier` system with reasons and expiry dates
+
+### Event System Patterns
+- Base event classes in `OpenGSGLibrary.Events`
+- Game-specific events inherit from `CountryEvent` or `NewsEvent`
+- Triggers implement `IEventTrigger.Evaluate(object context)`
+- Effects implement `IEventEffect.Execute(object context)`
+- Modal `EventDialog` pauses simulation automatically
+
+### Simulation Threading
+- `GameSimulationThread` runs on background thread
+- UI updates via static events: `EventTriggered`, `UIRefreshRequested`
+- Lock all shared state access (don't use `volatile`)
+- `IsTickComplete()` gates tick advancement
