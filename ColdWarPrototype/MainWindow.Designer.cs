@@ -35,6 +35,17 @@
         private ComboBox SpeedComboBox;
         private Button DebugConsoleButton;
 
+        public GroupBox ActiveCountryBox;
+        public Label ActiveCountryName;
+        public Label ActiveCountryProduction;
+        public Label ActiveCountryMilitaryStrength;
+        public Label ActiveCountrySoftPower;
+        public Label ActiveCountryUnrest;
+        public Label ActiveCountryCivilTech;
+        public Label ActiveCountryMilitaryTech;
+        public Label IndustryInvestmentLabel;
+        public TextBox IndustryInvestmentTextBox;
+
         /// <summary>
         ///  Clean up any resources being used.
         /// </summary>
@@ -82,11 +93,22 @@
             PlayPauseButton = new Button();
             SpeedComboBox = new ComboBox();
             DebugConsoleButton = new Button();
+            ActiveCountryBox = new GroupBox();
+            ActiveCountryName = new Label();
+            ActiveCountryProduction = new Label();
+            ActiveCountryMilitaryStrength = new Label();
+            ActiveCountrySoftPower = new Label();
+            ActiveCountryUnrest = new Label();
+            ActiveCountryCivilTech = new Label();
+            ActiveCountryMilitaryTech = new Label();
+            IndustryInvestmentLabel = new Label();
+            IndustryInvestmentTextBox = new TextBox();
             ((System.ComponentModel.ISupportInitialize)MapPictureBox).BeginInit();
             MapModeGroup.SuspendLayout();
             ProvinceBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)FlagPictureBox).BeginInit();
             CountryBox.SuspendLayout();
+            ActiveCountryBox.SuspendLayout();
             SuspendLayout();
             // 
             // MapPictureBox
@@ -345,11 +367,103 @@
             DebugConsoleButton.Text = "Console";
             DebugConsoleButton.UseVisualStyleBackColor = true;
             // 
+            // ActiveCountryBox
+            // 
+            ActiveCountryBox.Controls.Add(IndustryInvestmentTextBox);
+            ActiveCountryBox.Controls.Add(IndustryInvestmentLabel);
+            ActiveCountryBox.Controls.Add(ActiveCountryMilitaryTech);
+            ActiveCountryBox.Controls.Add(ActiveCountryCivilTech);
+            ActiveCountryBox.Controls.Add(ActiveCountryUnrest);
+            ActiveCountryBox.Controls.Add(ActiveCountrySoftPower);
+            ActiveCountryBox.Controls.Add(ActiveCountryMilitaryStrength);
+            ActiveCountryBox.Controls.Add(ActiveCountryProduction);
+            ActiveCountryBox.Controls.Add(ActiveCountryName);
+            ActiveCountryBox.Location = new Point(268, 680);
+            ActiveCountryBox.Name = "ActiveCountryBox";
+            ActiveCountryBox.Size = new Size(500, 200);
+            ActiveCountryBox.TabIndex = 22;
+            ActiveCountryBox.TabStop = false;
+            ActiveCountryBox.Text = "Active Country (Player)";
+            // 
+            // ActiveCountryName
+            // 
+            ActiveCountryName.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            ActiveCountryName.Location = new Point(10, 20);
+            ActiveCountryName.Name = "ActiveCountryName";
+            ActiveCountryName.Size = new Size(480, 20);
+            ActiveCountryName.TabIndex = 0;
+            ActiveCountryName.Text = "United States of America (USA)";
+            // 
+            // ActiveCountryProduction
+            // 
+            ActiveCountryProduction.Location = new Point(10, 45);
+            ActiveCountryProduction.Name = "ActiveCountryProduction";
+            ActiveCountryProduction.Size = new Size(230, 15);
+            ActiveCountryProduction.TabIndex = 1;
+            ActiveCountryProduction.Text = "Production: 0";
+            // 
+            // ActiveCountryMilitaryStrength
+            // 
+            ActiveCountryMilitaryStrength.Location = new Point(10, 65);
+            ActiveCountryMilitaryStrength.Name = "ActiveCountryMilitaryStrength";
+            ActiveCountryMilitaryStrength.Size = new Size(230, 15);
+            ActiveCountryMilitaryStrength.TabIndex = 2;
+            ActiveCountryMilitaryStrength.Text = "Military Strength: 0";
+            // 
+            // ActiveCountrySoftPower
+            // 
+            ActiveCountrySoftPower.Location = new Point(10, 85);
+            ActiveCountrySoftPower.Name = "ActiveCountrySoftPower";
+            ActiveCountrySoftPower.Size = new Size(230, 15);
+            ActiveCountrySoftPower.TabIndex = 3;
+            ActiveCountrySoftPower.Text = "Soft Power: 50";
+            // 
+            // ActiveCountryUnrest
+            // 
+            ActiveCountryUnrest.Location = new Point(10, 105);
+            ActiveCountryUnrest.Name = "ActiveCountryUnrest";
+            ActiveCountryUnrest.Size = new Size(230, 15);
+            ActiveCountryUnrest.TabIndex = 4;
+            ActiveCountryUnrest.Text = "Unrest: 0";
+            // 
+            // ActiveCountryCivilTech
+            // 
+            ActiveCountryCivilTech.Location = new Point(260, 65);
+            ActiveCountryCivilTech.Name = "ActiveCountryCivilTech";
+            ActiveCountryCivilTech.Size = new Size(230, 15);
+            ActiveCountryCivilTech.TabIndex = 5;
+            ActiveCountryCivilTech.Text = "Civil Tech: 50";
+            // 
+            // ActiveCountryMilitaryTech
+            // 
+            ActiveCountryMilitaryTech.Location = new Point(260, 85);
+            ActiveCountryMilitaryTech.Name = "ActiveCountryMilitaryTech";
+            ActiveCountryMilitaryTech.Size = new Size(230, 15);
+            ActiveCountryMilitaryTech.TabIndex = 6;
+            ActiveCountryMilitaryTech.Text = "Military Tech: 50";
+            // 
+            // IndustryInvestmentLabel
+            // 
+            IndustryInvestmentLabel.Location = new Point(10, 135);
+            IndustryInvestmentLabel.Name = "IndustryInvestmentLabel";
+            IndustryInvestmentLabel.Size = new Size(200, 15);
+            IndustryInvestmentLabel.TabIndex = 7;
+            IndustryInvestmentLabel.Text = "Industry Investment %:";
+            // 
+            // IndustryInvestmentTextBox
+            // 
+            IndustryInvestmentTextBox.Location = new Point(210, 132);
+            IndustryInvestmentTextBox.Name = "IndustryInvestmentTextBox";
+            IndustryInvestmentTextBox.Size = new Size(60, 23);
+            IndustryInvestmentTextBox.TabIndex = 8;
+            IndustryInvestmentTextBox.Text = "50";
+            // 
             // MainWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1924, 932);
+            Controls.Add(ActiveCountryBox);
             Controls.Add(DebugConsoleButton);
             Controls.Add(SpeedComboBox);
             Controls.Add(PlayPauseButton);
@@ -369,6 +483,8 @@
             ProvinceBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)FlagPictureBox).EndInit();
             CountryBox.ResumeLayout(false);
+            ActiveCountryBox.ResumeLayout(false);
+            ActiveCountryBox.PerformLayout();
             ResumeLayout(false);
         }
 
