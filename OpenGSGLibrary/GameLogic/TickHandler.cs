@@ -227,6 +227,7 @@ namespace OpenGSGLibrary.GameLogic
                                     evt.Options[0].Execute(context);
                                 }
                                 evt.ResetMTTH();
+                                evt.ResetMTTH();
                             }
                             // Player country: show UI popup
                             else

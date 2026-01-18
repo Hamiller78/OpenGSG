@@ -233,8 +233,17 @@ namespace ColdWarPrototype2
 
         private void TickHandler_EventTriggered(object? sender, EventTriggeredArgs e)
         {
+            // Marshal to UI thread if needed
+            if (InvokeRequired)
+            {
+                BeginInvoke(() => TickHandler_EventTriggered(sender, e));
+                return;
+            }
+
+            // Now we're on the UI thread - safe to show dialog
             // Create and show event dialog as a modal dialog
             using var eventDialog = new EventDialog();
+            eventDialog.Owner = this;
             eventDialog.ShowEvent(
                 e.Event,
                 e.Context,
