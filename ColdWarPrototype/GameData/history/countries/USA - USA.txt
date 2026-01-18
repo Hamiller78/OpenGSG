@@ -2,6 +2,7 @@ long_name = "United States of America"
 government = democratic
 leader = "Harry Truman"
 
+# Diplomatic Relations
 give_guarantee = JPN
 give_guarantee = ROK
 
@@ -11,7 +12,12 @@ add_opinion = {
     value = -40
 }
 
-add_opinion = {
-    target = UK
-    value = 80
-}
+# Economic Policy
+industry_investment = 40   # 40% to industry, 60% to living standards
+
+# Country Statistics (0-100 scale)
+soft_power = 85          # High international influence
+unrest = 5               # Very stable
+civil_tech = 85       # Advanced civilian technology
+military_tech = 75    # Strong military tech
+# military_strength calculated from armies/economy

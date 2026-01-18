@@ -40,6 +40,8 @@ public class CwpProvince : Province
 
     public long GetProduction()
     {
+        // Base production from population, industrialization, and education
+        // Tech multiplier is applied at country level when aggregating
         return Convert.ToInt64(
             Population / 1_000_000.0 * Industrialization / 100.0 * Education / 100.0
         );

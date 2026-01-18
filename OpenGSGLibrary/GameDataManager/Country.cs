@@ -163,5 +163,16 @@ namespace OpenGSGLibrary.GameDataManager
 
             Opinions[towardCountryTag].BaseValue = Math.Clamp(baseValue, -100, 100);
         }
+
+        /// <summary>
+        /// Recalculates country statistics based on current state.
+        /// Called monthly during game tick.
+        /// Override in derived classes to implement game-specific stat calculations.
+        /// </summary>
+        public virtual void RecalculateStats()
+        {
+            // Base implementation does nothing
+            // Game-specific implementations override this
+        }
     }
 }

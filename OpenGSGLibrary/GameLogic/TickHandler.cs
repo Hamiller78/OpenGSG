@@ -131,12 +131,37 @@ namespace OpenGSGLibrary.GameLogic
             // notify all interested classes (synchronous invoke)
             TickDone?.Invoke(this, args);
 
+            // Monthly updates (every 30 ticks = 1 month)
+            if (_currentTick % 30 == 0)
+            {
+                PerformMonthlyUpdates();
+            }
+
             // Evaluate events after world updates
             EvaluateEvents();
 
             // After provinces and other TickDone subscribers have run, request UI refresh
             // so the UI can pull latest model state (or ViewModels can Refresh()).
             UIRefreshRequested?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Performs monthly updates: country stat recalculations, budget allocation, etc.
+        /// </summary>
+        private void PerformMonthlyUpdates()
+        {
+            if (_currentWorldState == null)
+                return;
+
+            var countries = _currentWorldState.GetCountryTable();
+            if (countries != null)
+            {
+                foreach (var country in countries.Values)
+                {
+                    // Call base class method - polymorphism handles game-specific implementation
+                    country.RecalculateStats();
+                }
+            }
         }
 
         /// <summary>

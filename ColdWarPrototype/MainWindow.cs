@@ -21,6 +21,7 @@ namespace ColdWarPrototype2
         private GeoCoordinates _coordinateView;
         private WorldMap _worldMapView;
         private DiplomacyInfo? _diplomacyInfo;
+        private ActiveCountryInfo? _activeCountryInfo; // ← Add this
 
         // Controllers
         private MouseController _mouseController;
@@ -91,6 +92,7 @@ namespace ColdWarPrototype2
             _armyBox = new ArmyList(this);
             _coordinateView = new GeoCoordinates(this);
             _diplomacyInfo = new DiplomacyInfo(this, _gameController); // ← Add this
+            _activeCountryInfo = new ActiveCountryInfo(this, _gameController);
 
             _worldMapView = new WorldMap(this);
             _worldMapView.SetSourceProvinceMap(_gameController.WorldData.ProvinceMap);
@@ -140,7 +142,6 @@ namespace ColdWarPrototype2
 
         private void MapPictureBox_MouseMove(object? sender, MouseEventArgs e)
         {
-            CoordsLabel.Text = $"X: {e.X}, Y: {e.Y}";
             _mouseController.HandleMouseMovedOverMap(e);
         }
 
@@ -216,6 +217,7 @@ namespace ColdWarPrototype2
             _provinceInfo?.UpdateCurrentProvince(_gameController.TickHandler.GetState());
             _countryInfo?.UpdateCurrentCountry(_gameController.TickHandler.GetState());
             _diplomacyInfo?.UpdateCurrentCountry(_gameController.TickHandler.GetState());
+            _activeCountryInfo?.UpdateActiveCountry(_gameController.TickHandler.GetState());
         }
 
         // MODIFIED: DateButton now toggles pause instead of advancing manually

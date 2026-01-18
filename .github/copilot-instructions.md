@@ -101,6 +101,12 @@ When providing code snippets:
 - Lock all shared state access (don't use `volatile`)
 - IsTickComplete() gates tick advancement
 
+## Country Stats in History Files
+- **soft_power** (0-100) - Cultural influence and diplomatic effectiveness (default: 50)
+- **unrest** (0-100) - Internal stability, higher = more unstable (default: 0)
+- **tech_level** (0-100) - Industrial/scientific advancement (default: 50)
+- **military_strength** (0-100) - Optional override, normally calculated from armies/economy
+
 ## Paradox Compatibility
 Match Paradox syntax where possible:
 - `give_guarantee = TAG` (unidirectional)
