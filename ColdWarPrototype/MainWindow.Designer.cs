@@ -29,8 +29,6 @@
         public System.Windows.Forms.Label CountryLeader;
         public System.Windows.Forms.Label CountryGovernment;
         public System.Windows.Forms.Label CountryAllegiance;
-
-        private Label CoordsLabel;
         public ListView DiplomacyListView;
 
         private Button PlayPauseButton;
@@ -81,7 +79,6 @@
             CountryLeader = new Label();
             CountryName = new Label();
             ArmyListBox = new ListBox();
-            CoordsLabel = new Label();
             PlayPauseButton = new Button();
             SpeedComboBox = new ComboBox();
             DebugConsoleButton = new Button();
@@ -321,15 +318,6 @@
             ArmyListBox.Size = new Size(259, 184);
             ArmyListBox.TabIndex = 17;
             // 
-            // CoordsLabel
-            // 
-            CoordsLabel.AutoSize = true;
-            CoordsLabel.Location = new Point(278, 688);
-            CoordsLabel.Name = "CoordsLabel";
-            CoordsLabel.Size = new Size(33, 15);
-            CoordsLabel.TabIndex = 18;
-            CoordsLabel.Text = "(0, 0)";
-            // 
             // PlayPauseButton
             // 
             PlayPauseButton.Location = new Point(225, 892);
@@ -365,7 +353,6 @@
             Controls.Add(DebugConsoleButton);
             Controls.Add(SpeedComboBox);
             Controls.Add(PlayPauseButton);
-            Controls.Add(CoordsLabel);
             Controls.Add(MapPictureBox);
             Controls.Add(MapModeGroup);
             Controls.Add(DateButton);
@@ -383,7 +370,6 @@
             ((System.ComponentModel.ISupportInitialize)FlagPictureBox).EndInit();
             CountryBox.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion

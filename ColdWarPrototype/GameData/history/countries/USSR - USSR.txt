@@ -2,8 +2,13 @@ long_name = "Union of Soviet Socialist Republics"
 government = communist
 leader = "Joseph Stalin"
 
-# Opinions (can be asymmetric)
+# Opinions
 add_opinion = {
     target = USA
     value = -50
 }
+
+# Country Statistics
+soft_power = 60          # Moderate influence
+unrest = 20              # Some internal tensions
+tech_level = 70          # Strong but behind USA

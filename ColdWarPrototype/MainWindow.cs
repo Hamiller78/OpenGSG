@@ -140,7 +140,6 @@ namespace ColdWarPrototype2
 
         private void MapPictureBox_MouseMove(object? sender, MouseEventArgs e)
         {
-            CoordsLabel.Text = $"X: {e.X}, Y: {e.Y}";
             _mouseController.HandleMouseMovedOverMap(e);
         }
 
