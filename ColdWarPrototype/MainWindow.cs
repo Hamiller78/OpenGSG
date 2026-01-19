@@ -240,6 +240,15 @@ namespace ColdWarPrototype2
                 return;
             }
 
+            // Auto-pause the game before showing the event
+            var sim = _gameController.SimulationThread;
+            bool wasRunning = sim.IsRunning && !sim.IsPaused;
+
+            if (wasRunning)
+            {
+                sim.Pause();
+            }
+
             // Now we're on the UI thread - safe to show dialog
             // Create and show event dialog as a modal dialog
             using var eventDialog = new EventDialog();
@@ -248,10 +257,23 @@ namespace ColdWarPrototype2
                 e.Event,
                 e.Context,
                 _gameController.LocalizationManager,
-                () => {
-                    // Event completed callback - can resume game or process queue
+                () =>
+                {
+                    // Event completed callback
+                    // Auto-resume if the game was running before the event
+                    if (wasRunning)
+                    {
+                        sim.Resume();
+                    }
                 }
             );
+
+            // Also resume here (in case dialog is closed without clicking an option)
+            // This won't double-resume because Resume() checks if already running
+            if (wasRunning && sim.IsPaused)
+            {
+                sim.Resume();
+            }
         }
 
         // NEW: Key handling for console toggle
