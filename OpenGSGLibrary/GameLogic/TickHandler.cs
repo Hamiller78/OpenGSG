@@ -257,10 +257,14 @@ namespace OpenGSGLibrary.GameLogic
                 if (evt.IsTriggeredOnly)
                     continue;
 
-                // News events with triggers should be evaluated per-country
-                if (evt.Triggers.Count > 0)
+                // Check if event has country-specific triggers (tag, country scope, etc.)
+                bool hasCountrySpecificTriggers = evt.Triggers.Any(t =>
+                    t is TagTrigger || t is CountryScopeTrigger
+                );
+
+                if (hasCountrySpecificTriggers)
                 {
-                    // Evaluate for each country
+                    // Evaluate for each country (like acheson_speech.2 with tag restrictions)
                     foreach (var country in countries.Values)
                     {
                         var countryNewsContext = new EventEvaluationContext
@@ -311,8 +315,42 @@ namespace OpenGSGLibrary.GameLogic
                 }
                 else
                 {
-                    // No triggers = truly global news event
-                    // Existing global news event logic here
+                    // Global news event (date-only triggers or no triggers)
+                    // Evaluate once, show to active player
+                    var globalContext = new EventEvaluationContext
+                    {
+                        WorldState = _currentWorldState,
+                        CurrentDate = currentDate,
+                        CurrentCountryTag = ActivePlayerCountryTag,
+                        TickHandler = this,
+                        EventManager = _eventManager,
+                    };
+
+                    if (evt.ShouldFire(globalContext, currentTick))
+                    {
+                        if (evt.TriggerOnlyOnce)
+                        {
+                            evt.HasTriggered = true;
+                        }
+
+                        if (evt.Hidden)
+                        {
+                            if (evt.Options.Count > 0)
+                            {
+                                evt.Options[0].Execute(globalContext);
+                            }
+                            evt.ResetMTTH();
+                        }
+                        else if (!string.IsNullOrEmpty(ActivePlayerCountryTag))
+                        {
+                            // Show to player
+                            EventTriggered?.Invoke(
+                                this,
+                                new EventTriggeredArgs(evt, globalContext)
+                            );
+                        }
+                        // In observer mode, hidden events auto-execute, visible events are skipped
+                    }
                 }
             }
         }
