@@ -4,3 +4,4 @@ population = 8400000
 industrialization = 60
 education = 70
 terrain = coastal
+add_core = POR

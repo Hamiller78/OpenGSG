@@ -4,3 +4,4 @@ population = 41650000
 industrialization = 70
 education = 90
 terrain = coastal
+add_core = FRA

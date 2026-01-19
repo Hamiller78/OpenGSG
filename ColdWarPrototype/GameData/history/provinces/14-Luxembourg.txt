@@ -4,3 +4,4 @@ population = 300000
 industrialization = 75
 education = 75
 terrain = continental
+add_core = LUX

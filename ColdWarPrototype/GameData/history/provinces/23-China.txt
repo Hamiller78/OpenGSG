@@ -1,6 +1,8 @@
 owner = PRC
 controller = PRC
 population = 550000000
-industrialization = 45
-education = 45
-terrain = coastal
+industrialization = 30
+education = 25
+terrain = plains
+add_core = PRC
+add_core = ROC

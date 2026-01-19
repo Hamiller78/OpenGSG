@@ -4,3 +4,5 @@ population = 7600000
 industrialization = 50
 education = 50
 terrain = coastal
+add_core = PRC
+add_core = ROC

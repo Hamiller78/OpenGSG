@@ -13,6 +13,12 @@ namespace OpenGSGLibrary.GameDataManager
         public string Owner { get; set; } = string.Empty;
         public List<Division>? Units { get; } = new List<Division>();
 
+        /// <summary>
+        /// List of country tags that consider this province their core territory.
+        /// Used for territorial claims, nationalism, and liberation mechanics.
+        /// </summary>
+        public List<string> Cores { get; set; } = new List<string>();
+
         public override void SetData(string fileName, ILookup<string, object> parsedData)
         {
             base.SetData(fileName, parsedData);
@@ -26,6 +32,19 @@ namespace OpenGSGLibrary.GameDataManager
             Owner = parsedData.Contains("owner")
                 ? parsedData["owner"].Single()?.ToString() ?? string.Empty
                 : string.Empty;
+
+            // Parse cores (using add_core keyword)
+            if (parsedData.Contains("add_core"))
+            {
+                foreach (var coreTag in parsedData["add_core"])
+                {
+                    var tag = coreTag?.ToString();
+                    if (!string.IsNullOrEmpty(tag) && !Cores.Contains(tag))
+                    {
+                        Cores.Add(tag);
+                    }
+                }
+            }
         }
     }
 }

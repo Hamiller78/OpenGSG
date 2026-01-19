@@ -4,3 +4,5 @@ population = 50100000
 industrialization = 30
 education = 90
 terrain = coastal
+add_core = FRG
+add_core = GDR

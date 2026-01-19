@@ -1,6 +1,8 @@
 owner = UK
 controller = UK
-population = 1300000
-industrialization = 75
-education = 80
+population = 1370000
+industrialization = 65
+education = 60
 terrain = coastal
+add_core = UK
+add_core = IRE
