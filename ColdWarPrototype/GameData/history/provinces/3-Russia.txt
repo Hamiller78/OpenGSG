@@ -4,3 +4,4 @@ population = 181077000
 industrialization = 25
 education = 100
 terrain = coastal
+add_core = USSR

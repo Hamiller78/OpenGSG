@@ -124,3 +124,9 @@ Match Paradox syntax where possible:
 
 ## Current Focus
 Building event system, diplomacy (guarantees, opinions), simulation threading, and data loading infrastructure.
+
+### Province Cores
+- **cores = { TAG TAG }** - Countries that consider this province core territory
+- Used for: territorial claims, unrest modifiers, casus belli, liberation
+- Owner is typically (but not always) included in cores
+- Multiple claimants represent contested territories (Korea, China, Vietnam)

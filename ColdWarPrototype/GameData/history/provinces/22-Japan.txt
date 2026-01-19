@@ -4,3 +4,4 @@ population = 84000000
 industrialization = 75
 education = 70
 terrain = coastal
+add_core = JPN

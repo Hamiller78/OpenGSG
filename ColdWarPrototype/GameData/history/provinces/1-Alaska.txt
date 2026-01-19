@@ -4,3 +4,4 @@ population = 135000
 industrialization = 10
 education = 90
 terrain = coastal
+add_core = USA

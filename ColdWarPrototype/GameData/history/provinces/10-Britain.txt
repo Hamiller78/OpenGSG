@@ -4,3 +4,4 @@ population = 47200000
 industrialization = 90
 education = 90
 terrain = coastal
+add_core = UK

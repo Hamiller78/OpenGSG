@@ -4,3 +4,4 @@ population = 10100000
 industrialization = 75
 education = 75
 terrain = coastal
+add_core = NED

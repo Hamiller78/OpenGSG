@@ -31,6 +31,7 @@ namespace ColdWarPrototype.Views
         public string Terrain { get; private set; } = string.Empty;
         public string Owner { get; private set; } = string.Empty;
         public string Controller { get; private set; } = string.Empty;
+        public List<string> Cores { get; private set; } = new List<string>();
 
         public ProvinceInfo(MainWindow motherWindow, MasterController controller)
         {
@@ -74,11 +75,13 @@ namespace ColdWarPrototype.Views
             Name = prov.Name ?? string.Empty;
             Owner = prov.Owner ?? string.Empty;
             Controller = prov.Controller ?? string.Empty;
+            Cores = new List<string>(prov.Cores); // ← Add this
 
             // Immediately update base controls
             SetTextSafe(() => motherWindow_.ProvinceName.Text = Name);
             SetTextSafe(() => motherWindow_.ProvinceOwner.Text = Owner);
             SetTextSafe(() => motherWindow_.ProvinceController.Text = Controller);
+            SetTextSafe(() => UpdateCoresDisplay()); // ← Add this
 
             if (prov is CwpProvince cwp)
             {
@@ -97,6 +100,7 @@ namespace ColdWarPrototype.Views
                 Education = 0;
                 Production = 0;
                 Terrain = string.Empty;
+                Cores.Clear(); // Clear cores in else block
 
                 SetTextSafe(() => motherWindow_.ProvincePopulation.Text = Population.ToString());
                 SetTextSafe(
@@ -106,6 +110,7 @@ namespace ColdWarPrototype.Views
                 SetTextSafe(() => motherWindow_.ProvinceEducation.Text = Education.ToString());
                 SetTextSafe(() => motherWindow_.ProvinceProduction.Text = Production.ToString());
                 SetTextSafe(() => motherWindow_.ProvinceTerrain.Text = Terrain);
+                SetTextSafe(() => motherWindow_.ProvinceCores.Text = "Cores: -"); // Clear cores display
             }
         }
 
@@ -220,6 +225,7 @@ namespace ColdWarPrototype.Views
             SetTextSafe(() => motherWindow_.ProvinceEducation.Text = Education.ToString());
             SetTextSafe(() => motherWindow_.ProvinceProduction.Text = Production.ToString());
             SetTextSafe(() => motherWindow_.ProvinceTerrain.Text = Terrain);
+            SetTextSafe(() => UpdateCoresDisplay()); // Update cores display
         }
 
         private void DetachViewModel()
@@ -241,6 +247,18 @@ namespace ColdWarPrototype.Views
             else
             {
                 uiAction();
+            }
+        }
+
+        private void UpdateCoresDisplay()
+        {
+            if (Cores.Count > 0)
+            {
+                motherWindow_.ProvinceCores.Text = $"Cores: {string.Join(", ", Cores)}";
+            }
+            else
+            {
+                motherWindow_.ProvinceCores.Text = "Cores: -";
             }
         }
 

@@ -1,6 +1,8 @@
 owner = DRK
 controller = DRK
-population = 10500000
-industrialization = 55
-education = 50
-terrain = coastal
+population = 10000000
+industrialization = 45
+education = 40
+terrain = mountains
+add_core = ROK
+add_core = DRK

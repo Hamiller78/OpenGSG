@@ -21,6 +21,7 @@
         public System.Windows.Forms.Label ProvinceTerrain;
         public System.Windows.Forms.Label ProvinceOwner;
         public System.Windows.Forms.Label ProvinceController;
+        public System.Windows.Forms.Label ProvinceCores;
 
         public GroupBox CountryBox;
         public System.Windows.Forms.PictureBox FlagPictureBox;
@@ -103,6 +104,7 @@
             ActiveCountryMilitaryTech = new Label();
             IndustryInvestmentLabel = new Label();
             IndustryInvestmentTextBox = new TextBox();
+            ProvinceCores = new Label();
             ((System.ComponentModel.ISupportInitialize)MapPictureBox).BeginInit();
             MapModeGroup.SuspendLayout();
             ProvinceBox.SuspendLayout();
@@ -174,6 +176,7 @@
             ProvinceBox.Controls.Add(ProvinceIndustrialization);
             ProvinceBox.Controls.Add(ProvincePopulation);
             ProvinceBox.Controls.Add(ProvinceName);
+            ProvinceBox.Controls.Add(ProvinceCores);
             ProvinceBox.Location = new Point(5, 89);
             ProvinceBox.Margin = new Padding(4, 3, 4, 3);
             ProvinceBox.Name = "ProvinceBox";
@@ -457,6 +460,15 @@
             IndustryInvestmentTextBox.Size = new Size(60, 23);
             IndustryInvestmentTextBox.TabIndex = 8;
             IndustryInvestmentTextBox.Text = "50";
+            // 
+            // ProvinceCores
+            // 
+            ProvinceCores.Location = new Point(9, 170);
+            ProvinceCores.Margin = new Padding(4, 0, 4, 0);
+            ProvinceCores.Name = "ProvinceCores";
+            ProvinceCores.Size = new Size(233, 40);  // Taller to handle multiple cores
+            ProvinceCores.TabIndex = 12;
+            ProvinceCores.Text = "Cores: -";
             // 
             // MainWindow
             // 
