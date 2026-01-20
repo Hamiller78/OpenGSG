@@ -1,4 +1,5 @@
 using System.Linq;
+using OpenGSGLibrary.GameLogic;
 
 namespace OpenGSGLibrary.Events
 {
@@ -73,7 +74,7 @@ namespace OpenGSGLibrary.Events
                             else
                             {
                                 // Show to player - use helper method
-                                evalContext.TickHandler.TriggerEvent(eventToFire, newsContext);
+                                TickHandler.TriggerEvent(eventToFire, newsContext);
                             }
                         }
                     }
@@ -84,7 +85,7 @@ namespace OpenGSGLibrary.Events
                 // Global news event - show to active player only
                 if (!string.IsNullOrEmpty(evalContext.TickHandler.ActivePlayerCountryTag))
                 {
-                    evalContext.TickHandler.TriggerEvent(eventToFire, evalContext);
+                    TickHandler.TriggerEvent(eventToFire, evalContext);
                 }
             }
             else
@@ -104,7 +105,7 @@ namespace OpenGSGLibrary.Events
                 else
                 {
                     // Show to player - use helper method
-                    evalContext.TickHandler.TriggerEvent(eventToFire, evalContext);
+                    TickHandler.TriggerEvent(eventToFire, evalContext);
                 }
             }
         }
