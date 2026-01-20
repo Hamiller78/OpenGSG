@@ -231,7 +231,7 @@ namespace ColdWarPrototype2
             DateButton.Text = _gameController.GetGameDateTime().ToString();
         }
 
-        private void TickHandler_EventTriggered(object? sender, EventTriggeredArgs e)
+        private void TickHandler_EventTriggered(object? sender, GameEventTriggeredEventArgs e)
         {
             // Marshal to UI thread if needed
             if (InvokeRequired)

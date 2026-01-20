@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using OpenGSGLibrary.GameDataManager;
 using OpenGSGLibrary.GameLogic;
 
@@ -275,7 +272,7 @@ namespace OpenGSGLibrary.Events
             }
         }
 
-        private void FireEvent(GameEvent evt, EventEvaluationContext context)
+        private static void FireEvent(GameEvent evt, EventEvaluationContext context)
         {
             if (evt.Hidden)
             {
