@@ -40,7 +40,7 @@ namespace OpenGSGLibrary.GameLogic
         private readonly PlayerManager _playerManager = new();
         private WorldState? _currentWorldState;
         private long _currentTick = 0;
-        private EventManager? _eventManager;
+        private EventEvaluator? _eventEvaluator;
         private DateTime _startDate = new DateTime(1950, 1, 1, 0, 0, 0, DateTimeKind.Unspecified); // Default start date
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace OpenGSGLibrary.GameLogic
         /// </summary>
         public void SetEventManager(EventManager eventManager)
         {
-            _eventManager = eventManager;
+            _eventEvaluator = new EventEvaluator(eventManager);
         }
 
         /// <summary>
@@ -137,7 +137,15 @@ namespace OpenGSGLibrary.GameLogic
             }
 
             // Evaluate events after world updates
-            EvaluateEvents();
+            if (_eventEvaluator != null && _currentWorldState != null)
+            {
+                _eventEvaluator.EvaluateAllEvents(
+                    _currentWorldState,
+                    GetCurrentDate(),
+                    _currentTick,
+                    ActivePlayerCountryTag
+                );
+            }
 
             // After provinces and other TickDone subscribers have run, request UI refresh
             // so the UI can pull latest model state (or ViewModels can Refresh()).
@@ -164,38 +172,9 @@ namespace OpenGSGLibrary.GameLogic
         }
 
         /// <summary>
-        /// Evaluates all events and fires those whose triggers are met.
-        /// Shows UI for active player country, auto-executes for AI countries.
+        /// Gets the current tick number.
         /// </summary>
-        private void EvaluateEvents()
-        {
-            if (_eventManager == null || _currentWorldState == null)
-                return;
-
-            var currentDate = GetCurrentDate();
-            var currentTick = _currentTick;
-
-            // Evaluate country events for ALL countries
-            var countries =
-                _currentWorldState.GetCountryTable()
-                ?? throw new WorldStateException("Country table is null");
-
-            foreach (var countryTag in countries.Values.Select(x => x.Tag))
-            {
-                var context = new EventEvaluationContext
-                {
-                    WorldState = _currentWorldState,
-                    CurrentDate = currentDate,
-                    CurrentCountryTag = countryTag,
-                    TickHandler = this,
-                    EventManager = _eventManager,
-                };
-
-                EvaluateCountryEvents(currentTick, countryTag, context);
-            }
-
-            EvaluateNewsEvents(currentDate, currentTick, countries);
-        }
+        public long GetCurrentTick() => _currentTick;
 
         /// <summary>
         /// Fires an event immediately for a specific country, bypassing trigger evaluation.
@@ -206,76 +185,15 @@ namespace OpenGSGLibrary.GameLogic
         /// <returns>True if event was found and fired, false otherwise</returns>
         public bool FireEventDebug(string eventId, string countryTag)
         {
-            if (_eventManager == null || _currentWorldState == null)
+            if (_eventEvaluator == null || _currentWorldState == null)
                 return false;
 
-            var countries = _currentWorldState.GetCountryTable();
-            if (!countries.TryGetValue(countryTag, out var country))
-                return false;
-
-            // Find the event
-            var countryEvents = _eventManager.GetCountryEvents();
-            var newsEvents = _eventManager.GetNewsEvents();
-
-            var countryEvent = countryEvents.FirstOrDefault(e => e.Id == eventId);
-            if (countryEvent != null)
-            {
-                var context = new EventEvaluationContext
-                {
-                    WorldState = _currentWorldState,
-                    CurrentDate = GetCurrentDate(),
-                    CurrentCountryTag = countryTag,
-                    TickHandler = this,
-                    EventManager = _eventManager,
-                };
-
-                // Fire event using the same pattern as EvaluateEvents()
-                if (countryEvent.Hidden)
-                {
-                    // Auto-execute for hidden events
-                    if (countryEvent.Options.Count > 0)
-                    {
-                        countryEvent.Options[0].Execute(context);
-                    }
-                }
-                else
-                {
-                    // Raise event for UI to display
-                    EventTriggered?.Invoke(null, new EventTriggeredArgs(countryEvent, context));
-                }
-                return true;
-            }
-
-            var newsEvent = newsEvents.FirstOrDefault(e => e.Id == eventId);
-            if (newsEvent != null)
-            {
-                var context = new EventEvaluationContext
-                {
-                    WorldState = _currentWorldState,
-                    CurrentDate = GetCurrentDate(),
-                    CurrentCountryTag = countryTag,
-                    TickHandler = this,
-                    EventManager = _eventManager,
-                };
-
-                // Fire event using the same pattern as EvaluateEvents()
-                if (newsEvent.Hidden)
-                {
-                    // Auto-execute for hidden events
-                    if (newsEvent.Options.Count > 0)
-                    {
-                        newsEvent.Options[0].Execute(context);
-                    }
-                }
-                else
-                {
-                    // Raise event for UI to display
-                    EventTriggered?.Invoke(null, new EventTriggeredArgs(newsEvent, context));
-                }
-                return true;
-            }
-
-            return false; // Event not found
+            return _eventEvaluator.FireEventDebug(
+                eventId,
+                countryTag,
+                _currentWorldState,
+                GetCurrentDate()
+            );
         }
 
         /// <summary>
@@ -315,162 +233,6 @@ namespace OpenGSGLibrary.GameLogic
         public static void TriggerEvent(GameEvent evt, EventEvaluationContext context)
         {
             EventTriggered?.Invoke(null, new EventTriggeredArgs(evt, context));
-        }
-
-        private void EvaluateCountryEvents(
-            long currentTick,
-            string countryTag,
-            EventEvaluationContext context
-        )
-        {
-            var countryEvents = _eventManager.GetCountryEvents();
-            foreach (var evt in countryEvents)
-            {
-                // Skip events that can only be triggered explicitly
-                if (evt.IsTriggeredOnly)
-                    continue;
-
-                if (evt.ShouldFire(context, currentTick))
-                {
-                    if (evt.TriggerOnlyOnce)
-                    {
-                        evt.HasTriggered = true;
-                    }
-
-                    // Determine if this is the player's country or AI
-                    bool isPlayerCountry = countryTag == ActivePlayerCountryTag;
-
-                    // Hidden events always auto-execute
-                    if (evt.Hidden)
-                    {
-                        if (evt.Options.Count > 0)
-                        {
-                            evt.Options[0].Execute(context);
-                        }
-                        evt.ResetMTTH();
-                    }
-                    // AI countries auto-execute (choose first option)
-                    else if (!isPlayerCountry)
-                    {
-                        // AI decision-making: for now, just pick first option
-                        // Future: AI can evaluate options and choose best one
-                        if (evt.Options.Count > 0)
-                        {
-                            evt.Options[0].Execute(context);
-                        }
-                        evt.ResetMTTH();
-                        evt.ResetMTTH();
-                    }
-                    // Player country: show UI popup
-                    else
-                    {
-                        EventTriggered?.Invoke(null, new EventTriggeredArgs(evt, context));
-                    }
-                }
-            }
-        }
-
-        private void EvaluateNewsEvents(
-            DateTime currentDate,
-            long currentTick,
-            IDictionary<string, Country> countries
-        )
-        {
-            // Evaluate news events - check against all countries if they have triggers
-            var newsEvents = _eventManager.GetNewsEvents();
-            foreach (var evt in newsEvents)
-            {
-                // Skip events that can only be triggered explicitly
-                if (evt.IsTriggeredOnly)
-                    continue;
-
-                // Check if event has country-specific triggers (tag, country scope, etc.)
-                bool hasCountrySpecificTriggers = evt.Triggers.Any(t =>
-                    t is TagTrigger || t is CountryScopeTrigger
-                );
-
-                if (hasCountrySpecificTriggers)
-                {
-                    // Evaluate for each country (like acheson_speech.2 with tag restrictions)
-                    foreach (var countryTag in countries.Values.Select(x => x.Tag))
-                    {
-                        var countryNewsContext = new EventEvaluationContext
-                        {
-                            WorldState = _currentWorldState,
-                            CurrentDate = currentDate,
-                            CurrentCountryTag = countryTag,
-                            TickHandler = this,
-                            EventManager = _eventManager,
-                        };
-
-                        if (evt.ShouldFire(countryNewsContext, currentTick))
-                        {
-                            if (evt.TriggerOnlyOnce)
-                            {
-                                evt.HasTriggered = true;
-                            }
-
-                            bool isPlayerCountry = countryTag == ActivePlayerCountryTag;
-
-                            if (evt.Hidden || !isPlayerCountry)
-                            {
-                                if (evt.Options.Count > 0)
-                                {
-                                    evt.Options[0].Execute(countryNewsContext);
-                                }
-                                evt.ResetMTTH();
-                            }
-                            else
-                            {
-                                // Show to player
-                                EventTriggered?.Invoke(
-                                    null,
-                                    new EventTriggeredArgs(evt, countryNewsContext)
-                                );
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Global news event (date-only triggers or no triggers)
-                    // Evaluate once, show to active player
-                    var globalContext = new EventEvaluationContext
-                    {
-                        WorldState = _currentWorldState,
-                        CurrentDate = currentDate,
-                        CurrentCountryTag = ActivePlayerCountryTag,
-                        TickHandler = this,
-                        EventManager = _eventManager,
-                    };
-
-                    if (evt.ShouldFire(globalContext, currentTick))
-                    {
-                        if (evt.TriggerOnlyOnce)
-                        {
-                            evt.HasTriggered = true;
-                        }
-
-                        if (evt.Hidden)
-                        {
-                            if (evt.Options.Count > 0)
-                            {
-                                evt.Options[0].Execute(globalContext);
-                            }
-                            evt.ResetMTTH();
-                        }
-                        else if (!string.IsNullOrEmpty(ActivePlayerCountryTag))
-                        {
-                            // Show to player
-                            EventTriggered?.Invoke(
-                                null,
-                                new EventTriggeredArgs(evt, globalContext)
-                            );
-                        }
-                        // In observer mode, hidden events auto-execute, visible events are skipped
-                    }
-                }
-            }
         }
     }
 
