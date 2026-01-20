@@ -190,7 +190,8 @@ public class TickHandler
             eventId,
             countryTag,
             _currentWorldState,
-            GetCurrentDate()
+            GetCurrentDate(),
+            ActivePlayerCountryTag
         );
     }
 

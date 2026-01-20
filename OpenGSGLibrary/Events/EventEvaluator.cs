@@ -68,7 +68,8 @@ namespace OpenGSGLibrary.Events
             string eventId,
             string countryTag,
             WorldState worldState,
-            DateTime currentDate
+            DateTime currentDate,
+            string? activePlayerCountryTag
         )
         {
             var countries = worldState.GetCountryTable();
@@ -94,7 +95,8 @@ namespace OpenGSGLibrary.Events
                 EventManager = _eventManager,
             };
 
-            FireEvent(evt, context);
+            bool isPlayerCountry = countryTag == activePlayerCountryTag;
+            ExecuteOrTriggerEvent(evt, context, isPlayerCountry);
             return true;
         }
 
@@ -113,35 +115,9 @@ namespace OpenGSGLibrary.Events
 
                 if (evt.ShouldFire(context, currentTick))
                 {
-                    if (evt.TriggerOnlyOnce)
-                    {
-                        evt.HasTriggered = true;
-                    }
-
+                    evt.HasTriggered = true;
                     bool isPlayerCountry = countryTag == activePlayerCountryTag;
-
-                    if (evt.Hidden)
-                    {
-                        if (evt.Options.Count > 0)
-                        {
-                            evt.Options[0].Execute(context);
-                        }
-                        evt.ResetMTTH();
-                    }
-                    else if (!isPlayerCountry)
-                    {
-                        // AI decision-making: for now, just pick first option
-                        if (evt.Options.Count > 0)
-                        {
-                            evt.Options[0].Execute(context);
-                        }
-                        evt.ResetMTTH();
-                    }
-                    else
-                    {
-                        // Player country: show UI popup
-                        TickHandler.TriggerEvent(evt, context);
-                    }
+                    ExecuteOrTriggerEvent(evt, context, isPlayerCountry);
                 }
             }
         }
@@ -160,7 +136,7 @@ namespace OpenGSGLibrary.Events
                 if (evt.IsTriggeredOnly)
                     continue;
 
-                bool hasCountrySpecificTriggers = evt.Triggers.Any(t =>
+                var hasCountrySpecificTriggers = evt.Triggers.Any(t =>
                     t is TagTrigger || t is CountryScopeTrigger
                 );
 
@@ -210,25 +186,9 @@ namespace OpenGSGLibrary.Events
 
                 if (evt.ShouldFire(context, currentTick))
                 {
-                    if (evt.TriggerOnlyOnce)
-                    {
-                        evt.HasTriggered = true;
-                    }
-
+                    evt.HasTriggered = true;
                     bool isPlayerCountry = countryTag == activePlayerCountryTag;
-
-                    if (evt.Hidden || !isPlayerCountry)
-                    {
-                        if (evt.Options.Count > 0)
-                        {
-                            evt.Options[0].Execute(context);
-                        }
-                        evt.ResetMTTH();
-                    }
-                    else
-                    {
-                        TickHandler.TriggerEvent(evt, context);
-                    }
+                    ExecuteOrTriggerEvent(evt, context, isPlayerCountry);
                 }
             }
         }
@@ -252,37 +212,36 @@ namespace OpenGSGLibrary.Events
 
             if (evt.ShouldFire(context, currentTick))
             {
-                if (evt.TriggerOnlyOnce)
-                {
-                    evt.HasTriggered = true;
-                }
-
-                if (evt.Hidden)
-                {
-                    if (evt.Options.Count > 0)
-                    {
-                        evt.Options[0].Execute(context);
-                    }
-                    evt.ResetMTTH();
-                }
-                else if (!string.IsNullOrEmpty(activePlayerCountryTag))
-                {
-                    TickHandler.TriggerEvent(evt, context);
-                }
+                evt.HasTriggered = true;
+                bool isPlayerCountry = !string.IsNullOrEmpty(activePlayerCountryTag);
+                ExecuteOrTriggerEvent(evt, context, isPlayerCountry);
             }
         }
 
-        private static void FireEvent(GameEvent evt, EventEvaluationContext context)
+        /// <summary>
+        /// Executes an event automatically (for hidden/AI) or triggers UI display (for player).
+        /// </summary>
+        /// <param name="evt">The event to execute or trigger</param>
+        /// <param name="context">Event evaluation context</param>
+        /// <param name="isPlayerCountry">Whether this is the active player's country</param>
+        private static void ExecuteOrTriggerEvent(
+            GameEvent evt,
+            EventEvaluationContext context,
+            bool isPlayerCountry
+        )
         {
-            if (evt.Hidden)
+            if (evt.Hidden || !isPlayerCountry)
             {
+                // Auto-execute for hidden events or AI countries
                 if (evt.Options.Count > 0)
                 {
                     evt.Options[0].Execute(context);
                 }
+                evt.ResetMTTH();
             }
             else
             {
+                // Player country: show UI popup
                 TickHandler.TriggerEvent(evt, context);
             }
         }
