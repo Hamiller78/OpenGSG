@@ -58,6 +58,67 @@ When providing code snippets:
 - Instead use **bold** for file names: **WorldLoader.cs**, **CwpCountry.cs**
 - This prevents VS from misinterpreting explanations as code snippet headers
 
+## Event System Architecture
+
+### Country Events vs News Events
+- **country_event**: Evaluates independently for each country (triggers + MTTH rolled per country)
+- **news_event**: Evaluates globally once (triggers + MTTH rolled once), then filtered by recipients
+
+### News Event Structure
+- **trigger** block: Global conditions (date, etc.) - evaluated once per tick
+- **recipients** block: Filter which countries receive the event - evaluated per country
+- If no recipients specified, all countries receive the event
+- Example: News event with date trigger fires globally, then recipients like `tag = USSR` filter who sees it
+
+### Country Event Structure
+- **trigger** block: Conditions evaluated independently for each country
+- MTTH rolled separately for each country that passes triggers
+- Example: Event with `tag = USA` only evaluates for USA
+
+### Event Properties
+- Events use `mean_time_to_happen = { days = X }` for randomized firing
+- `trigger_only_once = yes` prevents re-firing
+- `hidden = yes` auto-executes first option (no UI)
+- Event pictures load from gfx/event_pictures/{name}.png
+- MTTH: probability = 1/days per tick (e.g., days=3 → ~33% chance per day)
+
+### Event Evaluation Flow
+1. **TickHandler.FinishTick()** calls **EventEvaluator.EvaluateAllEvents()**
+2. For **country events**:
+   - Loop through all countries
+   - Evaluate triggers in each country's context
+   - Roll MTTH for each country that passes triggers
+   - Show to player or auto-execute for AI
+3. For **news events**:
+   - Evaluate global triggers once (in player/first country context)
+   - Roll MTTH once
+   - If event fires:
+     - Loop through all countries
+     - Check recipients filter for each country
+     - Show to player country (once) or auto-execute for AI countries
+
+## Testability Patterns
+
+### Dependency Injection
+- Use interfaces for external dependencies:
+  - `IEventTriggerNotifier` - for event UI notifications
+  - `IRandom` - for random number generation
+- Production implementations: `TickHandlerEventNotifier`, `SystemRandom`
+- Test implementations: `TestEventNotifier`, `DeterministicRandom`, `SeededRandom`
+
+### Deterministic Testing
+- ALWAYS use `DeterministicRandom` or `SeededRandom` for tests involving randomness
+- Document expected values when using seeded randoms (e.g., "with seed 12345, produces exactly 8 fires")
+- Never write non-deterministic tests (no random variance in assertions)
+- Use reflection for testing private properties when necessary
+
+### Unit Test Structure (NUnit)
+- Use **[TestFixture]** for test classes
+- Use **[Test]** for test methods
+- Assertion style: `Assert.That(actual, Is.EqualTo(expected))`
+- Test naming: `MethodName_Scenario_ExpectedBehavior`
+- Test pattern: Arrange-Act-Assert with clear comments
+
 ## Common Patterns
 
 ### Adding New Country Properties
@@ -76,13 +137,6 @@ When providing code snippets:
 - Base triggers in **OpenGSGLibrary.Events**
 - Game-specific triggers override ParseSingleTrigger()
 - All triggers implement `IEventTrigger.Evaluate(object context)`
-
-### Event Properties
-- Events use `mean_time_to_happen = { days = X }` for randomized firing
-- `trigger_only_once = yes` prevents re-firing
-- `hidden = yes` auto-executes first option (no UI)
-- Event pictures load from gfx/event_pictures/{name}.png
-- MTTH: probability = 1/days per tick (e.g., days=3 → ~33% chance per day)
 
 ### Diplomatic Relations
 - Base: **WarRelation**, **AllianceRelation** (OpenGSGLibrary)
@@ -107,6 +161,18 @@ When providing code snippets:
 - **tech_level** (0-100) - Industrial/scientific advancement (default: 50)
 - **military_strength** (0-100) - Optional override, normally calculated from armies/economy
 
+## Province Cores
+- **cores = { TAG TAG }** - Countries that consider this province core territory
+- Used for: territorial claims, unrest modifiers, casus belli, liberation
+- Owner is typically (but not always) included in cores
+- Multiple claimants represent contested territories (Korea, China, Vietnam)
+
+## Code Organization Rules
+- One class per file (including small helper classes like EventArgs)
+- Event args classes: **TickEventArgs.cs**, **GameEventTriggeredEventArgs.cs**
+- Interfaces: **IEventTriggerNotifier.cs**, **IRandom.cs**
+- Test implementations: Alongside interfaces or in test projects
+
 ## Paradox Compatibility
 Match Paradox syntax where possible:
 - `give_guarantee = TAG` (unidirectional)
@@ -121,12 +187,11 @@ Match Paradox syntax where possible:
 - ❌ Use British spelling in code (use American in data files if matching Paradox)
 - ❌ Use `volatile` for shared state (use locks instead)
 - ❌ Use backticks for filenames in explanatory text when code snippets are present
+- ❌ Use **trigger** block for news event recipients (use **recipients** instead)
+- ❌ Write non-deterministic tests
+- ❌ Use static dependencies in testable code
+- ❌ Put multiple classes in one file
+- ❌ Use `Random` directly in production code (use `IRandom` interface)
 
 ## Current Focus
 Building event system, diplomacy (guarantees, opinions), simulation threading, and data loading infrastructure.
-
-### Province Cores
-- **cores = { TAG TAG }** - Countries that consider this province core territory
-- Used for: territorial claims, unrest modifiers, casus belli, liberation
-- Owner is typically (but not always) included in cores
-- Multiple claimants represent contested territories (Korea, China, Vietnam)
