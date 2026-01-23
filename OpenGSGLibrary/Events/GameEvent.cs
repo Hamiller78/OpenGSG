@@ -72,9 +72,10 @@ public abstract class GameEvent
     private long _triggerMetTick = -1;
 
     /// <summary>
-    /// Random number generator for MTTH rolls (static for consistent seeding).
+    /// Random number generator for MTTH calculations.
+    /// Can be injected for testing (defaults to SystemRandom).
     /// </summary>
-    private static readonly Random _random = new();
+    public IRandom Random { get; set; } = new SystemRandom();
 
     /// <summary>
     /// Sets the event properties from parsed data.
@@ -388,52 +389,38 @@ public abstract class GameEvent
     }
 
     /// <summary>
-    /// Evaluates whether this event should fire, considering both triggers and MTTH.
-    /// Call this each tick when triggers are met to determine if the event fires.
+    /// Evaluates whether this event should fire based on triggers and MTTH.
     /// </summary>
-    /// <param name="context">Game state context for evaluating triggers.</param>
-    /// <param name="currentTick">Current game tick (day).</param>
-    /// <returns>True if the event should fire this tick.</returns>
-    public virtual bool ShouldFire(object context, long currentTick)
+    public bool ShouldFire(EventEvaluationContext context, long currentTick)
     {
-        // Check if triggers are met
-        if (!EvaluateTriggers(context))
-        {
-            // Triggers not met - reset MTTH tracking
-            _triggerMetTick = -1;
+        // If already triggered and should only trigger once, don't fire
+        if (TriggerOnlyOnce && HasTriggered)
             return false;
-        }
 
-        // Triggers are met
+        // Check all triggers
+        if (!EvaluateTriggers(context))
+            return false;
 
-        // If no MTTH, fire immediately
-        if (MeanTimeToHappenDays <= 0)
+        // Check MTTH (Mean Time To Happen)
+        if (MeanTimeToHappenDays > 0)
         {
-            return true;
+            // Probability = 1 / MTTH per day
+            double probability = 1.0 / MeanTimeToHappenDays;
+            double roll = Random.NextDouble(); // Use injected Random
+
+            return roll < probability;
         }
 
-        // Track when triggers were first met
-        if (_triggerMetTick == -1)
-        {
-            _triggerMetTick = currentTick;
-        }
-
-        // Calculate probability to fire this tick
-        // Formula: probability = 1 / MTTH per day
-        // This gives approximately MTTH days average time to happen
-        double fireChance = 1.0 / MeanTimeToHappenDays;
-
-        // Roll the dice
-        return _random.NextDouble() < fireChance;
+        // No MTTH, fire immediately
+        return true;
     }
 
     /// <summary>
-    /// Resets the MTTH tracking for this event.
-    /// Called when the event fires or when it should be reset.
+    /// Resets the MTTH random state (for testing).
     /// </summary>
     public void ResetMTTH()
     {
-        _triggerMetTick = -1;
+        // No longer needed with injectable Random, but kept for compatibility
     }
 
     /// <summary>

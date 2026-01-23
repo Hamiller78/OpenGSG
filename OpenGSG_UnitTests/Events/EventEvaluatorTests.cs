@@ -114,28 +114,76 @@ namespace OpenGSG_UnitTests.Events
                     new DateLessThanTrigger { Date = new DateTime(1962, 1, 1) },
                 },
                 Options = new List<EventOption> { new EventOption { Name = "Interesting" } },
+                // Inject deterministic random: first roll succeeds (0.001 < 0.0056)
+                // second roll fails (0.9 > 0.0056), third succeeds
+                Random = new DeterministicRandom(0.001, 0.9, 0.9, 0.002, 0.9),
             };
             eventManager.RegisterEvent(newsEvent);
 
             var worldState = CreateTestWorldState(new[] { "USA" });
             var currentDate = new DateTime(1961, 6, 1);
 
-            int fireCount = 0;
-            // Run 100 times to test MTTH probability
-            for (int i = 0; i < 100; i++)
+            // Act - run 5 evaluations
+            var results = new List<bool>();
+            for (int i = 0; i < 5; i++)
             {
                 notifier.TriggeredEvents.Clear();
-                newsEvent.ResetMTTH(); // Reset for each test
+                evaluator.EvaluateAllEvents(worldState, currentDate, i, "USA", null!);
+                results.Add(notifier.TriggeredEvents.Count > 0);
+            }
 
+            // Assert - deterministic results based on injected random values
+            // With MTTH 180 days, probability = 1/180 ≈ 0.0056
+            Assert.That(results[0], Is.True); // 0.001 < 0.0056 → fires
+            Assert.That(results[1], Is.False); // 0.9 > 0.0056 → doesn't fire
+            Assert.That(results[2], Is.False); // 0.9 > 0.0056 → doesn't fire
+            Assert.That(results[3], Is.True); // 0.002 < 0.0056 → fires
+            Assert.That(results[4], Is.False); // 0.9 > 0.0056 → doesn't fire
+        }
+
+        [Test]
+        public void NewsEvent_WithMTTH_UsesCorrectProbability()
+        {
+            // Arrange
+            var eventManager = new EventManager();
+            var notifier = new TestEventNotifier();
+            var evaluator = new EventEvaluator(eventManager, notifier);
+
+            // Test with known seed for reproducible results
+            var newsEvent = new NewsEvent
+            {
+                Id = "test.mtth",
+                Title = "MTTH Test",
+                MeanTimeToHappenDays = 100, // probability = 0.01
+                Triggers = new List<IEventTrigger>
+                {
+                    new DateGreaterEqualTrigger { Date = new DateTime(1950, 1, 1) },
+                },
+                Options = new List<EventOption> { new EventOption { Name = "OK" } },
+                Random = new SeededRandom(
+                    12345
+                ) // Fixed seed for reproducibility
+                ,
+            };
+            eventManager.RegisterEvent(newsEvent);
+
+            var worldState = CreateTestWorldState(new[] { "USA" });
+            var currentDate = new DateTime(1950, 1, 1);
+
+            // Act - run 1000 times with fixed seed
+            int fireCount = 0;
+            for (int i = 0; i < 1000; i++)
+            {
+                notifier.TriggeredEvents.Clear();
                 evaluator.EvaluateAllEvents(worldState, currentDate, i, "USA", null!);
 
                 if (notifier.TriggeredEvents.Count > 0)
                     fireCount++;
             }
 
-            // With MTTH of 180 days, probability per day is ~0.56%
-            // Over 100 ticks, we expect roughly 0-10 fires (allow some variance)
-            Assert.That(fireCount, Is.InRange(0, 10));
+            // Assert - with seed 12345, the random sequence produces exactly 8 fires
+            // (empirically determined - any change to this indicates a bug or RNG change)
+            Assert.That(fireCount, Is.EqualTo(8));
         }
 
         [Test]
