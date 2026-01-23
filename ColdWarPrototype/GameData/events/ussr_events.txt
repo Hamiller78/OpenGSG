@@ -1,0 +1,25 @@
+news_event = {
+    id = trololo.1
+    title = trololo.1.t
+    desc = trololo.1.d
+    picture = trololo
+
+    trigger_only_once = yes
+
+    trigger = {
+        date >= 1976.01.01
+        date < 1976.01.01
+    }
+
+    mean_time_to_happen = {
+        days = 180
+    }
+
+    recipients = {
+        tag = USSR
+    }
+
+    option = {
+        name = trololo.1.a
+    }
+}
