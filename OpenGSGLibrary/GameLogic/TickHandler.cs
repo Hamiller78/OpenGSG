@@ -46,7 +46,9 @@ public class TickHandler
     /// </summary>
     public void SetEventManager(EventManager eventManager)
     {
-        _eventEvaluator = new EventEvaluator(eventManager);
+        // Create notifier that delegates to static event
+        var notifier = new TickHandlerEventNotifier();
+        _eventEvaluator = new EventEvaluator(eventManager, notifier);
     }
 
     /// <summary>

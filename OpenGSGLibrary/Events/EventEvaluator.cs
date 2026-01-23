@@ -6,8 +6,17 @@ namespace OpenGSGLibrary.Events
     /// <summary>
     /// Responsible for evaluating and firing events based on triggers.
     /// </summary>
-    public class EventEvaluator(EventManager eventManager)
+    public class EventEvaluator
     {
+        private readonly EventManager _eventManager;
+        private readonly IEventTriggerNotifier _eventNotifier;
+
+        public EventEvaluator(EventManager eventManager, IEventTriggerNotifier eventNotifier)
+        {
+            _eventManager = eventManager;
+            _eventNotifier = eventNotifier;
+        }
+
         /// <summary>
         /// Evaluates all events and fires those whose triggers are met.
         /// </summary>
@@ -25,7 +34,7 @@ namespace OpenGSGLibrary.Events
 
             // Evaluate country events
             EvaluateEventList(
-                eventManager.GetCountryEvents(),
+                _eventManager.GetCountryEvents(),
                 worldState,
                 currentDate,
                 currentTick,
@@ -36,7 +45,7 @@ namespace OpenGSGLibrary.Events
 
             // Evaluate news events (same logic)
             EvaluateEventList(
-                eventManager.GetNewsEvents(),
+                _eventManager.GetNewsEvents(),
                 worldState,
                 currentDate,
                 currentTick,
@@ -117,7 +126,7 @@ namespace OpenGSGLibrary.Events
                 CurrentDate = currentDate,
                 CurrentCountryTag = contextCountryTag,
                 TickHandler = tickHandler,
-                EventManager = eventManager,
+                EventManager = _eventManager,
             };
 
             // Check if event fires globally
@@ -139,7 +148,7 @@ namespace OpenGSGLibrary.Events
                     CurrentDate = currentDate,
                     CurrentCountryTag = country.Tag,
                     TickHandler = tickHandler,
-                    EventManager = eventManager,
+                    EventManager = _eventManager,
                 };
 
                 // Check if this country should receive the event
@@ -188,7 +197,7 @@ namespace OpenGSGLibrary.Events
                     CurrentDate = currentDate,
                     CurrentCountryTag = country.Tag,
                     TickHandler = tickHandler,
-                    EventManager = eventManager,
+                    EventManager = _eventManager,
                 };
 
                 if (evt.ShouldFire(context, currentTick))
@@ -214,7 +223,7 @@ namespace OpenGSGLibrary.Events
             }
         }
 
-        private static void HandleAICountryAfterPlayerShown(
+        private void HandleAICountryAfterPlayerShown(
             GameEvent evt,
             EventEvaluationContext context,
             bool isPlayerCountry
@@ -227,7 +236,7 @@ namespace OpenGSGLibrary.Events
             }
         }
 
-        private static bool HandleEventFiring(
+        private bool HandleEventFiring(
             GameEvent evt,
             EventEvaluationContext context,
             bool isPlayerCountry
@@ -245,7 +254,7 @@ namespace OpenGSGLibrary.Events
             }
         }
 
-        private static void AutoExecuteEvent(GameEvent evt, EventEvaluationContext context)
+        private void AutoExecuteEvent(GameEvent evt, EventEvaluationContext context)
         {
             if (evt.Options.Count > 0)
             {
@@ -254,9 +263,9 @@ namespace OpenGSGLibrary.Events
             evt.ResetMTTH();
         }
 
-        private static void ShowEventToPlayer(GameEvent evt, EventEvaluationContext context)
+        private void ShowEventToPlayer(GameEvent evt, EventEvaluationContext context)
         {
-            TickHandler.TriggerEvent(evt, context);
+            _eventNotifier.TriggerEvent(evt, context);
         }
 
         /// <summary>
@@ -285,7 +294,7 @@ namespace OpenGSGLibrary.Events
                 CurrentDate = currentDate,
                 CurrentCountryTag = countryTag,
                 TickHandler = tickHandler,
-                EventManager = eventManager,
+                EventManager = _eventManager,
             };
 
             bool isPlayerCountry = countryTag == activePlayerCountryTag;
@@ -298,7 +307,7 @@ namespace OpenGSGLibrary.Events
             }
             else
             {
-                TickHandler.TriggerEvent(evt, context);
+                ShowEventToPlayer(evt, context);
             }
 
             return true;
@@ -306,8 +315,8 @@ namespace OpenGSGLibrary.Events
 
         private GameEvent? FindEvent(string eventId)
         {
-            return (GameEvent?)eventManager.GetCountryEvents().FirstOrDefault(e => e.Id == eventId)
-                ?? (GameEvent?)eventManager.GetNewsEvents().FirstOrDefault(e => e.Id == eventId);
+            return (GameEvent?)_eventManager.GetCountryEvents().FirstOrDefault(e => e.Id == eventId)
+                ?? (GameEvent?)_eventManager.GetNewsEvents().FirstOrDefault(e => e.Id == eventId);
         }
     }
 }
