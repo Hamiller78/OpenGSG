@@ -256,7 +256,7 @@ namespace OpenGSGLibrary.GameDataManager
             try
             {
                 var eventsPath = Path.Combine(gamedataPath, "events");
-                _eventManager = EventFactory.LoadFromFolder<TCountryEvent, TNewsEvent>(eventsPath);
+                _eventManager = EventFactory.LoadFromFolder(eventsPath);
             }
             catch (Exception)
             {

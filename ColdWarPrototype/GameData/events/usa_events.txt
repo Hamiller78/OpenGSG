@@ -36,7 +36,7 @@ news_event = {
 
     is_triggered_only = yes
 
-    trigger = {
+    recipients = {
         OR = {
             tag = ROK
             tag = DRK
@@ -44,5 +44,9 @@ news_event = {
             tag = JAP
             tag = PRC
         }
+    }
+
+    option = {
+        name = acheson_speech.2.a
     }
 }

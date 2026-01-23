@@ -141,7 +141,8 @@ public class TickHandler
                 _currentWorldState,
                 GetCurrentDate(),
                 _currentTick,
-                ActivePlayerCountryTag
+                ActivePlayerCountryTag,
+                this
             );
         }
 
@@ -191,7 +192,8 @@ public class TickHandler
             countryTag,
             _currentWorldState,
             GetCurrentDate(),
-            ActivePlayerCountryTag
+            ActivePlayerCountryTag,
+            this
         );
     }
 
