@@ -27,6 +27,36 @@ namespace OpenGSGLibrary.GameDataManager
         /// </summary>
         public Dictionary<string, Opinion> Opinions { get; } = new();
 
+        /// <summary>
+        /// Country flags for event scripting and game state tracking.
+        /// Flags persist for the entire game session.
+        /// </summary>
+        public HashSet<string> Flags { get; private set; } = new HashSet<string>();
+
+        /// <summary>
+        /// Sets a country flag.
+        /// </summary>
+        public void SetFlag(string flagName)
+        {
+            Flags.Add(flagName);
+        }
+
+        /// <summary>
+        /// Clears a country flag.
+        /// </summary>
+        public void ClearFlag(string flagName)
+        {
+            Flags.Remove(flagName);
+        }
+
+        /// <summary>
+        /// Checks if a country has a specific flag.
+        /// </summary>
+        public bool HasFlag(string flagName)
+        {
+            return Flags.Contains(flagName);
+        }
+
         public override void SetData(string fileName, ILookup<string, object> parsedData)
         {
             base.SetData(fileName, parsedData);

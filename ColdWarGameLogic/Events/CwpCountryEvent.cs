@@ -21,29 +21,17 @@ namespace ColdWarGameLogic.Events
                 return baseTrigger;
 
             // Handle Cold War specific triggers
-            switch (key)
-            {
-                //case "has_war":
-                //    return new HasWarTrigger
-                //    {
-                //        ExpectedValue = value.ToString()?.ToLowerInvariant() != "no",
-                //    };
-
-                case "date":
-                    // TODO: Parse date operators (>=, <, etc.)
-                    break;
-            }
-
+            // TODO: Add game-specific triggers like has_war when needed
             return null;
         }
 
         /// <summary>
         /// Parses game-specific effects (like remove_guarantee).
         /// </summary>
-        protected override IEventEffect? ParseEffect(string key, object value)
+        protected override IEventEffect? ParseSingleEffect(string key, object value)
         {
             // Try base effects first
-            var baseEffect = base.ParseEffect(key, value);
+            var baseEffect = base.ParseSingleEffect(key, value);
             if (baseEffect != null)
                 return baseEffect;
 
@@ -77,15 +65,21 @@ namespace ColdWarGameLogic.Events
                 return baseTrigger;
 
             // Handle Cold War specific triggers
-            //switch (key)
-            //{
-            //    case "has_war":
-            //        return new HasWarTrigger
-            //        {
-            //            ExpectedValue = value.ToString()?.ToLowerInvariant() != "no",
-            //        };
-            //}
+            // TODO: Add game-specific triggers when needed
+            return null;
+        }
 
+        /// <summary>
+        /// Parses game-specific effects.
+        /// </summary>
+        protected override IEventEffect? ParseSingleEffect(string key, object value)
+        {
+            // Try base effects first
+            var baseEffect = base.ParseSingleEffect(key, value);
+            if (baseEffect != null)
+                return baseEffect;
+
+            // Handle Cold War specific effects (none yet)
             return null;
         }
     }

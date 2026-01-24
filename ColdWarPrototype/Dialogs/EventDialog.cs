@@ -27,6 +27,11 @@ namespace ColdWarPrototype.Dialogs
             button1.Visible = false;
             button2.Visible = false;
             button3.Visible = false;
+
+            // Wire up click events
+            button1.Click += OptionButton_Click;
+            button2.Click += OptionButton_Click;
+            button3.Click += OptionButton_Click;
         }
 
         /// <summary>

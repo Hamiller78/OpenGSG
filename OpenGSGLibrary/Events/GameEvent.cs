@@ -271,8 +271,11 @@ public abstract class GameEvent
             case "country_exists":
                 return new CountryExistsTrigger { Tag = value.ToString() ?? string.Empty };
 
+            case "has_country_flag":
+                return new HasCountryFlagTrigger { FlagName = value.ToString() ?? string.Empty };
+
             default:
-                // Check if this is a country scope trigger (e.g., "ROK = { has_war = no }")
+                // Check if this is a country scope trigger
                 if (value is ILookup<string, object> scopedTriggers)
                 {
                     return new CountryScopeTrigger
@@ -299,34 +302,42 @@ public abstract class GameEvent
         foreach (var group in optionData)
         {
             var key = group.Key;
-            if (key == "name" || key == "hidden_effect")
+
+            // Skip meta-properties
+            if (key == "name")
                 continue;
 
-            foreach (var value in group)
+            // Handle hidden_effect block
+            if (key == "hidden_effect")
             {
-                var effect = ParseEffect(key, value);
-                if (effect != null)
+                foreach (var value in group)
                 {
-                    option.Effects.Add(effect);
+                    if (value is ILookup<string, object> hiddenEffects)
+                    {
+                        // Parse effects within hidden_effect block
+                        foreach (var effectGroup in hiddenEffects)
+                        {
+                            foreach (var effectValue in effectGroup)
+                            {
+                                var effect = ParseSingleEffect(effectGroup.Key, effectValue);
+                                if (effect != null)
+                                {
+                                    option.HiddenEffects.Add(effect);
+                                }
+                            }
+                        }
+                    }
                 }
             }
-        }
-
-        // Parse hidden effects
-        if (optionData.Contains("hidden_effect"))
-        {
-            var hiddenData = optionData["hidden_effect"].FirstOrDefault();
-            if (hiddenData is ILookup<string, object> hiddenEffects)
+            // Handle direct effects (not in a block)
+            else
             {
-                foreach (var group in hiddenEffects)
+                foreach (var value in group)
                 {
-                    foreach (var value in group)
+                    var effect = ParseSingleEffect(key, value);
+                    if (effect != null)
                     {
-                        var effect = ParseEffect(group.Key, value);
-                        if (effect != null)
-                        {
-                            option.HiddenEffects.Add(effect);
-                        }
+                        option.Effects.Add(effect);
                     }
                 }
             }
@@ -337,12 +348,18 @@ public abstract class GameEvent
 
     /// <summary>
     /// Parses a single effect from event data.
-    /// Must be overridden by derived classes to handle game-specific effects.
+    /// Can be overridden by derived classes to handle game-specific effects.
     /// </summary>
-    protected virtual IEventEffect? ParseEffect(string key, object value)
+    protected virtual IEventEffect? ParseSingleEffect(string key, object value)
     {
         switch (key)
         {
+            case "set_country_flag":
+                return new SetCountryFlagEffect { FlagName = value.ToString() ?? string.Empty };
+
+            case "clr_country_flag":
+                return new ClearCountryFlagEffect { FlagName = value.ToString() ?? string.Empty };
+
             case "news_event":
                 if (value is ILookup<string, object> newsEventData)
                 {
@@ -364,9 +381,43 @@ public abstract class GameEvent
                     };
                 }
                 break;
+
+            default:
+                // Check if this is a country scope effect (e.g., "USSR = { set_country_flag = x }")
+                if (value is ILookup<string, object> scopedEffects)
+                {
+                    return new CountryScopeEffect
+                    {
+                        CountryTag = key,
+                        InnerEffects = ParseEffectsFromBlock(scopedEffects),
+                    };
+                }
+                break;
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Parses all effects from a block (used for scoped effects).
+    /// </summary>
+    private List<IEventEffect> ParseEffectsFromBlock(ILookup<string, object> effectData)
+    {
+        var effects = new List<IEventEffect>();
+
+        foreach (var group in effectData)
+        {
+            foreach (var value in group)
+            {
+                var effect = ParseSingleEffect(group.Key, value);
+                if (effect != null)
+                {
+                    effects.Add(effect);
+                }
+            }
+        }
+
+        return effects;
     }
 
     /// <summary>
