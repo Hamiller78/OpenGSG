@@ -237,4 +237,22 @@ public class TickHandler
     {
         EventTriggered?.Invoke(null, new GameEventTriggeredEventArgs(evt, context));
     }
+
+    /// <summary>
+    /// Sets the current game date by adjusting the tick counter.
+    /// Used for debugging and testing.
+    /// </summary>
+    /// <param name="targetDate">The date to set</param>
+    public void SetCurrentDate(DateTime targetDate)
+    {
+        // Calculate the number of days between start date and target date
+        TimeSpan difference = targetDate - _startDate;
+        long newTick = (long)difference.TotalDays;
+
+        // Don't allow going before start date
+        if (newTick < 0)
+            newTick = 0;
+
+        _currentTick = newTick;
+    }
 }

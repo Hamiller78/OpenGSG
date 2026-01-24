@@ -68,6 +68,7 @@ namespace ColdWarPrototype
             WriteOutput("  player <countryTag> - Switch active country");
             WriteOutput("  observer - Switch to observer mode");
             WriteOutput("  event <eventId> <countryTag> - Fire an event");
+            WriteOutput("  date <year|YYYY.MM.DD> - Set current game date");
             WriteOutput("  help - Show available commands");
             WriteOutput("  clear - Clear console output");
             WriteOutput("");
@@ -127,6 +128,8 @@ namespace ColdWarPrototype
                     WriteOutput("  event <eventId> <countryTag> - Fire an event for a country");
                     WriteOutput("  player <countryTag> - Switch to playing as a country");
                     WriteOutput("  observer - Switch to observer mode");
+                    WriteOutput("  date <year|YYYY.MM.DD> - Set current game date");
+                    WriteOutput("    Examples: date 1960 or date 1960.06.15");
                     WriteOutput("  clear - Clear console output");
                     WriteOutput("  help - Show this help");
                     break;
@@ -155,6 +158,20 @@ namespace ColdWarPrototype
                     SwitchToObserver();
                     break;
 
+                case "date":
+                case "setdate":
+                case "time":
+                    if (parts.Length < 2)
+                    {
+                        WriteOutput("ERROR: Usage: date <year|YYYY.MM.DD>");
+                        WriteOutput("Examples: date 1960 or date 1960.06.15");
+                    }
+                    else
+                    {
+                        SetGameDate(parts[1]);
+                    }
+                    break;
+
                 case "event":
                     if (parts.Length < 3)
                     {
@@ -174,6 +191,67 @@ namespace ColdWarPrototype
                         $"ERROR: Unknown command '{cmd}'. Type 'help' for available commands."
                     );
                     break;
+            }
+        }
+
+        private void SetGameDate(string dateInput)
+        {
+            try
+            {
+                DateTime targetDate;
+                var currentDate = _gameController.TickHandler.GetCurrentDate();
+
+                // Check if input is just a year (4 digits)
+                if (dateInput.Length == 4 && int.TryParse(dateInput, out int year))
+                {
+                    // Set to January 1st of that year
+                    targetDate = new DateTime(year, 1, 1);
+                }
+                // Otherwise try to parse as YYYY.MM.DD
+                else
+                {
+                    var parts = dateInput.Split('.');
+                    if (parts.Length != 3)
+                    {
+                        WriteOutput("ERROR: Invalid date format. Use YYYY or YYYY.MM.DD");
+                        WriteOutput("Examples: 1960 or 1960.06.15");
+                        return;
+                    }
+
+                    if (
+                        !int.TryParse(parts[0], out int yearPart)
+                        || !int.TryParse(parts[1], out int month)
+                        || !int.TryParse(parts[2], out int day)
+                    )
+                    {
+                        WriteOutput("ERROR: Invalid date format. Use YYYY or YYYY.MM.DD");
+                        return;
+                    }
+
+                    try
+                    {
+                        targetDate = new DateTime(yearPart, month, day);
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        WriteOutput("ERROR: Invalid date values");
+                        WriteOutput($"  Year: {yearPart}, Month: {month}, Day: {day}");
+                        return;
+                    }
+                }
+
+                // Set the date
+                _gameController.TickHandler.SetCurrentDate(targetDate);
+                var newDate = _gameController.TickHandler.GetCurrentDate();
+                long newTick = _gameController.TickHandler.GetCurrentTick();
+
+                WriteOutput($"SUCCESS: Date set to {newDate:yyyy.MM.dd}");
+                WriteOutput($"  Current tick: {newTick}");
+                WriteOutput($"  Previous date: {currentDate:yyyy.MM.dd}");
+            }
+            catch (Exception ex)
+            {
+                WriteOutput($"ERROR: Exception while setting date: {ex.Message}");
             }
         }
 
