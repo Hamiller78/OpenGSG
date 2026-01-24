@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace OpenGSGLibrary.Events;
 
 /// <summary>
@@ -59,6 +61,12 @@ public abstract class GameEvent
     public List<EventOption> Options { get; set; } = new List<EventOption>();
 
     /// <summary>
+    /// Effects that execute immediately when the event fires (before showing UI).
+    /// Used for routing logic, preprocessing, etc.
+    /// </summary>
+    public List<IEventEffect> ImmediateEffects { get; set; } = new List<IEventEffect>();
+
+    /// <summary>
     /// Mean time to happen in days (for random event triggering).
     /// 0 means the event fires immediately when triggers are met.
     /// Higher values mean lower probability per day.
@@ -114,6 +122,16 @@ public abstract class GameEvent
             if (triggerData is ILookup<string, object> triggers)
             {
                 Triggers.AddRange(ParseTriggers(triggers));
+            }
+        }
+
+        // Parse immediate block
+        if (eventData.Contains("immediate"))
+        {
+            var immediateData = eventData["immediate"].FirstOrDefault();
+            if (immediateData is ILookup<string, object> immediateBlock)
+            {
+                ImmediateEffects.AddRange(ParseEffectsFromBlock(immediateBlock));
             }
         }
 
@@ -263,6 +281,25 @@ public abstract class GameEvent
     /// </summary>
     protected virtual IEventTrigger? ParseSingleTrigger(string key, object value)
     {
+        // Handle random< syntax (scanner appends operator to key)
+        if (key.StartsWith("random"))
+        {
+            string op = key.Length > 6 ? key.Substring(6) : "<"; // Extract operator
+
+            // Use InvariantCulture to handle decimal points correctly
+            if (
+                double.TryParse(
+                    value?.ToString(),
+                    System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out double threshold
+                )
+            )
+            {
+                return new RandomTrigger { Threshold = threshold, Operator = op };
+            }
+        }
+
         switch (key)
         {
             case "tag":
@@ -271,8 +308,11 @@ public abstract class GameEvent
             case "country_exists":
                 return new CountryExistsTrigger { Tag = value.ToString() ?? string.Empty };
 
+            case "has_country_flag":
+                return new HasCountryFlagTrigger { FlagName = value.ToString() ?? string.Empty };
+
             default:
-                // Check if this is a country scope trigger (e.g., "ROK = { has_war = no }")
+                // Check if this is a country scope trigger
                 if (value is ILookup<string, object> scopedTriggers)
                 {
                     return new CountryScopeTrigger
@@ -299,34 +339,42 @@ public abstract class GameEvent
         foreach (var group in optionData)
         {
             var key = group.Key;
-            if (key == "name" || key == "hidden_effect")
+
+            // Skip meta-properties
+            if (key == "name")
                 continue;
 
-            foreach (var value in group)
+            // Handle hidden_effect block
+            if (key == "hidden_effect")
             {
-                var effect = ParseEffect(key, value);
-                if (effect != null)
+                foreach (var value in group)
                 {
-                    option.Effects.Add(effect);
+                    if (value is ILookup<string, object> hiddenEffects)
+                    {
+                        // Parse effects within hidden_effect block
+                        foreach (var effectGroup in hiddenEffects)
+                        {
+                            foreach (var effectValue in effectGroup)
+                            {
+                                var effect = ParseSingleEffect(effectGroup.Key, effectValue);
+                                if (effect != null)
+                                {
+                                    option.HiddenEffects.Add(effect);
+                                }
+                            }
+                        }
+                    }
                 }
             }
-        }
-
-        // Parse hidden effects
-        if (optionData.Contains("hidden_effect"))
-        {
-            var hiddenData = optionData["hidden_effect"].FirstOrDefault();
-            if (hiddenData is ILookup<string, object> hiddenEffects)
+            // Handle direct effects (not in a block)
+            else
             {
-                foreach (var group in hiddenEffects)
+                foreach (var value in group)
                 {
-                    foreach (var value in group)
+                    var effect = ParseSingleEffect(key, value);
+                    if (effect != null)
                     {
-                        var effect = ParseEffect(group.Key, value);
-                        if (effect != null)
-                        {
-                            option.HiddenEffects.Add(effect);
-                        }
+                        option.Effects.Add(effect);
                     }
                 }
             }
@@ -337,12 +385,18 @@ public abstract class GameEvent
 
     /// <summary>
     /// Parses a single effect from event data.
-    /// Must be overridden by derived classes to handle game-specific effects.
+    /// Can be overridden by derived classes to handle game-specific effects.
     /// </summary>
-    protected virtual IEventEffect? ParseEffect(string key, object value)
+    protected virtual IEventEffect? ParseSingleEffect(string key, object value)
     {
         switch (key)
         {
+            case "set_country_flag":
+                return new SetCountryFlagEffect { FlagName = value.ToString() ?? string.Empty };
+
+            case "clr_country_flag":
+                return new ClearCountryFlagEffect { FlagName = value.ToString() ?? string.Empty };
+
             case "news_event":
                 if (value is ILookup<string, object> newsEventData)
                 {
@@ -350,6 +404,7 @@ public abstract class GameEvent
                     {
                         EventId = GetString(newsEventData, "id"),
                         IsNewsEvent = true,
+                        Days = GetInt(newsEventData, "days", 0),
                     };
                 }
                 break;
@@ -361,12 +416,116 @@ public abstract class GameEvent
                     {
                         EventId = GetString(countryEventData, "id"),
                         IsNewsEvent = false,
+                        Days = GetInt(countryEventData, "days", 0),
+                    };
+                }
+                break;
+
+            default:
+                // Check if this is a country scope effect
+                if (value is ILookup<string, object> scopedEffects)
+                {
+                    return new CountryScopeEffect
+                    {
+                        CountryTag = key,
+                        InnerEffects = ParseEffectsFromBlock(scopedEffects),
                     };
                 }
                 break;
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Parses all effects from a block (used for scoped effects and immediate blocks).
+    /// Handles if/else pairing.
+    /// </summary>
+    private List<IEventEffect> ParseEffectsFromBlock(ILookup<string, object> effectData)
+    {
+        var effects = new List<IEventEffect>();
+        var keys = effectData.Select(g => g.Key).ToList();
+
+        for (int i = 0; i < keys.Count; i++)
+        {
+            var key = keys[i];
+
+            // Skip else blocks - they're handled with their corresponding if
+            if (key == "else")
+                continue;
+
+            // Handle if block (look for matching else)
+            if (key == "if")
+            {
+                var ifData = effectData["if"].FirstOrDefault();
+                if (ifData is ILookup<string, object> ifBlock)
+                {
+                    var conditional = new ConditionalEffect();
+
+                    // Parse limit block
+                    if (ifBlock.Contains("limit"))
+                    {
+                        var limitData = ifBlock["limit"].FirstOrDefault();
+                        if (limitData is ILookup<string, object> limitBlock)
+                        {
+                            conditional.Condition = ParseTriggers(limitBlock);
+                        }
+                    }
+
+                    // Parse then effects (all keys except limit)
+                    foreach (var group in ifBlock)
+                    {
+                        if (group.Key == "limit")
+                            continue;
+
+                        foreach (var effectValue in group)
+                        {
+                            var effect = ParseSingleEffect(group.Key, effectValue);
+                            if (effect != null)
+                            {
+                                conditional.ThenEffects.Add(effect);
+                            }
+                        }
+                    }
+
+                    // Look for matching else block (sibling)
+                    if (effectData.Contains("else"))
+                    {
+                        var elseData = effectData["else"].FirstOrDefault();
+                        if (elseData is ILookup<string, object> elseBlock)
+                        {
+                            foreach (var group in elseBlock)
+                            {
+                                foreach (var effectValue in group)
+                                {
+                                    var effect = ParseSingleEffect(group.Key, effectValue);
+                                    if (effect != null)
+                                    {
+                                        conditional.ElseEffects.Add(effect);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    effects.Add(conditional);
+                }
+            }
+            else
+            {
+                // Regular effect (not if/else)
+                foreach (var value in effectData[key])
+                {
+                    var effect = ParseSingleEffect(key, value);
+                    if (effect != null)
+                    {
+                        effects.Add(effect);
+                    }
+                }
+            }
+        }
+
+        return effects;
     }
 
     /// <summary>

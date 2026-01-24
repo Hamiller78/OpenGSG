@@ -50,3 +50,184 @@ news_event = {
         name = acheson_speech.2.a
     }
 }
+
+country_event = {
+    id = star_trek_router.1
+    hidden = yes
+
+    trigger_only_once = yes
+
+    trigger = {
+        tag = USA
+        date = 1966.09.08
+    }
+
+    immediate = {
+        if = {
+            limit = {
+                random < 0.7
+            }
+            news_event = { id = star_trek.1 }
+        }
+        else = {
+            news_event = { id = frontier_trek.1 }
+        }
+    }
+}
+
+news_event = {
+    id = star_trek.1
+    title = star_trek.1.t
+    desc = star_trek.1.d
+    picture = star_trek
+
+    is_triggered_only = yes
+
+    recipients = {
+        tag = USA
+    }
+
+    option = {
+        name = star_trek.1.a
+        set_country_flag = star_trek_aired
+    }
+}
+
+news_event = {
+    id = star_trek.2
+    title = star_trek.2.t
+    desc = star_trek.2.d
+    picture = russian_on_bridge
+
+    trigger = {
+        USA = {
+            has_country_flag = star_trek_aired
+        }
+        date = 1967.09.15
+    }
+
+    recipients = {
+        tag = USA
+    }
+
+    option = {
+        name = star_trek.2.a
+
+        hidden_effect = {
+            USSR = {
+                set_country_flag = chekov_appeared
+            }
+        }
+    }
+}
+
+country_event = {
+    id = star_trek.3
+    title = star_trek.3.t
+    desc = star_trek.3.d
+    picture = russian_on_bridge_2
+
+    trigger_only_once = yes
+    
+    trigger = {
+        tag = USSR
+        has_country_flag = chekov_appeared
+    }
+
+    mean_time_to_happen = {
+        days = 45
+    }
+
+    option = {
+        name = star_trek.3.a1   # Positive interpretation
+
+        hidden_effect = {
+            news_event = { id = star_trek.4a }
+        }
+    }
+
+    option = {
+        name = star_trek.3.a2   # Negative interpretation
+
+        hidden_effect = {
+            news_event = { id = star_trek.4b }
+        }
+    }
+
+    option = {
+        name = star_trek.3.a3   # Ignore it
+    }
+}
+
+news_event = {
+    id = star_trek.4a
+    title = star_trek.4a.t
+    desc = star_trek.4a.d
+    picture = détente
+
+    is_triggered_only = yes
+
+    recipients = {
+        tag = USA
+        tag = USSR
+    }
+
+    option = {
+        name = star_trek.4a.a
+    }
+}
+
+news_event = {
+    id = star_trek.4b
+    title = star_trek.4b.t
+    desc = star_trek.4b.d
+    picture = escalation
+
+    is_triggered_only = yes
+
+    recipients = {
+        tag = USA
+        tag = USSR
+    }
+
+    option = {
+        name = star_trek.4b.a
+    }
+}
+
+news_event = {
+    id = frontier_trek.1
+    title = frontier_trek.1.t
+    desc = frontier_trek.1.d
+    picture = frontier_trek_1
+
+    is_triggered_only = yes
+
+    recipients = {
+        tag = USA
+    }
+
+    option = {
+        name = frontier_trek.1.a
+        hidden_effect = {
+            country_event = { id = frontier_trek.2 days = 21 }
+        }
+    }
+}
+
+news_event = {
+    id = frontier_trek.2
+    title = frontier_trek.2.t
+    desc = frontier_trek.2.d
+    picture = frontier_trek_2
+
+    is_triggered_only = yes
+
+    recipients = {
+        tag = USA
+    }
+
+    option = {
+        name = frontier_trek.2.a
+    }
+}

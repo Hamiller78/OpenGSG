@@ -8,7 +8,7 @@ news_event = {
 
     trigger = {
         date >= 1976.01.01
-        date < 1976.01.01
+        date < 1977.01.01
     }
 
     mean_time_to_happen = {

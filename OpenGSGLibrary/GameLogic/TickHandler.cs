@@ -39,14 +39,19 @@ public class TickHandler
     private WorldState? _currentWorldState;
     private long _currentTick = 0;
     private EventEvaluator? _eventEvaluator;
-    private DateTime _startDate = new DateTime(1950, 1, 1, 0, 0, 0, DateTimeKind.Unspecified); // Default start date
+    private DateTime _startDate = new DateTime(1950, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
+    private readonly object _tickLock = new();
+
+    /// <summary>
+    /// Queue of events scheduled to fire in the future.
+    /// </summary>
+    private readonly List<ScheduledEvent> _scheduledEvents = new List<ScheduledEvent>();
 
     /// <summary>
     /// Sets the event manager for event evaluation.
     /// </summary>
     public void SetEventManager(EventManager eventManager)
     {
-        // Create notifier that delegates to static event
         var notifier = new TickHandlerEventNotifier();
         _eventEvaluator = new EventEvaluator(eventManager, notifier);
     }
@@ -72,7 +77,6 @@ public class TickHandler
     /// Connects world state to tick handler which includes setting the state in TickHandlers
     /// and associating event handlers.
     /// </summary>
-    /// <param name="newState">WorldState to set in TickHandler.</param>
     public void ConnectProvinceEventHandlers(WorldState newState)
     {
         _currentWorldState = newState;
@@ -82,9 +86,7 @@ public class TickHandler
         {
             foreach (var province in provinceDict.Values)
             {
-                // Provinces implement OnTickDone(object, EventArgs)
-                // The TickDone event uses EventArgs; subscribe via a lambda to adapt the signature.
-                TickDone += (s, ev) => province.OnTickDone(s, ev);
+                TickDone += (s, ev) => province.OnTickDone(s!, ev);
             }
         }
     }
@@ -92,28 +94,22 @@ public class TickHandler
     /// <summary>
     /// Returns the world state used by the tick handler
     /// </summary>
-    /// <returns>WorldState object for the current tick which will be modified each tick.</returns>
     public WorldState GetState() => _currentWorldState!;
 
     /// <summary>
     /// Method to do stuff when an new tick starts.
-    /// In the original code this collected GUI input and launched AI threads.
     /// </summary>
     public void BeginNewTick()
     {
-        // do timed game events
-        // launch AI threads
         if (_currentWorldState is not null)
         {
             _playerManager.CalculateStrategies(_currentWorldState);
         }
-        // collect GUI input
     }
 
     /// <summary>
     /// Is the current tick complete?
     /// </summary>
-    /// <returns>Boolean whether the current tick is complete</returns>
     public bool IsTickComplete() => _playerManager.IsEverybodyDone();
 
     /// <summary>
@@ -122,35 +118,37 @@ public class TickHandler
     /// </summary>
     public void FinishTick()
     {
-        // lock GUI input
-        // calculate world in next tick
-        _currentTick += 1;
-        var args = new TickEventArgs((int)_currentTick);
+        if (!IsTickComplete())
+            return;
 
-        // notify all interested classes (synchronous invoke)
-        TickDone?.Invoke(this, args);
-
-        // Monthly updates (every 30 ticks = 1 month)
-        if (_currentTick % 30 == 0)
+        lock (_tickLock)
         {
-            PerformMonthlyUpdates();
-        }
+            _currentTick++;
 
-        // Evaluate events after world updates
-        if (_eventEvaluator != null && _currentWorldState != null)
-        {
-            _eventEvaluator.EvaluateAllEvents(
-                _currentWorldState,
+            // Process scheduled events first
+            ProcessScheduledEvents();
+
+            // Notify provinces
+            TickDone?.Invoke(this, EventArgs.Empty);
+
+            // Then evaluate normal events
+            _eventEvaluator?.EvaluateAllEvents(
+                _currentWorldState!,
                 GetCurrentDate(),
                 _currentTick,
                 ActivePlayerCountryTag,
                 this
             );
-        }
 
-        // After provinces and other TickDone subscribers have run, request UI refresh
-        // so the UI can pull latest model state (or ViewModels can Refresh()).
-        UIRefreshRequested?.Invoke(null, args);
+            // Perform monthly updates every 30 ticks (days)
+            if (_currentTick % 30 == 0)
+            {
+                PerformMonthlyUpdates();
+            }
+
+            // Fire UIRefreshRequested event
+            OnUIRefreshRequested();
+        }
     }
 
     /// <summary>
@@ -166,7 +164,6 @@ public class TickHandler
         {
             foreach (var country in countries.Values)
             {
-                // Call base class method - polymorphism handles game-specific implementation
                 country.RecalculateStats();
             }
         }
@@ -179,11 +176,7 @@ public class TickHandler
 
     /// <summary>
     /// Fires an event immediately for a specific country, bypassing trigger evaluation.
-    /// Used for debugging and testing.
     /// </summary>
-    /// <param name="eventId">ID of the event to fire (e.g., "event.1")</param>
-    /// <param name="countryTag">Tag of the country to fire the event for</param>
-    /// <returns>True if event was found and fired, false otherwise</returns>
     public bool FireEventDebug(string eventId, string countryTag)
     {
         if (_eventEvaluator == null || _currentWorldState == null)
@@ -202,18 +195,14 @@ public class TickHandler
     /// <summary>
     /// Sets the active player country.
     /// </summary>
-    /// <param name="countryTag">Country tag to play as, or null for observer mode</param>
-    /// <returns>True if country exists or is observer mode, false otherwise</returns>
     public bool SetPlayerCountry(string? countryTag)
     {
-        // Allow null for observer mode
         if (countryTag == null)
         {
             ActivePlayerCountryTag = null;
             return true;
         }
 
-        // Validate country exists
         var countries = _currentWorldState?.GetCountryTable();
         if (countries == null || !countries.ContainsKey(countryTag))
         {
@@ -231,10 +220,76 @@ public class TickHandler
 
     /// <summary>
     /// Triggers an event for the player (or AI) to handle.
-    /// Used when events are triggered by effects (not just during evaluation).
     /// </summary>
     public static void TriggerEvent(GameEvent evt, EventEvaluationContext context)
     {
         EventTriggered?.Invoke(null, new GameEventTriggeredEventArgs(evt, context));
+    }
+
+    /// <summary>
+    /// Sets the current game date by adjusting the tick counter.
+    /// </summary>
+    public void SetCurrentDate(DateTime targetDate)
+    {
+        TimeSpan difference = targetDate - _startDate;
+        long newTick = (long)difference.TotalDays;
+
+        if (newTick < 0)
+            newTick = 0;
+
+        _currentTick = newTick;
+    }
+
+    /// <summary>
+    /// Schedules an event to fire after a specified number of days.
+    /// </summary>
+    public void ScheduleEvent(string eventId, string targetCountryTag, int days, bool isNewsEvent)
+    {
+        var fireDate = GetCurrentDate().AddDays(days);
+
+        _scheduledEvents.Add(
+            new ScheduledEvent
+            {
+                EventId = eventId,
+                TargetCountryTag = targetCountryTag,
+                FireDate = fireDate,
+                IsNewsEvent = isNewsEvent,
+            }
+        );
+    }
+
+    /// <summary>
+    /// Checks and fires any scheduled events that are due.
+    /// </summary>
+    private void ProcessScheduledEvents()
+    {
+        if (_eventEvaluator == null || _currentWorldState == null)
+            return;
+
+        var currentDate = GetCurrentDate();
+        var eventsToFire = _scheduledEvents.Where(e => e.FireDate <= currentDate).ToList();
+
+        foreach (var scheduledEvent in eventsToFire)
+        {
+            _eventEvaluator.FireEventDebug(
+                scheduledEvent.EventId,
+                scheduledEvent.TargetCountryTag,
+                _currentWorldState,
+                currentDate,
+                ActivePlayerCountryTag,
+                this
+            );
+
+            _scheduledEvents.Remove(scheduledEvent);
+        }
+    }
+
+    /// <summary>
+    /// Invokes the UIRefreshRequested event.
+    /// </summary>
+    private void OnUIRefreshRequested()
+    {
+        var args = new TickEventArgs((int)_currentTick);
+        UIRefreshRequested?.Invoke(null, args);
     }
 }
