@@ -242,6 +242,12 @@ namespace OpenGSGLibrary.Events
             bool isPlayerCountry
         )
         {
+            // Execute immediate effects FIRST (before UI or option execution)
+            foreach (var effect in evt.ImmediateEffects)
+            {
+                effect.Execute(context);
+            }
+
             if (evt.Hidden || !isPlayerCountry)
             {
                 AutoExecuteEvent(evt, context);

@@ -6,35 +6,50 @@ namespace OpenGSGLibrary.Events
 {
     /// <summary>
     /// Effect that triggers another event (country or news event).
-    /// Used in hidden_effect blocks to chain events.
+    /// Can trigger immediately or schedule for future execution.
     /// </summary>
     public class TriggerEventEffect : IEventEffect
     {
         public string EventId { get; set; } = string.Empty;
         public bool IsNewsEvent { get; set; }
 
+        /// <summary>
+        /// Number of days to wait before triggering the event.
+        /// 0 = immediate trigger.
+        /// </summary>
+        public int Days { get; set; } = 0;
+
         public void Execute(object context)
         {
             if (context is not EventEvaluationContext evalContext)
                 return;
 
-            if (
-                evalContext.TickHandler == null
-                || evalContext.EventManager == null
-                || evalContext.WorldState == null
-            )
+            if (evalContext.TickHandler == null || evalContext.EventManager == null)
                 return;
 
-            // Find the event to trigger
-            GameEvent? eventToFire = FindEvent(evalContext.EventManager);
-            if (eventToFire == null)
-                return;
+            // If days > 0, schedule for future; otherwise trigger immediately
+            if (Days > 0)
+            {
+                evalContext.TickHandler.ScheduleEvent(
+                    EventId,
+                    evalContext.CurrentCountryTag,
+                    Days,
+                    IsNewsEvent
+                );
+            }
+            else
+            {
+                // Immediate trigger (existing logic)
+                GameEvent? eventToFire = FindEvent(evalContext.EventManager);
+                if (eventToFire == null)
+                    return;
 
-            var countries = evalContext.WorldState.GetCountryTable();
-            if (countries == null)
-                return;
+                var countries = evalContext.WorldState?.GetCountryTable();
+                if (countries == null)
+                    return;
 
-            EvaluateEventForAllCountries(eventToFire, evalContext, countries);
+                EvaluateEventForAllCountries(eventToFire, evalContext, countries);
+            }
         }
 
         private GameEvent? FindEvent(EventManager eventManager)

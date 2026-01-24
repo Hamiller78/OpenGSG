@@ -51,15 +51,37 @@ news_event = {
     }
 }
 
+country_event = {
+    id = star_trek_router.1
+    hidden = yes
+
+    trigger_only_once = yes
+
+    trigger = {
+        tag = USA
+        date = 1966.09.08
+    }
+
+    immediate = {
+        if = {
+            limit = {
+                random < 0.7
+            }
+            news_event = { id = star_trek.1 }
+        }
+        else = {
+            news_event = { id = frontier_trek.1 }
+        }
+    }
+}
+
 news_event = {
     id = star_trek.1
     title = star_trek.1.t
     desc = star_trek.1.d
     picture = star_trek
 
-    trigger = {
-        date = 1966.09.08
-    }
+    is_triggered_only = yes
 
     recipients = {
         tag = USA
@@ -179,7 +201,7 @@ news_event = {
     desc = frontier_trek.1.d
     picture = frontier_trek_1
 
-    trigger_only_once = yes
+    is_triggered_only = yes
 
     recipients = {
         tag = USA
@@ -187,6 +209,9 @@ news_event = {
 
     option = {
         name = frontier_trek.1.a
+        hidden_effect = {
+            country_event = { id = frontier_trek.2 days = 21 }
+        }
     }
 }
 
@@ -196,7 +221,7 @@ news_event = {
     desc = frontier_trek.2.d
     picture = frontier_trek_2
 
-    trigger_only_once = yes
+    is_triggered_only = yes
 
     recipients = {
         tag = USA

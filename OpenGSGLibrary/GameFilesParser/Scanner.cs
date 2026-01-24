@@ -33,7 +33,22 @@ namespace OpenGSGLibrary.GameFilesParser
                     var sval = ScanName(reader);
                     if (IsSimpleNumber(sval))
                     {
-                        yield return Token.FromValue((int)double.Parse(sval));
+                        // If it contains a decimal point, keep it as a string
+                        if (sval.Contains('.'))
+                        {
+                            yield return Token.FromString(sval);
+                        }
+                        else
+                        {
+                            // Integer - parse and return as int
+                            yield return Token.FromValue(
+                                (int)
+                                    double.Parse(
+                                        sval,
+                                        System.Globalization.CultureInfo.InvariantCulture
+                                    )
+                            );
+                        }
                     }
                     else
                     {
@@ -50,7 +65,22 @@ namespace OpenGSGLibrary.GameFilesParser
                         var sval = "-" + ScanName(reader);
                         if (IsSimpleNumber(sval))
                         {
-                            yield return Token.FromValue((int)double.Parse(sval));
+                            // If it contains a decimal point, keep it as a string
+                            if (sval.Contains('.'))
+                            {
+                                yield return Token.FromString(sval);
+                            }
+                            else
+                            {
+                                // Integer - parse and return as int
+                                yield return Token.FromValue(
+                                    (int)
+                                        double.Parse(
+                                            sval,
+                                            System.Globalization.CultureInfo.InvariantCulture
+                                        )
+                                );
+                            }
                         }
                         else
                         {
@@ -59,7 +89,7 @@ namespace OpenGSGLibrary.GameFilesParser
                     }
                     else
                     {
-                        // It's just a minus sign (shouldn't happen in valid files)
+                        // It's just a minus sign
                         yield return Token.FromKind(Kind.UNKNOWN);
                     }
                 }
