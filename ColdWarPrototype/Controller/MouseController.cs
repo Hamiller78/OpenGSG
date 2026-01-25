@@ -1,7 +1,7 @@
 ﻿using ColdWarGameLogic.GameLogic;
 using OpenGSGLibrary.WorldMap;
 
-namespace ColdWarPrototype.Controller
+namespace ColdWarPrototype.Controller // Changed: uppercase W
 {
     public class ProvinceEventArgs(int id) : EventArgs
     {
@@ -15,6 +15,11 @@ namespace ColdWarPrototype.Controller
 
     internal class MouseController
     {
+        /// <summary>
+        /// Raised when a province is clicked.
+        /// </summary>
+        public event EventHandler<ProvinceEventArgs>? ProvinceClicked;
+
         public event EventHandler<ProvinceEventArgs>? HoveredProvinceChanged;
         public event EventHandler<CountryEventArgs>? HoveredCountryChanged;
 
@@ -40,16 +45,28 @@ namespace ColdWarPrototype.Controller
             _mapScaling = Math.Max(xFactor, yFactor);
         }
 
-        public void HandleMouseMovedOverMap(MouseEventArgs e)
+        /// <summary>
+        /// Gets the province ID at the given mouse position.
+        /// Returns -1 if no valid province is found.
+        /// </summary>
+        private int GetProvinceIdAtMousePosition(MouseEventArgs e)
         {
-            if (_provinceMap == null || e == null)
-                return;
+            if (_provinceMap == null || e == null || _mapScaling == 0)
+                return -1;
 
+            // Scale mouse coordinates to original map size
             var mapX = (int)(e.X * _mapScaling);
             var mapY = (int)(e.Y * _mapScaling);
 
+            // Get province ID from pixel color
             var rgb = _provinceMap.GetPixelRgb(mapX, mapY);
-            var provinceId = _provinceMap.GetProvinceNumber(rgb);
+            return _provinceMap.GetProvinceNumber(rgb);
+        }
+
+        public void HandleMouseMovedOverMap(MouseEventArgs e)
+        {
+            var provinceId = GetProvinceIdAtMousePosition(e);
+
             if (provinceId != -1 && provinceId != _currentProvinceId)
             {
                 HoveredProvinceChanged?.Invoke(this, new ProvinceEventArgs(provinceId));
@@ -70,6 +87,21 @@ namespace ColdWarPrototype.Controller
                     _currentCountryTag = tag ?? string.Empty;
                     HoveredCountryChanged?.Invoke(this, new CountryEventArgs(_currentCountryTag));
                 }
+            }
+        }
+
+        /// <summary>
+        /// Handles mouse click on the map.
+        /// Call this from MapPictureBox.MouseClick event.
+        /// </summary>
+        public void HandleMouseClickOnMap(MouseEventArgs e)
+        {
+            var provinceId = GetProvinceIdAtMousePosition(e);
+
+            if (provinceId != -1)
+            {
+                // Always invoke - even if same province (needed for unpin behavior)
+                ProvinceClicked?.Invoke(this, new ProvinceEventArgs(provinceId));
             }
         }
     }

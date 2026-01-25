@@ -4,6 +4,7 @@ using ColdWarPrototype.Controller;
 using ColdWarPrototype.Dialogs;
 using ColdWarPrototype.Views;
 using OpenGSGLibrary.Events;
+using OpenGSGLibrary.GameDataManager;
 using OpenGSGLibrary.GameLogic;
 using OpenGSGLibrary.Tools;
 
@@ -21,12 +22,16 @@ namespace ColdWarPrototype2
         private GeoCoordinates _coordinateView;
         private WorldMap _worldMapView;
         private DiplomacyInfo? _diplomacyInfo;
-        private ActiveCountryInfo? _activeCountryInfo; // ← Add this
+        private ActiveCountryInfo? _activeCountryInfo;
 
         // Controllers
         private MouseController _mouseController;
 
         private DebugConsole? _debugConsole;
+
+        // Pin state
+        private int _pinnedProvinceId = -1; // -1 = not pinned
+        private bool IsProvincePinned => _pinnedProvinceId > 0;
 
         public MainWindow()
         {
@@ -64,6 +69,7 @@ namespace ColdWarPrototype2
                 }
 
                 MapPictureBox.MouseMove += MapPictureBox_MouseMove;
+                MapPictureBox.MouseClick += MapPictureBox_MouseClick; // ADD THIS
                 DateButton.Text = _gameController.GetGameDateTime().ToString();
                 DateButton.Click += DateButton_Click;
                 MapModePolitical.CheckedChanged += MapModePolitical_CheckedChanged;
@@ -108,21 +114,73 @@ namespace ColdWarPrototype2
 
         private void SetupEventHandlers()
         {
-            _mouseController.HoveredProvinceChanged += _provinceInfo.HandleProvinceChanged;
-            _mouseController.HoveredCountryChanged += _countryInfo.HandleCountryChanged;
-            _mouseController.HoveredCountryChanged += _diplomacyInfo.HandleCountryChanged;
-
-            // Wire up army list to show formations when hovering provinces
+            // Province hover - only update if not pinned
             _mouseController.HoveredProvinceChanged += (sender, e) =>
             {
-                if (e.ProvinceId > 0) // Valid province
+                if (!IsProvincePinned && e.ProvinceId > 0)
                 {
-                    _armyBox?.UpdateArmyListBox(
-                        _gameController.TickHandler.GetState(),
-                        e.ProvinceId
-                    );
+                    UpdateProvinceViews(e.ProvinceId);
                 }
             };
+
+            // Province click - toggle pin
+            _mouseController.ProvinceClicked += (sender, e) =>
+            {
+                if (_pinnedProvinceId == e.ProvinceId)
+                {
+                    // Unpin - clicked on same province
+                    _pinnedProvinceId = -1;
+                    // Immediately update to current hover province
+                    UpdateProvinceViews(e.ProvinceId);
+                }
+                else
+                {
+                    // Pin to new province
+                    _pinnedProvinceId = e.ProvinceId;
+                    UpdateProvinceViews(e.ProvinceId);
+                }
+            };
+
+            // Country hover - only update if not pinned
+            _mouseController.HoveredCountryChanged += (sender, e) =>
+            {
+                if (!IsProvincePinned)
+                {
+                    _countryInfo?.HandleCountryChanged(sender, e);
+                    _diplomacyInfo?.HandleCountryChanged(sender, e);
+                }
+            };
+        }
+
+        /// <summary>
+        /// Updates all province-related views (province info, country info, army list).
+        /// </summary>
+        private void UpdateProvinceViews(int provinceId)
+        {
+            if (provinceId <= 0)
+                return;
+
+            var state = _gameController.TickHandler.GetState();
+
+            // Update province info
+            _provinceInfo?.HandleProvinceChanged(this, new ProvinceEventArgs(provinceId));
+
+            // Update army list
+            _armyBox?.UpdateArmyListBox(state, provinceId);
+
+            // Update country info based on province owner
+            var provinceTable = state.GetProvinceTable();
+            if (provinceTable != null && provinceTable.TryGetValue(provinceId, out var province))
+            {
+                if (!string.IsNullOrEmpty(province.Owner))
+                {
+                    _countryInfo?.HandleCountryChanged(this, new CountryEventArgs(province.Owner));
+                    _diplomacyInfo?.HandleCountryChanged(
+                        this,
+                        new CountryEventArgs(province.Owner)
+                    );
+                }
+            }
         }
 
         private void SetupSimulationControls()
@@ -155,6 +213,11 @@ namespace ColdWarPrototype2
         private void MapPictureBox_MouseMove(object? sender, MouseEventArgs e)
         {
             _mouseController.HandleMouseMovedOverMap(e);
+        }
+
+        private void MapPictureBox_MouseClick(object? sender, MouseEventArgs e)
+        {
+            _mouseController.HandleMouseClickOnMap(e);
         }
 
         private void MapModePolitical_CheckedChanged(object? sender, EventArgs e)
