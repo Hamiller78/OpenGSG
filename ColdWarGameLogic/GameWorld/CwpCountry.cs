@@ -14,13 +14,6 @@ namespace ColdWarGameLogic.GameWorld
         public string Allegiance { get; set; } = string.Empty;
         public string Leader { get; set; } = string.Empty;
 
-        // Country Stats (0-100 normalized values)
-        /// <summary>
-        /// Military strength indicator (0-100).
-        /// Calculated from army size, equipment, and economy.
-        /// </summary>
-        public float MilitaryStrength { get; set; } = 0.0f;
-
         /// <summary>
         /// Soft power indicator (0-100).
         /// Represents cultural influence, diplomacy effectiveness, and international standing.

@@ -1,0 +1,8 @@
+# Bomber
+type = air
+
+strength = 3
+speed = 20
+
+production_cost  = 14
+maintenance_cost = 3

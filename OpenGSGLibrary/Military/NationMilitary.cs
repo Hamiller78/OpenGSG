@@ -1,32 +1,96 @@
-using OpenGSGLibrary.GameDataManager;
 using System.Collections.Generic;
+using OpenGSGLibrary.GameDataManager;
 
 namespace OpenGSGLibrary.Military
 {
     /// <summary>
-    /// Represents the military forces of a single nation. Contains a list of armies.
+    /// Represents a country's military forces.
     /// </summary>
-    public class NationMilitary : GameObject
+    public class NationMilitary
     {
-        private string owner_ = string.Empty;
-        private List<Army> armies_ = new List<Army>();
+        /// <summary>
+        /// Country tag
+        /// </summary>
+        public string Tag { get; set; } = string.Empty;
 
         /// <summary>
-        /// Populate nation military from parsed data. Expects a top-level "tag" and nested "army" entries.
+        /// All armies belonging to this nation
         /// </summary>
-        /// <param name="fileName">Source file name (unused).</param>
-        /// <param name="parsedData">Parser output.</param>
-        public override void SetData(string fileName, ILookup<string, object> parsedData)
+        public List<MilitaryFormation> Armies { get; set; } = new List<MilitaryFormation>();
+
+        /// <summary>
+        /// All air forces belonging to this nation
+        /// </summary>
+        public List<MilitaryFormation> AirForces { get; set; } = new List<MilitaryFormation>();
+
+        /// <summary>
+        /// Loads military from parsed data.
+        /// </summary>
+        public void SetData(string tag, ILookup<string, object> parsedData)
         {
-            base.SetData(fileName, parsedData);
-            owner_ = parsedData.Contains("tag") ? parsedData["tag"].Single()?.ToString() ?? string.Empty : string.Empty;
-            armies_ = GameObjectFactory.ListFromLookup<Army>(parsedData, "army");
-            foreach (var army in armies_) army.SetOwner(owner_);
+            Tag = tag;
+
+            // Parse armies
+            if (parsedData.Contains("army"))
+            {
+                foreach (var armyData in parsedData["army"])
+                {
+                    if (armyData is ILookup<string, object> armyLookup)
+                    {
+                        var army = new MilitaryFormation();
+                        army.SetData("army", armyLookup);
+                        Armies.Add(army);
+                    }
+                }
+            }
+
+            // Parse air forces
+            if (parsedData.Contains("air_forces"))
+            {
+                foreach (var airData in parsedData["air_forces"])
+                {
+                    if (airData is ILookup<string, object> airLookup)
+                    {
+                        var airForce = new MilitaryFormation();
+                        airForce.SetData("air_forces", airLookup);
+                        AirForces.Add(airForce);
+                    }
+                }
+            }
         }
 
         /// <summary>
-        /// Returns the list of armies belonging to this nation.
+        /// Calculates total military strength.
         /// </summary>
-        public List<Army> GetArmiesList() => armies_;
+        public int GetTotalStrength(Dictionary<string, Unit> unitDefinitions)
+        {
+            int total = 0;
+            foreach (var army in Armies)
+            {
+                total += army.GetTotalStrength(unitDefinitions);
+            }
+            foreach (var airForce in AirForces)
+            {
+                total += airForce.GetTotalStrength(unitDefinitions);
+            }
+            return total;
+        }
+
+        /// <summary>
+        /// Calculates total daily maintenance cost.
+        /// </summary>
+        public int GetTotalMaintenanceCost(Dictionary<string, Unit> unitDefinitions)
+        {
+            int total = 0;
+            foreach (var army in Armies)
+            {
+                total += army.GetMaintenanceCost(unitDefinitions);
+            }
+            foreach (var airForce in AirForces)
+            {
+                total += airForce.GetMaintenanceCost(unitDefinitions);
+            }
+            return total;
+        }
     }
 }

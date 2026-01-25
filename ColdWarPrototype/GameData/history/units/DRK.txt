@@ -1,0 +1,20 @@
+###### Start unit locations ######
+tag = DRK
+
+army = {
+    location = 21 # North Korea
+
+    infantry   = 6      # ~120–150k troops
+    armor      = 3      # T-34 core striking force
+    artillery  = 3      # strong Soviet-style firepower
+
+    readiness  = active  # offensive posture in 1950
+}
+
+air_forces = {
+    location = 21 # North Korea
+
+    fighter = 2         # limited but operational
+
+    readiness  = ready  # offensive posture in 1950
+}

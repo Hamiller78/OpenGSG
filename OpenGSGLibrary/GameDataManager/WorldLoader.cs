@@ -12,19 +12,17 @@ namespace OpenGSGLibrary.GameDataManager
 {
     /// <summary>
     /// Class to create a world state from gamedata files.
-    /// The derived classes for provinces, countries, events, etc. have to be specified when creating an instance of the class.
+    /// The derived classes for provinces and countries have to be specified when creating an instance of the class.
     /// </summary>
-    public class WorldLoader<TProv, TCountry, TCountryEvent, TNewsEvent>
+    public class WorldLoader<TProv, TCountry>
         where TProv : Province, new()
         where TCountry : Country, new()
-        where TCountryEvent : CountryEvent, new()
-        where TNewsEvent : NewsEvent, new()
     {
         private IDictionary<int, Province> _provinceTable = default!;
         private IDictionary<string, Country> _countryTable = default!;
-        private readonly ArmyManager _armyManager = new();
+        private Dictionary<string, Unit> _unitDefinitions = new();
         private EventManager _eventManager = new();
-        private LocalizationManager _localizationManager = new();
+        private readonly LocalizationManager _localizationManager = new();
 
         /// <summary>
         /// Gets the event manager containing all loaded events.
@@ -35,6 +33,11 @@ namespace OpenGSGLibrary.GameDataManager
         /// Gets the localization manager containing all loaded translations.
         /// </summary>
         public LocalizationManager LocalizationManager => _localizationManager;
+
+        /// <summary>
+        /// Gets the unit definitions loaded from common/units.
+        /// </summary>
+        public Dictionary<string, Unit> UnitDefinitions => _unitDefinitions;
 
         /// <summary>
         /// Creates a world state from the data in the game data or mod directories.
@@ -54,13 +57,16 @@ namespace OpenGSGLibrary.GameDataManager
                 LoadCountries(gamedataPath);
                 LoadCountryFlags(gamedataPath);
 
-                LoadArmies(gamedataPath);
+                // Load unit definitions before militaries (militaries reference unit types)
+                LoadUnitDefinitions(gamedataPath);
+
+                // Load and attach militaries to countries
+                LoadMilitaries(gamedataPath);
 
                 LoadEvents(gamedataPath);
 
                 newState.SetProvinceTable(_provinceTable);
                 newState.SetCountryTable(_countryTable);
-                newState.SetArmyManager(_armyManager);
 
                 _countryTable.Values.ToList().ForEach(c => c.UpdateProvinces(newState));
 
@@ -99,7 +105,7 @@ namespace OpenGSGLibrary.GameDataManager
             try
             {
                 _provinceTable = GameObjectFactory.FromFolderWithFilenameId<Province, TProv>(
-                    Path.Combine(gamedataPath, "history\\provinces")
+                    Path.Combine(gamedataPath, "history", "provinces")
                 );
             }
             catch (Exception)
@@ -117,7 +123,7 @@ namespace OpenGSGLibrary.GameDataManager
             {
                 // Load basic country definitions from common/countries
                 _countryTable = GameObjectFactory.FromFolder<string, Country, TCountry>(
-                    Path.Combine(gamedataPath, "common\\countries"),
+                    Path.Combine(gamedataPath, "common", "countries"),
                     "tag"
                 );
 
@@ -137,7 +143,7 @@ namespace OpenGSGLibrary.GameDataManager
         {
             try
             {
-                var historyPath = Path.Combine(gamedataPath, "history\\countries");
+                var historyPath = Path.Combine(gamedataPath, "history", "countries");
 
                 if (!Directory.Exists(historyPath))
                 {
@@ -218,7 +224,7 @@ namespace OpenGSGLibrary.GameDataManager
         {
             try
             {
-                var flagPath = Path.Combine(gamedataPath, "gfx\\flags");
+                var flagPath = Path.Combine(gamedataPath, "gfx", "flags");
                 if (_countryTable != null)
                 {
                     foreach (var country in _countryTable)
@@ -236,17 +242,81 @@ namespace OpenGSGLibrary.GameDataManager
             }
         }
 
-        private void LoadArmies(string gamedataPath)
+        private void LoadUnitDefinitions(string gamedataPath)
         {
             try
             {
-                _armyManager.LoadFolder(Path.Combine(gamedataPath, "history\\units"));
+                var unitsPath = Path.Combine(gamedataPath, "common", "units");
+                _unitDefinitions = UnitLoader.LoadUnits(unitsPath);
+
+                GlobalLogger
+                    .GetInstance()
+                    .WriteLine(
+                        LogLevel.Info,
+                        $"Loaded {_unitDefinitions.Count} unit definition(s)"
+                    );
             }
             catch (Exception)
             {
                 GlobalLogger
                     .GetInstance()
-                    .WriteLine(LogLevel.Fatal, "Error while loading army data.");
+                    .WriteLine(LogLevel.Fatal, "Error while loading unit definitions.");
+                throw;
+            }
+        }
+
+        private void LoadMilitaries(string gamedataPath)
+        {
+            try
+            {
+                var militaryHistoryPath = Path.Combine(gamedataPath, "history", "units");
+                var militaries = MilitaryLoader.LoadMilitaries(militaryHistoryPath);
+
+                // Attach militaries to countries and calculate strength
+                var attachedCount = 0;
+                foreach (var (tag, military) in militaries)
+                {
+                    if (_countryTable.TryGetValue(tag, out var country))
+                    {
+                        country.Military = military;
+
+                        // Calculate and set military strength from units
+                        var totalStrength = military.GetTotalStrength(_unitDefinitions);
+                        country.MilitaryStrength = totalStrength;
+
+                        attachedCount++;
+
+                        GlobalLogger
+                            .GetInstance()
+                            .WriteLine(
+                                LogLevel.Info,
+                                $"Attached military to {tag}: {military.Armies.Count} armies, "
+                                    + $"{military.AirForces.Count} air forces, strength={totalStrength}"
+                            );
+                    }
+                    else
+                    {
+                        GlobalLogger
+                            .GetInstance()
+                            .WriteLine(
+                                LogLevel.Warning,
+                                $"Military data for unknown country: {tag}"
+                            );
+                    }
+                }
+
+                GlobalLogger
+                    .GetInstance()
+                    .WriteLine(
+                        LogLevel.Info,
+                        $"Attached militaries to {attachedCount} country/countries"
+                    );
+            }
+            catch (Exception)
+            {
+                GlobalLogger
+                    .GetInstance()
+                    .WriteLine(LogLevel.Fatal, "Error while loading military data.");
                 throw;
             }
         }

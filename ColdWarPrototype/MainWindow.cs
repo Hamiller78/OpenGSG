@@ -109,8 +109,20 @@ namespace ColdWarPrototype2
         private void SetupEventHandlers()
         {
             _mouseController.HoveredProvinceChanged += _provinceInfo.HandleProvinceChanged;
-            _mouseController.HoveredCountryChanged += _countryInfo.HandleCountryChanged; // ← Add this back
-            _mouseController.HoveredCountryChanged += _diplomacyInfo.HandleCountryChanged; // ← Keep this
+            _mouseController.HoveredCountryChanged += _countryInfo.HandleCountryChanged;
+            _mouseController.HoveredCountryChanged += _diplomacyInfo.HandleCountryChanged;
+
+            // Wire up army list to show formations when hovering provinces
+            _mouseController.HoveredProvinceChanged += (sender, e) =>
+            {
+                if (e.ProvinceId > 0) // Valid province
+                {
+                    _armyBox?.UpdateArmyListBox(
+                        _gameController.TickHandler.GetState(),
+                        e.ProvinceId
+                    );
+                }
+            };
         }
 
         private void SetupSimulationControls()

@@ -19,12 +19,7 @@ namespace ColdWarGameLogic.GameLogic
             new LocalizationManager();
         public GameSimulationThread SimulationThread { get; private set; } = default!;
 
-        private readonly WorldLoader<
-            CwpProvince,
-            CwpCountry,
-            CwpCountryEvent,
-            CwpNewsEvent
-        > _worldLoader = new();
+        private readonly WorldLoader<CwpProvince, CwpCountry> _worldLoader = new();
 
         public void Init()
         {

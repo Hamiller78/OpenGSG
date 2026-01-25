@@ -6,7 +6,6 @@ namespace OpenGSGLibrary.GameDataManager
     {
         private IDictionary<int, Province> _provinceTable = default!;
         private IDictionary<string, Country> _countryTable = default!;
-        private ArmyManager _armyManager = new();
 
         // Store orders as objects to avoid cross-assembly type resolving during incremental migration.
         private readonly List<object> _runningOrders = [];
@@ -20,10 +19,6 @@ namespace OpenGSGLibrary.GameDataManager
             _countryTable = countryTable;
 
         public IDictionary<string, Country> GetCountryTable() => _countryTable;
-
-        public void SetArmyManager(ArmyManager armyManager) => _armyManager = armyManager;
-
-        public ArmyManager? GetArmyManager() => _armyManager;
 
         public List<object>? GetOrders() => _runningOrders;
     }

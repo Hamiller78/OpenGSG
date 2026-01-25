@@ -4,23 +4,24 @@ using OpenGSGLibrary.Military;
 namespace OpenGSGLibrary.Orders
 {
     /// <summary>
-    /// Order that moves an army to a target province when finalized.
+    /// Order that moves a military formation to a target province when finalized.
     /// </summary>
     public class MarchOrder : Order
     {
-        private readonly Army army_;
-        private readonly int targetProvince_;
+        private readonly MilitaryFormation _formation;
+        private readonly int _targetProvince;
 
-        public MarchOrder(Army army, int targetProvince)
+        public MarchOrder(MilitaryFormation formation, int targetProvince)
         {
-            army_ = army;
-            targetProvince_ = targetProvince;
+            _formation = formation;
+            _targetProvince = targetProvince;
         }
 
         public override void FinalizeOrder(WorldState currentWorld)
         {
-            var armyManager = currentWorld.GetArmyManager();
-            armyManager?.MoveArmy(army_, targetProvince_);
+            // Simply update the formation's location
+            // The formation is already referenced in the country's Military object
+            _formation.Location = _targetProvince;
         }
     }
 }

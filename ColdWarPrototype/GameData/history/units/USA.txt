@@ -2,48 +2,39 @@
 tag = USA
 
 ### European Armies ###
-army = {			
-	name = "Seventh Army"
-	location = 4
-	
-	division = {
-		name = "1st Europe Infantry Division"
-		type = infantry
-		size = 10000
-	}
-	division = {
-		name = "2nd Europe Infantry Division"
-		type = infantry
-		size = 10000
-	}
-	division = {
-		name = "3rd Europe Infantry Division"
-		type = infantry
-		size = 10000
-	}
-	division = {
-		name = "4th Europe Infantry Division"
-		type = infantry
-		size = 10000
-	}
-	division = {
-		name = "5th Europe Infantry Division"
-		type = infantry
-		size = 10000
-	}
-	division = {
-		name = "6th Europe Infantry Division"
-		type = infantry
-		size = 10000
-	}
-	division = {
-		name = "7th Europe Infantry Division"
-		type = infantry
-		size = 10000
-	}
-	division = {
-		name = "1st Europe Armor Division"
-		type = armor
-		size = 3000
-	}
+army = {
+    location = 4 # Western Germany
+
+    infantry  = 2
+    artillery = 1
+
+    readiness = garrison
+}
+
+air_forces = {
+    location = 4 # Western German
+
+    fighter = 2
+    bomber  = 1
+
+    readiness = garrison
+}
+
+army = {
+    location = 22 # Japan
+
+    infantry   = 5      # occupation forces
+    armor      = 1      # limited, outdated
+    artillery  = 1
+
+    readiness  = garrison   # occupation posture
+}
+
+air_forces = {
+    location = 22 # Japan
+
+    fighter   = 3
+    bomber    = 1
+
+    readiness = garrison
 }

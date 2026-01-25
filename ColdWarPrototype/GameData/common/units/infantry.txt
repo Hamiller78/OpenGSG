@@ -4,3 +4,6 @@ type = army
 strength = 2
 
 speed = 10
+
+production_cost = 4
+maintenance_cost = 1

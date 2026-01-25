@@ -1,0 +1,8 @@
+# Fighter
+type = air
+
+strength = 2
+speed = 25
+
+production_cost  = 10
+maintenance_cost = 2

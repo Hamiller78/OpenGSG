@@ -1,0 +1,8 @@
+# Artillery
+type = army
+
+strength = 2
+speed = 6
+
+production_cost  = 6
+maintenance_cost = 1.5

@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using OpenGSGLibrary.Diplomacy;
+using OpenGSGLibrary.Military;
 
 namespace OpenGSGLibrary.GameDataManager
 {
@@ -32,6 +33,17 @@ namespace OpenGSGLibrary.GameDataManager
         /// Flags persist for the entire game session.
         /// </summary>
         public HashSet<string> Flags { get; private set; } = new HashSet<string>();
+
+        /// <summary>
+        /// Military forces belonging to this country.
+        /// </summary>
+        public NationMilitary? Military { get; set; }
+
+        /// <summary>
+        /// Calculated military strength.
+        /// For game-specific implementations, this can be overridden or calculated differently.
+        /// </summary>
+        public float MilitaryStrength { get; set; } = 0.0f;
 
         /// <summary>
         /// Sets a country flag.

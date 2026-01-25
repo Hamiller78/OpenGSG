@@ -1,5 +1,3 @@
-using OpenGSGLibrary.Military;
-
 namespace OpenGSGLibrary.GameDataManager
 {
     /// <summary>
@@ -11,7 +9,6 @@ namespace OpenGSGLibrary.GameDataManager
         public string Name { get; private set; } = string.Empty;
         public string Controller { get; set; } = string.Empty;
         public string Owner { get; set; } = string.Empty;
-        public List<Division>? Units { get; } = new List<Division>();
 
         /// <summary>
         /// List of country tags that consider this province their core territory.

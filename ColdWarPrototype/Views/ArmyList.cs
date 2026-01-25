@@ -5,73 +5,220 @@ using OpenGSGLibrary.Military;
 namespace ColdWarPrototype.Views
 {
     /// <summary>
-    /// Simple view helper for showing armies in a province.
-    /// Provides methods to get armies for a province and to fill a ListBox control.
-    /// Also supports updating the internal motherWindow's ArmyListBox like the original VB view.
+    /// Simple view helper for showing military formations in a province.
+    /// Provides methods to get formations for a province and to fill a ListBox control.
     /// </summary>
     public class ArmyList
     {
-        private readonly MainWindow motherWindow_;
+        private readonly MainWindow _motherWindow;
 
-        private int currentProvinceId_;
-        private bool isChoosingTarget_ = false;
-        private List<Army> armiesInProvince_ = new List<Army>();
-        private List<Army> selectedArmies_ = new List<Army>();
+        private int _currentProvinceId;
+        private bool _isChoosingTarget = false;
+        private List<MilitaryFormation> _formationsInProvince = new List<MilitaryFormation>();
+        private List<MilitaryFormation> _selectedFormations = new List<MilitaryFormation>();
 
         public ArmyList(MainWindow motherWindow)
         {
-            motherWindow_ = motherWindow;
+            _motherWindow = motherWindow;
         }
 
         /// <summary>
-        /// Returns the list of armies present in the given province from the provided world state.
+        /// Returns the list of military formations present in the given province.
+        /// Searches all countries' militaries for formations stationed at this location.
         /// </summary>
-        public List<Army> GetArmiesInProvince(WorldState state, int provinceId)
+        public List<MilitaryFormation> GetFormationsInProvince(WorldState state, int provinceId)
         {
-            var mgr = state?.GetArmyManager();
-            if (mgr == null)
-                return new List<Army>();
-            return mgr.GetArmiesInProvince(provinceId) ?? new List<Army>();
+            var formations = new List<MilitaryFormation>();
+
+            if (state == null)
+                return formations;
+
+            var countries = state.GetCountryTable();
+            if (countries == null)
+                return formations;
+
+            foreach (var country in countries.Values)
+            {
+                if (country.Military == null)
+                    continue;
+
+                // Add armies in this province
+                formations.AddRange(country.Military.Armies.Where(a => a.Location == provinceId));
+
+                // Add air forces in this province
+                formations.AddRange(
+                    country.Military.AirForces.Where(a => a.Location == provinceId)
+                );
+            }
+
+            return formations;
         }
 
         /// <summary>
-        /// Fills the given ListBox control with the armies in the specified province.
-        /// Each army's ToString() is used for display.
+        /// Fills the given ListBox control with the military formations in the specified province.
+        /// Shows formation type, owning country, and unit composition.
         /// </summary>
         public void FillListBox(ListBox listBox, WorldState state, int provinceId)
         {
             listBox.Items.Clear();
-            var armies = GetArmiesInProvince(state, provinceId);
-            foreach (var army in armies)
+            var formations = GetFormationsInProvince(state, provinceId);
+
+            foreach (var formation in formations)
             {
-                listBox.Items.Add(army);
+                // Find owning country
+                var ownerTag = FindOwningCountry(state, formation);
+
+                // Build display string
+                var unitSummary = string.Join(
+                    ", ",
+                    formation.Units.Select(kvp => $"{kvp.Value}x {kvp.Key}")
+                );
+
+                var displayText = $"[{ownerTag}] {formation.Branch}: {unitSummary}";
+
+                listBox.Items.Add(displayText);
             }
         }
 
         /// <summary>
-        /// Updates the mother window's ArmyListBox with armies from the given province.
-        /// Mirrors the original VB behaviour which used BeginUpdate/EndUpdate and stored internal state.
+        /// Updates the mother window's ArmyListBox with formations from the given province.
+        /// Stores the formations internally for later selection/orders.
         /// </summary>
         public void UpdateArmyListBox(WorldState currentState, int mouseProvinceId)
         {
-            armiesInProvince_ =
-                currentState?.GetArmyManager()?.GetArmiesInProvince(mouseProvinceId)
-                ?? new List<Army>();
+            _currentProvinceId = mouseProvinceId;
+            _formationsInProvince = GetFormationsInProvince(currentState, mouseProvinceId);
 
-            if (motherWindow_?.ArmyListBox == null)
+            if (_motherWindow?.ArmyListBox == null)
                 return;
 
-            var lb = motherWindow_.ArmyListBox;
-            lb.Items.Clear();
+            var lb = _motherWindow.ArmyListBox;
             lb.BeginUpdate();
-            if (armiesInProvince_ != null)
+            lb.Items.Clear();
+
+            foreach (var formation in _formationsInProvince)
             {
-                foreach (var army in armiesInProvince_)
+                // Find owning country
+                var ownerTag = FindOwningCountry(currentState, formation);
+
+                // Build display string with readiness indicator
+                var unitSummary = string.Join(
+                    ", ",
+                    formation.Units.Select(kvp => $"{kvp.Value}x {kvp.Key}")
+                );
+
+                var readinessIcon = GetReadinessIcon(formation.Readiness);
+                var displayText = $"{readinessIcon} [{ownerTag}] {formation.Branch}: {unitSummary}";
+
+                lb.Items.Add(displayText);
+            }
+
+            lb.EndUpdate();
+        }
+
+        /// <summary>
+        /// Finds which country owns a specific formation.
+        /// </summary>
+        private string FindOwningCountry(WorldState state, MilitaryFormation formation)
+        {
+            var countries = state?.GetCountryTable();
+            if (countries == null)
+                return "???";
+
+            foreach (var country in countries.Values)
+            {
+                if (country.Military == null)
+                    continue;
+
+                if (
+                    country.Military.Armies.Contains(formation)
+                    || country.Military.AirForces.Contains(formation)
+                )
                 {
-                    lb.Items.Add(army.ToString());
+                    return country.Tag;
                 }
             }
-            lb.EndUpdate();
+
+            return "???";
+        }
+
+        /// <summary>
+        /// Gets a visual indicator for readiness state.
+        /// </summary>
+        private string GetReadinessIcon(string readiness)
+        {
+            return readiness?.ToLower() switch
+            {
+                "active" => "⚔️",
+                "ready" => "✓",
+                "training" => "🎓",
+                "reserve" => "💤",
+                _ => "•",
+            };
+        }
+
+        /// <summary>
+        /// Gets the formation at the specified index in the current province.
+        /// Used when user selects a formation from the list.
+        /// </summary>
+        public MilitaryFormation? GetFormationAtIndex(int index)
+        {
+            if (index < 0 || index >= _formationsInProvince.Count)
+                return null;
+
+            return _formationsInProvince[index];
+        }
+
+        /// <summary>
+        /// Gets all formations currently displayed in the list.
+        /// </summary>
+        public List<MilitaryFormation> GetCurrentFormations()
+        {
+            return _formationsInProvince;
+        }
+
+        /// <summary>
+        /// Sets whether we're in "choose target province" mode for march orders.
+        /// </summary>
+        public void SetChoosingTargetMode(bool isChoosing)
+        {
+            _isChoosingTarget = isChoosing;
+        }
+
+        /// <summary>
+        /// Gets whether we're in target selection mode.
+        /// </summary>
+        public bool IsChoosingTarget => _isChoosingTarget;
+
+        /// <summary>
+        /// Adds or removes a formation from the selection.
+        /// </summary>
+        public void ToggleFormationSelection(int index)
+        {
+            var formation = GetFormationAtIndex(index);
+            if (formation == null)
+                return;
+
+            if (_selectedFormations.Contains(formation))
+                _selectedFormations.Remove(formation);
+            else
+                _selectedFormations.Add(formation);
+        }
+
+        /// <summary>
+        /// Gets currently selected formations.
+        /// </summary>
+        public List<MilitaryFormation> GetSelectedFormations()
+        {
+            return _selectedFormations;
+        }
+
+        /// <summary>
+        /// Clears the selection.
+        /// </summary>
+        public void ClearSelection()
+        {
+            _selectedFormations.Clear();
         }
     }
 }

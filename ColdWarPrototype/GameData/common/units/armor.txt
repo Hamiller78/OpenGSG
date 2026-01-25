@@ -1,6 +1,8 @@
-#Armor
+# Armor
 type = army
 
 strength = 3
-
 speed = 15
+
+production_cost   = 8
+maintenance_cost  = 2

@@ -1,0 +1,18 @@
+###### Start unit locations ######
+tag = ROK
+
+army = {
+    location = 20 # South Korea
+
+    infantry   = 4      # numerically present, poorly equipped
+    artillery  = 1      # very limited heavy weapons
+
+    readiness  = garrison    # unprepared for large-scale war
+}
+
+army = {
+    location = 20
+
+    infantry  = 2
+    readiness = reserve
+}
