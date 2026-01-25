@@ -16,5 +16,5 @@ air_forces = {
 
     fighter = 2         # limited but operational
 
-    readiness  = ready  # offensive posture in 1950
+    readiness  = active # offensive posture in 1950
 }
