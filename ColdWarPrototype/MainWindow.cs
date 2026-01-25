@@ -7,6 +7,7 @@ using OpenGSGLibrary.Events;
 using OpenGSGLibrary.GameDataManager;
 using OpenGSGLibrary.GameLogic;
 using OpenGSGLibrary.Tools;
+using OpenGSGLibrary.WorldMap;
 
 namespace ColdWarPrototype2
 {
@@ -32,6 +33,9 @@ namespace ColdWarPrototype2
         // Pin state
         private int _pinnedProvinceId = -1; // -1 = not pinned
         private bool IsProvincePinned => _pinnedProvinceId > 0;
+
+        // Add field
+        private System.Windows.Forms.Timer? _blinkTimer;
 
         public MainWindow()
         {
@@ -84,6 +88,12 @@ namespace ColdWarPrototype2
 
                 // Subscribe to UI refresh events (updates date display automatically)
                 TickHandler.UIRefreshRequested += TickHandler_UIRefreshRequested;
+
+                // Add this after setting up map
+                _blinkTimer = new System.Windows.Forms.Timer();
+                _blinkTimer.Interval = 500; // Blink every 500ms
+                _blinkTimer.Tick += BlinkTimer_Tick;
+                _blinkTimer.Start();
             }
             catch (Exception ex)
             {
@@ -179,6 +189,20 @@ namespace ColdWarPrototype2
                         this,
                         new CountryEventArgs(province.Owner)
                     );
+                }
+            }
+
+            // Set highlighted province for blinking
+            if (_worldMapView?.MapMaker is CountryModeMapMaker countryMap)
+            {
+                countryMap.HighlightedProvinceId = IsProvincePinned ? _pinnedProvinceId : -1;
+
+                // When unpinning, reset to normal color immediately
+                if (!IsProvincePinned)
+                {
+                    countryMap.ShowHighlight = false;
+                    // Force redraw to show normal color (works in both modes)
+                    _worldMapView.UpdateCountryMap(state);
                 }
             }
         }
@@ -369,5 +393,25 @@ namespace ColdWarPrototype2
             _gameController.SimulationThread?.Stop();
             base.OnFormClosing(e);
         }
+
+        private void BlinkTimer_Tick(object? sender, EventArgs e)
+        {
+            // Only blink if something is pinned (works in both modes now)
+            if (!IsProvincePinned)
+                return;
+
+            if (_worldMapView?.MapMaker is CountryModeMapMaker countryMap)
+            {
+                countryMap.ShowHighlight = !countryMap.ShowHighlight;
+
+                if (countryMap.HighlightedProvinceId > 0)
+                {
+                    _worldMapView.UpdateCountryMap(_gameController.TickHandler.GetState());
+                }
+            }
+        }
+
+        // Add this public accessor method
+        public MasterController GetGameController() => _gameController;
     }
 }
