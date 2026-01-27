@@ -49,6 +49,11 @@
         public Label ActiveCountryMilitaryTech;
         public Label IndustryInvestmentLabel;
         public TextBox IndustryInvestmentTextBox;
+        
+        // Military tab controls
+        public ListView MilitaryUnitsListView;
+        public Button MoveUnitsButton;
+        public Label MilitaryInstructionsLabel;
 
         /// <summary>
         ///  Clean up any resources being used.
@@ -111,6 +116,9 @@
             ActiveCountryProduction = new Label();
             ActiveCountryName = new Label();
             MilitaryTabPage = new TabPage();
+            MilitaryUnitsListView = new ListView();
+            MoveUnitsButton = new Button();
+            MilitaryInstructionsLabel = new Label();
             ((System.ComponentModel.ISupportInitialize)MapPictureBox).BeginInit();
             MapModeGroup.SuspendLayout();
             ProvinceBox.SuspendLayout();
@@ -119,6 +127,7 @@
             ActiveCountryBox.SuspendLayout();
             ActiveCountryTabControl.SuspendLayout();
             EconomyTabPage.SuspendLayout();
+            MilitaryTabPage.SuspendLayout();
             SuspendLayout();
             // 
             // MapPictureBox
@@ -502,6 +511,9 @@
             // 
             // MilitaryTabPage
             // 
+            MilitaryTabPage.Controls.Add(MilitaryInstructionsLabel);
+            MilitaryTabPage.Controls.Add(MoveUnitsButton);
+            MilitaryTabPage.Controls.Add(MilitaryUnitsListView);
             MilitaryTabPage.Location = new Point(4, 24);
             MilitaryTabPage.Name = "MilitaryTabPage";
             MilitaryTabPage.Padding = new Padding(3);
@@ -509,6 +521,39 @@
             MilitaryTabPage.TabIndex = 1;
             MilitaryTabPage.Text = "Military";
             MilitaryTabPage.UseVisualStyleBackColor = true;
+            // 
+            // MilitaryUnitsListView
+            // 
+            MilitaryUnitsListView.FullRowSelect = true;
+            MilitaryUnitsListView.Location = new Point(7, 25);
+            MilitaryUnitsListView.Name = "MilitaryUnitsListView";
+            MilitaryUnitsListView.Size = new Size(1200, 120);
+            MilitaryUnitsListView.TabIndex = 0;
+            MilitaryUnitsListView.UseCompatibleStateImageBehavior = false;
+            MilitaryUnitsListView.View = View.Details;
+            MilitaryUnitsListView.Columns.Add("Type", 80);
+            MilitaryUnitsListView.Columns.Add("Location", 150);
+            MilitaryUnitsListView.Columns.Add("Units", 400);
+            MilitaryUnitsListView.Columns.Add("Readiness", 100);
+            MilitaryUnitsListView.Columns.Add("Strength", 100);
+            // 
+            // MoveUnitsButton
+            // 
+            MoveUnitsButton.Enabled = false;
+            MoveUnitsButton.Location = new Point(1213, 25);
+            MoveUnitsButton.Name = "MoveUnitsButton";
+            MoveUnitsButton.Size = new Size(120, 35);
+            MoveUnitsButton.TabIndex = 1;
+            MoveUnitsButton.Text = "Move to Province";
+            MoveUnitsButton.UseVisualStyleBackColor = true;
+            // 
+            // MilitaryInstructionsLabel
+            // 
+            MilitaryInstructionsLabel.Location = new Point(7, 5);
+            MilitaryInstructionsLabel.Name = "MilitaryInstructionsLabel";
+            MilitaryInstructionsLabel.Size = new Size(500, 15);
+            MilitaryInstructionsLabel.TabIndex = 2;
+            MilitaryInstructionsLabel.Text = "Select a formation and click on a province to move. Button enables when province is selected.";
             // 
             // MainWindow
             // 
@@ -539,6 +584,8 @@
             ActiveCountryTabControl.ResumeLayout(false);
             EconomyTabPage.ResumeLayout(false);
             EconomyTabPage.PerformLayout();
+            MilitaryTabPage.ResumeLayout(false);
+            MilitaryTabPage.PerformLayout();
             ResumeLayout(false);
         }
 
