@@ -37,6 +37,9 @@
         private Button DebugConsoleButton;
 
         public GroupBox ActiveCountryBox;
+        public TabControl ActiveCountryTabControl;
+        public TabPage EconomyTabPage;
+        public TabPage MilitaryTabPage;
         public Label ActiveCountryName;
         public Label ActiveCountryProduction;
         public Label ActiveCountryMilitaryStrength;
@@ -82,6 +85,7 @@
             ProvinceIndustrialization = new Label();
             ProvincePopulation = new Label();
             ProvinceName = new Label();
+            ProvinceCores = new Label();
             FlagPictureBox = new PictureBox();
             CountryBox = new GroupBox();
             DiplomacyListView = new ListView();
@@ -95,22 +99,26 @@
             SpeedComboBox = new ComboBox();
             DebugConsoleButton = new Button();
             ActiveCountryBox = new GroupBox();
-            ActiveCountryName = new Label();
-            ActiveCountryProduction = new Label();
-            ActiveCountryMilitaryStrength = new Label();
-            ActiveCountrySoftPower = new Label();
-            ActiveCountryUnrest = new Label();
-            ActiveCountryCivilTech = new Label();
-            ActiveCountryMilitaryTech = new Label();
-            IndustryInvestmentLabel = new Label();
+            ActiveCountryTabControl = new TabControl();
+            EconomyTabPage = new TabPage();
             IndustryInvestmentTextBox = new TextBox();
-            ProvinceCores = new Label();
+            IndustryInvestmentLabel = new Label();
+            ActiveCountryMilitaryTech = new Label();
+            ActiveCountryCivilTech = new Label();
+            ActiveCountryUnrest = new Label();
+            ActiveCountrySoftPower = new Label();
+            ActiveCountryMilitaryStrength = new Label();
+            ActiveCountryProduction = new Label();
+            ActiveCountryName = new Label();
+            MilitaryTabPage = new TabPage();
             ((System.ComponentModel.ISupportInitialize)MapPictureBox).BeginInit();
             MapModeGroup.SuspendLayout();
             ProvinceBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)FlagPictureBox).BeginInit();
             CountryBox.SuspendLayout();
             ActiveCountryBox.SuspendLayout();
+            ActiveCountryTabControl.SuspendLayout();
+            EconomyTabPage.SuspendLayout();
             SuspendLayout();
             // 
             // MapPictureBox
@@ -258,6 +266,15 @@
             ProvinceName.TabIndex = 4;
             ProvinceName.Text = "-";
             // 
+            // ProvinceCores
+            // 
+            ProvinceCores.Location = new Point(9, 170);
+            ProvinceCores.Margin = new Padding(4, 0, 4, 0);
+            ProvinceCores.Name = "ProvinceCores";
+            ProvinceCores.Size = new Size(233, 40);
+            ProvinceCores.TabIndex = 12;
+            ProvinceCores.Text = "Cores: -";
+            // 
             // FlagPictureBox
             // 
             FlagPictureBox.Location = new Point(203, 18);
@@ -372,103 +389,126 @@
             // 
             // ActiveCountryBox
             // 
-            ActiveCountryBox.Controls.Add(IndustryInvestmentTextBox);
-            ActiveCountryBox.Controls.Add(IndustryInvestmentLabel);
-            ActiveCountryBox.Controls.Add(ActiveCountryMilitaryTech);
-            ActiveCountryBox.Controls.Add(ActiveCountryCivilTech);
-            ActiveCountryBox.Controls.Add(ActiveCountryUnrest);
-            ActiveCountryBox.Controls.Add(ActiveCountrySoftPower);
-            ActiveCountryBox.Controls.Add(ActiveCountryMilitaryStrength);
-            ActiveCountryBox.Controls.Add(ActiveCountryProduction);
-            ActiveCountryBox.Controls.Add(ActiveCountryName);
+            ActiveCountryBox.Controls.Add(ActiveCountryTabControl);
             ActiveCountryBox.Location = new Point(268, 680);
             ActiveCountryBox.Name = "ActiveCountryBox";
-            ActiveCountryBox.Size = new Size(500, 200);
+            ActiveCountryBox.Size = new Size(1425, 206);
             ActiveCountryBox.TabIndex = 22;
             ActiveCountryBox.TabStop = false;
             ActiveCountryBox.Text = "Active Country (Player)";
             // 
-            // ActiveCountryName
+            // ActiveCountryTabControl
             // 
-            ActiveCountryName.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            ActiveCountryName.Location = new Point(10, 20);
-            ActiveCountryName.Name = "ActiveCountryName";
-            ActiveCountryName.Size = new Size(480, 20);
-            ActiveCountryName.TabIndex = 0;
-            ActiveCountryName.Text = "United States of America (USA)";
+            ActiveCountryTabControl.Controls.Add(EconomyTabPage);
+            ActiveCountryTabControl.Controls.Add(MilitaryTabPage);
+            ActiveCountryTabControl.Dock = DockStyle.Fill;
+            ActiveCountryTabControl.Location = new Point(3, 19);
+            ActiveCountryTabControl.Name = "ActiveCountryTabControl";
+            ActiveCountryTabControl.SelectedIndex = 0;
+            ActiveCountryTabControl.Size = new Size(1419, 184);
+            ActiveCountryTabControl.TabIndex = 0;
             // 
-            // ActiveCountryProduction
+            // EconomyTabPage
             // 
-            ActiveCountryProduction.Location = new Point(10, 45);
-            ActiveCountryProduction.Name = "ActiveCountryProduction";
-            ActiveCountryProduction.Size = new Size(230, 15);
-            ActiveCountryProduction.TabIndex = 1;
-            ActiveCountryProduction.Text = "Production: 0";
-            // 
-            // ActiveCountryMilitaryStrength
-            // 
-            ActiveCountryMilitaryStrength.Location = new Point(10, 65);
-            ActiveCountryMilitaryStrength.Name = "ActiveCountryMilitaryStrength";
-            ActiveCountryMilitaryStrength.Size = new Size(230, 15);
-            ActiveCountryMilitaryStrength.TabIndex = 2;
-            ActiveCountryMilitaryStrength.Text = "Military Strength: 0";
-            // 
-            // ActiveCountrySoftPower
-            // 
-            ActiveCountrySoftPower.Location = new Point(10, 85);
-            ActiveCountrySoftPower.Name = "ActiveCountrySoftPower";
-            ActiveCountrySoftPower.Size = new Size(230, 15);
-            ActiveCountrySoftPower.TabIndex = 3;
-            ActiveCountrySoftPower.Text = "Soft Power: 50";
-            // 
-            // ActiveCountryUnrest
-            // 
-            ActiveCountryUnrest.Location = new Point(10, 105);
-            ActiveCountryUnrest.Name = "ActiveCountryUnrest";
-            ActiveCountryUnrest.Size = new Size(230, 15);
-            ActiveCountryUnrest.TabIndex = 4;
-            ActiveCountryUnrest.Text = "Unrest: 0";
-            // 
-            // ActiveCountryCivilTech
-            // 
-            ActiveCountryCivilTech.Location = new Point(260, 65);
-            ActiveCountryCivilTech.Name = "ActiveCountryCivilTech";
-            ActiveCountryCivilTech.Size = new Size(230, 15);
-            ActiveCountryCivilTech.TabIndex = 5;
-            ActiveCountryCivilTech.Text = "Civil Tech: 50";
-            // 
-            // ActiveCountryMilitaryTech
-            // 
-            ActiveCountryMilitaryTech.Location = new Point(260, 85);
-            ActiveCountryMilitaryTech.Name = "ActiveCountryMilitaryTech";
-            ActiveCountryMilitaryTech.Size = new Size(230, 15);
-            ActiveCountryMilitaryTech.TabIndex = 6;
-            ActiveCountryMilitaryTech.Text = "Military Tech: 50";
-            // 
-            // IndustryInvestmentLabel
-            // 
-            IndustryInvestmentLabel.Location = new Point(10, 135);
-            IndustryInvestmentLabel.Name = "IndustryInvestmentLabel";
-            IndustryInvestmentLabel.Size = new Size(200, 15);
-            IndustryInvestmentLabel.TabIndex = 7;
-            IndustryInvestmentLabel.Text = "Industry Investment %:";
+            EconomyTabPage.Controls.Add(IndustryInvestmentTextBox);
+            EconomyTabPage.Controls.Add(IndustryInvestmentLabel);
+            EconomyTabPage.Controls.Add(ActiveCountryMilitaryTech);
+            EconomyTabPage.Controls.Add(ActiveCountryCivilTech);
+            EconomyTabPage.Controls.Add(ActiveCountryUnrest);
+            EconomyTabPage.Controls.Add(ActiveCountrySoftPower);
+            EconomyTabPage.Controls.Add(ActiveCountryMilitaryStrength);
+            EconomyTabPage.Controls.Add(ActiveCountryProduction);
+            EconomyTabPage.Controls.Add(ActiveCountryName);
+            EconomyTabPage.Location = new Point(4, 24);
+            EconomyTabPage.Name = "EconomyTabPage";
+            EconomyTabPage.Padding = new Padding(3);
+            EconomyTabPage.Size = new Size(1411, 156);
+            EconomyTabPage.TabIndex = 0;
+            EconomyTabPage.Text = "Economy";
+            EconomyTabPage.UseVisualStyleBackColor = true;
             // 
             // IndustryInvestmentTextBox
             // 
-            IndustryInvestmentTextBox.Location = new Point(210, 132);
+            IndustryInvestmentTextBox.Location = new Point(207, 112);
             IndustryInvestmentTextBox.Name = "IndustryInvestmentTextBox";
             IndustryInvestmentTextBox.Size = new Size(60, 23);
             IndustryInvestmentTextBox.TabIndex = 8;
             IndustryInvestmentTextBox.Text = "50";
             // 
-            // ProvinceCores
+            // IndustryInvestmentLabel
             // 
-            ProvinceCores.Location = new Point(9, 170);
-            ProvinceCores.Margin = new Padding(4, 0, 4, 0);
-            ProvinceCores.Name = "ProvinceCores";
-            ProvinceCores.Size = new Size(233, 40);  // Taller to handle multiple cores
-            ProvinceCores.TabIndex = 12;
-            ProvinceCores.Text = "Cores: -";
+            IndustryInvestmentLabel.Location = new Point(7, 115);
+            IndustryInvestmentLabel.Name = "IndustryInvestmentLabel";
+            IndustryInvestmentLabel.Size = new Size(200, 15);
+            IndustryInvestmentLabel.TabIndex = 7;
+            IndustryInvestmentLabel.Text = "Industry Investment %:";
+            // 
+            // ActiveCountryMilitaryTech
+            // 
+            ActiveCountryMilitaryTech.Location = new Point(257, 65);
+            ActiveCountryMilitaryTech.Name = "ActiveCountryMilitaryTech";
+            ActiveCountryMilitaryTech.Size = new Size(230, 15);
+            ActiveCountryMilitaryTech.TabIndex = 6;
+            ActiveCountryMilitaryTech.Text = "Military Tech: 50";
+            // 
+            // ActiveCountryCivilTech
+            // 
+            ActiveCountryCivilTech.Location = new Point(257, 45);
+            ActiveCountryCivilTech.Name = "ActiveCountryCivilTech";
+            ActiveCountryCivilTech.Size = new Size(230, 15);
+            ActiveCountryCivilTech.TabIndex = 5;
+            ActiveCountryCivilTech.Text = "Civil Tech: 50";
+            // 
+            // ActiveCountryUnrest
+            // 
+            ActiveCountryUnrest.Location = new Point(7, 85);
+            ActiveCountryUnrest.Name = "ActiveCountryUnrest";
+            ActiveCountryUnrest.Size = new Size(230, 15);
+            ActiveCountryUnrest.TabIndex = 4;
+            ActiveCountryUnrest.Text = "Unrest: 0";
+            // 
+            // ActiveCountrySoftPower
+            // 
+            ActiveCountrySoftPower.Location = new Point(7, 65);
+            ActiveCountrySoftPower.Name = "ActiveCountrySoftPower";
+            ActiveCountrySoftPower.Size = new Size(230, 15);
+            ActiveCountrySoftPower.TabIndex = 3;
+            ActiveCountrySoftPower.Text = "Soft Power: 50";
+            // 
+            // ActiveCountryMilitaryStrength
+            // 
+            ActiveCountryMilitaryStrength.Location = new Point(7, 45);
+            ActiveCountryMilitaryStrength.Name = "ActiveCountryMilitaryStrength";
+            ActiveCountryMilitaryStrength.Size = new Size(230, 15);
+            ActiveCountryMilitaryStrength.TabIndex = 2;
+            ActiveCountryMilitaryStrength.Text = "Military Strength: 0";
+            // 
+            // ActiveCountryProduction
+            // 
+            ActiveCountryProduction.Location = new Point(7, 25);
+            ActiveCountryProduction.Name = "ActiveCountryProduction";
+            ActiveCountryProduction.Size = new Size(230, 15);
+            ActiveCountryProduction.TabIndex = 1;
+            ActiveCountryProduction.Text = "Production: 0";
+            // 
+            // ActiveCountryName
+            // 
+            ActiveCountryName.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            ActiveCountryName.Location = new Point(7, 3);
+            ActiveCountryName.Name = "ActiveCountryName";
+            ActiveCountryName.Size = new Size(480, 20);
+            ActiveCountryName.TabIndex = 0;
+            ActiveCountryName.Text = "United States of America (USA)";
+            // 
+            // MilitaryTabPage
+            // 
+            MilitaryTabPage.Location = new Point(4, 24);
+            MilitaryTabPage.Name = "MilitaryTabPage";
+            MilitaryTabPage.Padding = new Padding(3);
+            MilitaryTabPage.Size = new Size(1411, 156);
+            MilitaryTabPage.TabIndex = 1;
+            MilitaryTabPage.Text = "Military";
+            MilitaryTabPage.UseVisualStyleBackColor = true;
             // 
             // MainWindow
             // 
@@ -496,7 +536,9 @@
             ((System.ComponentModel.ISupportInitialize)FlagPictureBox).EndInit();
             CountryBox.ResumeLayout(false);
             ActiveCountryBox.ResumeLayout(false);
-            ActiveCountryBox.PerformLayout();
+            ActiveCountryTabControl.ResumeLayout(false);
+            EconomyTabPage.ResumeLayout(false);
+            EconomyTabPage.PerformLayout();
             ResumeLayout(false);
         }
 
