@@ -24,6 +24,7 @@ namespace ColdWarPrototype2
         private WorldMap _worldMapView;
         private DiplomacyInfo? _diplomacyInfo;
         private ActiveCountryInfo? _activeCountryInfo;
+        private MilitaryUnitsView? _militaryUnitsView; // ADD THIS
 
         // Controllers
         private MouseController _mouseController;
@@ -107,8 +108,9 @@ namespace ColdWarPrototype2
             _countryInfo = new CountryInfo(this, _gameController);
             _armyBox = new ArmyList(this);
             _coordinateView = new GeoCoordinates(this);
-            _diplomacyInfo = new DiplomacyInfo(this, _gameController); // ← Add this
+            _diplomacyInfo = new DiplomacyInfo(this, _gameController);
             _activeCountryInfo = new ActiveCountryInfo(this, _gameController);
+            _militaryUnitsView = new MilitaryUnitsView(this); // ADD THIS
 
             _worldMapView = new WorldMap(this);
             _worldMapView.SetSourceProvinceMap(_gameController.WorldData.ProvinceMap);
@@ -160,6 +162,50 @@ namespace ColdWarPrototype2
                     _diplomacyInfo?.HandleCountryChanged(sender, e);
                 }
             };
+
+            // Military tab - populate list when tab is selected
+            ActiveCountryTabControl.SelectedIndexChanged += (sender, e) =>
+            {
+                if (ActiveCountryTabControl.SelectedTab == MilitaryTabPage)
+                {
+                    UpdateMilitaryTab();
+                }
+            };
+
+            // Military list - update button state when selection changes
+            MilitaryUnitsListView.SelectedIndexChanged += (sender, e) =>
+            {
+                bool hasSelection = MilitaryUnitsListView.SelectedItems.Count > 0;
+                _militaryUnitsView?.UpdateMoveButtonState(IsProvincePinned, hasSelection);
+            };
+
+            // Move button click
+            MoveUnitsButton.Click += MoveUnitsButton_Click;
+        }
+
+        private void UpdateMilitaryTab()
+        {
+            var activeTag = _gameController.TickHandler.ActivePlayerCountryTag;
+            _militaryUnitsView?.UpdateMilitaryList(
+                _gameController.TickHandler.GetState(),
+                activeTag
+            );
+        }
+
+        private void MoveUnitsButton_Click(object? sender, EventArgs e)
+        {
+            var formation = _militaryUnitsView?.GetSelectedFormation();
+            if (formation == null || !IsProvincePinned)
+                return;
+
+            // TODO: Create MarchOrder and add to order queue
+            MessageBox.Show(
+                $"Moving {formation.Branch} to province {_pinnedProvinceId}\n"
+                    + $"(Order system not yet implemented)",
+                "Move Order",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         /// <summary>
@@ -205,6 +251,10 @@ namespace ColdWarPrototype2
                     _worldMapView.UpdateCountryMap(state);
                 }
             }
+
+            // Update move button state
+            bool hasSelection = MilitaryUnitsListView.SelectedItems.Count > 0;
+            _militaryUnitsView?.UpdateMoveButtonState(IsProvincePinned, hasSelection);
         }
 
         private void SetupSimulationControls()
@@ -317,6 +367,12 @@ namespace ColdWarPrototype2
             _countryInfo?.UpdateCurrentCountry(_gameController.TickHandler.GetState());
             _diplomacyInfo?.UpdateCurrentCountry(_gameController.TickHandler.GetState());
             _activeCountryInfo?.UpdateActiveCountry(_gameController.TickHandler.GetState());
+
+            // Refresh military tab if it's active
+            if (ActiveCountryTabControl.SelectedTab == MilitaryTabPage)
+            {
+                UpdateMilitaryTab();
+            }
         }
 
         // MODIFIED: DateButton now toggles pause instead of advancing manually
